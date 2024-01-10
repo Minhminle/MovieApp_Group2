@@ -81,9 +81,7 @@ const MovieItem = () => {
     );
   }
   const { data, isLoading, error } = useSWR<MovieList>("/movie/upcoming");
-  const [result, setResult] = useState<Movie[]>(
-    data?.results.slice(0, 5) ?? []
-  );
+  const [result, setResult] = useState<Movie[]>(data?.results ?? []);
   return (
     <>
       <Container>
@@ -93,7 +91,7 @@ const MovieItem = () => {
             justifyContent="space-between"
             alignItems="center"
           >
-            <Typography sx={_letterStyles} variant="body1">
+            <Typography sx={_letterStyles} variant="h4">
               Upcoming
             </Typography>
             <Stack direction="row" spacing={1}>

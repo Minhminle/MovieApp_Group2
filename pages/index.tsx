@@ -3,6 +3,7 @@ import Image from "next/image";
 import { Inter } from "next/font/google";
 import { Box } from "@mui/material";
 import MovieItem from "@/components/movie/MovieItem";
+import Footter from "@/components/movie/Footer";
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
@@ -10,6 +11,7 @@ export default function Home() {
     <>
       <Box sx={{ background: "black" }}>
         <MovieItem />
+        <Footter />
       </Box>
     </>
   );

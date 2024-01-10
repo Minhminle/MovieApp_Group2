@@ -87,7 +87,7 @@ const MovieItem = () => {
   return (
     <>
       <Container>
-        <Box>
+        <Box sx={{ p: "10px 0px 10px 0px" }}>
           <Stack
             direction="row"
             justifyContent="space-between"

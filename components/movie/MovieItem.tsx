@@ -96,10 +96,10 @@ const MovieItem = () => {
             </Typography>
             <Stack direction="row" spacing={1}>
               <ArrowBackIosNewTwoToneIcon
-                sx={{ color: "white", width: "10px", height: "10px" }}
+                sx={{ color: "white", width: "20px", height: "20px" }}
               />
               <ArrowForwardIosTwoToneIcon
-                sx={{ color: "white", width: "10px", height: "10px" }}
+                sx={{ color: "white", width: "20px", height: "20px" }}
               />
             </Stack>
           </Stack>

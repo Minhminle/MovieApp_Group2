@@ -30,4 +30,5 @@ export interface Movie {
   production_countries: ProductionCountry[];
   videos: VideoList;
   credits: CreditSection;
+  vote_average:number;
 }

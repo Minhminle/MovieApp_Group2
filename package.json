@@ -18,7 +18,10 @@
     "next": "14.0.4",
     "react": "^18",
     "react-dom": "^18",
+    "react-id-swiper": "^4.0.0",
+    "react-slick": "^0.29.0",
     "styled-components": "^6.1.8",
+    "swiper": "^11.0.5",
     "swr": "^2.2.4"
   },
   "devDependencies": {

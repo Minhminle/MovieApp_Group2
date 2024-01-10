@@ -22,16 +22,7 @@ const MovieCategory: NextPageWithLayout = () => {
   console.log(data);
   return (
     <>
-      <Stack
-        gap={4}
-        sx={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
-          gap: "16px",
-          overflowX: "auto",
-          scrollbarWidth: "thin",
-        }}
-      >
+      <Stack>
         {data?.results.map((movie) => (
           <Card
             key={movie.id}

@@ -1,7 +1,35 @@
+import { Image } from "@mui/icons-material";
+import { Box, Container, Stack } from "@mui/material";
 import React from "react";
-
-type Props = {};
-
-const ListApp = (props: Props) => {
-  return <Box>ListApp22222222</Box>;
+const listapp = ["disney", "nextflix", "hbo", "pixar"];
+function ShowListApp(props: { item: string[] }) {
+  return (
+    <>
+      <Stack
+        sx={{ p: "20px 0px 20px 0px" }}
+        direction="row"
+        justifyContent="space-between"
+      >
+        {props.item.map((item, index) => (
+          <Box
+            component="img"
+            key={index}
+            src={`/images/${item}.svg`}
+            width={30}
+            height={15}
+          />
+        ))}
+      </Stack>
+    </>
+  );
+}
+const ListApp = () => {
+  return (
+    <>
+      <Container>
+        <ShowListApp item={listapp} />
+      </Container>
+    </>
+  );
 };
+export default ListApp;

@@ -15,8 +15,8 @@ function ShowListApp(props: { item: string[] }) {
             component="img"
             key={index}
             src={`/images/${item}.svg`}
-            width={30}
-            height={15}
+            width={35}
+            height={35}
           />
         ))}
       </Stack>

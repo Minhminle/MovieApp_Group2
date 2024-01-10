@@ -1,12 +1,6 @@
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 import { createTheme, ThemeProvider } from "@mui/material";
-import { Raleway } from "next/font/google";
-import "@fontsource/raleway/100.css";
-import "@fontsource/raleway/200.css";
-import "@fontsource/raleway/300.css";
-import "@fontsource/raleway/400.css";
-import "@fontsource/raleway/500.css";
 import axios from "axios";
 import { SWRConfig } from "swr";
 import { ReactElement, ReactNode } from "react";

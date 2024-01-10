@@ -1,13 +1,9 @@
-// pages/index.tsx
+import { Box } from "@mui/material";
 import React from "react";
-import MovieCategory from "./movie/MovieCategory";
-
-const homePage: React.FC = () => {
-  return (
-    <>
-      <MovieCategory></MovieCategory>
-    </>
-  );
+const home = () => {
+  return;
+  <>
+    <Box></Box>
+  </>;
 };
-
-export default homePage;
+export default home;

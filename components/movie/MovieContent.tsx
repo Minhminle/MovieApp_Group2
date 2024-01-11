@@ -12,18 +12,28 @@ type Props = {};
 
 const MovieContent = (props: Props) => {
   const router = useRouter();
+
   const fetcher = (url: string) =>
     axios.get(url).then((response) => response.data);
+
   const { data, isLoading, error } = useSWR<MovieList>(
-    "/movie/upcoming",
+    "/movie/popular",
     fetcher
   );
+
+  const handleDetailClick = (movieId: string) => {
+    router.push(`/detail/movie/${movieId}`);
+  };
+
+  console.log(data);
   return (
     <>
-      <Stack gap={4}>
+      <Stack gap={4} direction="row" sx={{ overflowX: "auto" }}>
         {data?.results.map((movie) => (
           <Stack key={movie.id}>
-            <Box fontSize={"30px"}>{movie.title}</Box>
+            <Box fontSize={"30px"} onClick={() => handleDetailClick(movie.id)}>
+              {movie.title}
+            </Box>
             <Stack direction={"row"} spacing={2}>
               <StarIcon sx={{ color: "yellow" }} className="star-icon" />
               <Box>{movie.vote_average}</Box>
@@ -35,7 +45,8 @@ const MovieContent = (props: Props) => {
             <Box>{movie.overview}</Box>
             <Stack direction={"row"} spacing={3}>
               <Button
-                sx={{ backgroundColor: "green" }}
+                onClick={() => handleDetailClick(movie.id)}
+                sx={{ backgroundColor: "green", width: "50%" }}
                 variant="contained"
                 startIcon={<AddCircleIcon />}
               >
@@ -43,6 +54,7 @@ const MovieContent = (props: Props) => {
               </Button>
               <Button
                 color="inherit"
+                sx={{ width: "50%" }}
                 variant="outlined"
                 startIcon={<TurnedInNotIcon />}
               >

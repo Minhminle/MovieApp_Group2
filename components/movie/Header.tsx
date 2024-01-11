@@ -53,11 +53,12 @@ const Header = (props: Props) => {
               <Box
                 component="img"
                 src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-                width={"100%"}
+                width={"375px"}
                 onClick={() => handleDetailClick(movie.id)}
               />
             </Stack>
             <Box
+              padding={"10px"}
               sx={{
                 background:
                   "linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.7))",

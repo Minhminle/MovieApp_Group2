@@ -17,42 +17,55 @@ const Header = (props: Props) => {
     "/movie/upcoming",
     fetcher
   );
+
   return (
     <>
-      <Stack gap={4}>
-        {data?.results.map((movie) => (
-          <Stack key={movie.id}>
-            <Box
-              component="img"
-              src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-              width={150}
-            />
-            <Box fontSize={"30px"}>{movie.title}</Box>
-            <Stack direction={"row"} spacing={2}>
-              <Box>{movie.release_date}</Box>
-              <Box>
-                <Typography>genre</Typography>
+      <Stack gap={4} direction={"row"}>
+        <Box>
+          {data?.results.map((movie) => (
+            <Stack key={movie.id} spacing={2}>
+              <Stack>
+                <Box
+                  component="img"
+                  src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+                  width={"100%"}
+                />
+              </Stack>
+              <Box
+                sx={{
+                  background:
+                    "linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.7))",
+                }}
+              >
+                <Box fontSize={"30px"}>{movie.title}</Box>
+                <Stack direction={"row"} spacing={2}>
+                  <Box>{movie.release_date}</Box>
+                  <Box>
+                    <Typography>genre</Typography>
+                  </Box>
+                </Stack>
+                <Box>{movie.overview}</Box>
+                <Stack direction={"row"} spacing={3}>
+                  <Button
+                    sx={{ backgroundColor: "green", width: "50%" }}
+                    variant="contained"
+                    startIcon={<AddCircleIcon />}
+                  >
+                    Play Now
+                  </Button>
+                  <Button
+                    color="inherit"
+                    sx={{ width: "50%" }}
+                    variant="outlined"
+                    startIcon={<TurnedInNotIcon />}
+                  >
+                    Add watchlist
+                  </Button>
+                </Stack>
               </Box>
             </Stack>
-            <Box>{movie.overview}</Box>
-            <Stack direction={"row"} spacing={3}>
-              <Button
-                sx={{ backgroundColor: "green" }}
-                variant="contained"
-                startIcon={<AddCircleIcon />}
-              >
-                Play Now
-              </Button>
-              <Button
-                sx={{ color: "" }}
-                variant="outlined"
-                startIcon={<TurnedInNotIcon />}
-              >
-                Add watchlist
-              </Button>
-            </Stack>
-          </Stack>
-        ))}
+          ))}
+        </Box>
       </Stack>
     </>
   );

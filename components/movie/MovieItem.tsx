@@ -4,6 +4,7 @@ import ArrowBackIosNewTwoToneIcon from "@mui/icons-material/ArrowBackIosNewTwoTo
 import ArrowForwardIosTwoToneIcon from "@mui/icons-material/ArrowForwardIosTwoTone";
 import StarRateIcon from "@mui/icons-material/StarRate";
 import { Movie, MovieList } from "@/models/Movie";
+import { useRouter } from "next/router";
 import {
   Box,
   CardMedia,
@@ -22,6 +23,10 @@ const MovieItem = () => {
     color: "white",
     fontWeight: "700",
   };
+  const router = useRouter();
+  const handleDetailClick = (movieId: string) => {
+    router.push(`/detail/movie/${movieId}`);
+  };
   const Moviecard = ({ movie }: Props) => {
     return (
       <>
@@ -33,6 +38,7 @@ const MovieItem = () => {
             sx={{ pt: "20px" }}
           >
             <Box
+              onClick={() => handleDetailClick(movie.id)}
               component="img"
               src={config.image_path + movie.poster_path}
               alt=""

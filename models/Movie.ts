@@ -30,13 +30,9 @@ export interface Movie {
   release_date: string;
   runtime: number;
   video: boolean;
-  vote_average: number;
-  vote_count: number;
   release_dat: string;
   production_countries: ProductionCountry[];
   videos: VideoList;
   credits: CreditSection;
-  vote_average: number;
-  vote_count: number;
   images: Images;
 }

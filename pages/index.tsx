@@ -7,12 +7,14 @@ import MovieItem from "@/components/movie/MovieItem";
 import Footter from "@/components/movie/Footer";
 import Header from "@/components/movie/Header";
 import MovieAward from "@/components/movie/MovieAward";
+import MovieContent from "@/components/movie/MovieContent";
 const Home: React.FC = () => {
   return (
     <Box sx={{ backgroundColor: "black", color: "white" }}>
       <Header />
       <ListApp />
       <MovieCard />
+      <MovieContent />
       <MovieCategory />
       <MovieAward></MovieAward>
       <MovieItem />

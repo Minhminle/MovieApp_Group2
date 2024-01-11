@@ -52,7 +52,7 @@ const MovieContent = (props: Props) => {
         direction="row"
         sx={{ overflowX: "auto", padding: "10px" }}
       >
-        {data?.results.map((movie) => (
+        {data?.results.slice(0, 2).map((movie) => (
           <Stack key={movie.id}>
             <Box
               fontSize={"50px"}

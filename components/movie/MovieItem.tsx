@@ -48,18 +48,17 @@ const MovieItem = () => {
             />
             <Stack>
               <Typography
-                sx={{ ..._letterStyles, fontSize: "10px", fontWeight: "500" }}
+                variant="h5"
+                sx={{ ..._letterStyles, fontWeight: "500" }}
               >
                 {movie.title}
               </Typography>
-              <Typography sx={{ fontSize: "5px", color: "gray" }}>
+              <Typography variant="h5" sx={{ color: "gray" }}>
                 {movie.release_date}
               </Typography>
               <Stack direction="row" alignItems="center" spacing={1}>
                 <StarRateIcon sx={{ color: "yellow" }} />
-                <Typography
-                  sx={{ ..._letterStyles, fontSize: "5px", fontWeight: "500" }}
-                >
+                <Typography sx={{ ..._letterStyles, fontWeight: "500" }}>
                   {movie.vote_average}|Movie
                 </Typography>
               </Stack>

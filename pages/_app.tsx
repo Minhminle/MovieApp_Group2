@@ -1,11 +1,6 @@
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 import { createTheme, ThemeProvider } from "@mui/material";
-<<<<<<< HEAD
-import { Raleway } from "next/font/google";
-
-=======
->>>>>>> develop
 import axios from "axios";
 import { SWRConfig } from "swr";
 import { ReactElement, ReactNode } from "react";

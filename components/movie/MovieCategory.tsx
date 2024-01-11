@@ -15,39 +15,47 @@ const MovieCategory: NextPageWithLayout = () => {
     axios.get(url).then((response) => response.data);
 
   const { data, isLoading, error } = useSWR<MovieList>(
-    "/movie/upcoming?append_to_response=images",
+    "/movie/popular",
     fetcher
   );
+
+  const handleDetailClick = (movieId: string) => {
+    router.push(`/detail/movie/${movieId}`);
+  };
 
   console.log(data);
   return (
     <>
       <Stack
-        gap={4}
-        sx={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
-          gap: "16px",
-          overflowX: "auto",
-          scrollbarWidth: "thin",
-        }}
+        direction="row"
+        sx={{ overflowX: "auto" }} // Thêm kiểm soát tràn ngang
       >
         {data?.results.map((movie) => (
-          <Card
+          <Box
             key={movie.id}
-            sx={{ margin: "15px", backgroundColor: "black", color: "white" }}
+            sx={{
+              margin: "10px",
+              backgroundColor: "black",
+              color: "white",
+            }}
           >
             <CardMedia
               style={{
                 borderRadius: "20px",
+                height: "180px",
+                width: "300px",
               }}
+              onClick={() => handleDetailClick(movie.id)}
               component="img"
               alt={movie.title}
-              height="200px"
               image={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
             />
             <CardContent>
-              <Typography variant="h5" component="div">
+              <Typography
+                variant="h5"
+                component="div"
+                onClick={() => handleDetailClick(movie.id)}
+              >
                 {movie.title}
               </Typography>
               <div style={{ display: "flex", alignItems: "center" }}>
@@ -65,7 +73,7 @@ const MovieCategory: NextPageWithLayout = () => {
                 </div>
               </div>
             </CardContent>
-          </Card>
+          </Box>
         ))}
       </Stack>
     </>

@@ -45,6 +45,10 @@ const MovieContent = (props: Props) => {
   };
 
   console.log(data);
+  const _letterStyles = {
+    color: "white",
+    fontWeight: "700",
+  };
   return (
     <>
       <Stack
@@ -56,7 +60,7 @@ const MovieContent = (props: Props) => {
           <Stack key={movie.id}>
             <Box
               fontSize={"30px"}
-              sx={{ width: "375px" }}
+              sx={{ ..._letterStyles, width: "375px" }}
               onClick={() => handleDetailClick(movie.id)}
             >
               {movie.title}

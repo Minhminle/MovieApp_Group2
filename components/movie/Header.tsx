@@ -43,6 +43,11 @@ const Header = (props: Props) => {
     router.push(`/detail/movie/${movieId}`);
   };
 
+  const _letterStyles = {
+    color: "white",
+    fontWeight: "700",
+  };
+
   console.log(data);
   return (
     <>
@@ -65,6 +70,7 @@ const Header = (props: Props) => {
               }}
             >
               <Box
+                sx={_letterStyles}
                 fontSize={"50px"}
                 onClick={() => handleDetailClick(movie.id)}
               >

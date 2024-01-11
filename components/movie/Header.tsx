@@ -30,16 +30,23 @@ const ExpandableText = ({ children, descriptionLength }) => {
 
 const Header = (props: Props) => {
   const router = useRouter();
+
   const fetcher = (url: string) =>
     axios.get(url).then((response) => response.data);
+
   const { data, isLoading, error } = useSWR<MovieList>(
-    "/movie/upcoming",
+    "/movie/popular",
     fetcher
   );
 
+  const handleDetailClick = (movieId: string) => {
+    router.push(`/detail/movie/${movieId}`);
+  };
+
+  console.log(data);
   return (
     <>
-      <Stack gap={4}>
+      <Stack gap={4} direction="row" sx={{ overflowX: "auto" }}>
         {data?.results.map((movie) => (
           <Stack key={movie.id} spacing={2}>
             <Stack>
@@ -47,6 +54,7 @@ const Header = (props: Props) => {
                 component="img"
                 src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
                 width={"100%"}
+                onClick={() => handleDetailClick(movie.id)}
               />
             </Stack>
             <Box
@@ -55,7 +63,12 @@ const Header = (props: Props) => {
                   "linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.7))",
               }}
             >
-              <Box fontSize={"30px"}>{movie.title}</Box>
+              <Box
+                fontSize={"50px"}
+                onClick={() => handleDetailClick(movie.id)}
+              >
+                {movie.title}
+              </Box>
               <Stack direction={"row"} spacing={2}>
                 <Box>{movie.release_date}</Box>
                 <Box>
@@ -73,6 +86,7 @@ const Header = (props: Props) => {
                   sx={{ backgroundColor: "green", width: "50%" }}
                   variant="contained"
                   startIcon={<AddCircleIcon />}
+                  onClick={() => handleDetailClick(movie.id)}
                 >
                   Play Now
                 </Button>

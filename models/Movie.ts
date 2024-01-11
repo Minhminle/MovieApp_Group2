@@ -1,4 +1,5 @@
 import { CreditSection } from "./Credit";
+import { Images } from "./Images";
 import { VideoList } from "./Video";
 
 export interface MovieList {
@@ -30,4 +31,7 @@ export interface Movie {
   production_countries: ProductionCountry[];
   videos: VideoList;
   credits: CreditSection;
+  vote_average: number;
+  vote_count: number;
+  images: Images;
 }

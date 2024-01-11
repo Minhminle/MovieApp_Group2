@@ -42,7 +42,8 @@ const MovieItem = () => {
             />
             <Stack>
               <Typography
-                sx={{ ..._letterStyles, fontSize: "10px", fontWeight: "500" }}
+                variant="h5"
+                sx={{ ..._letterStyles, fontWeight: "500" }}
               >
                 {movie.title}
               </Typography>
@@ -51,9 +52,7 @@ const MovieItem = () => {
               </Typography>
               <Stack direction="row" alignItems="center" spacing={1}>
                 <StarRateIcon sx={{ color: "yellow" }} />
-                <Typography
-                  sx={{ ..._letterStyles, fontSize: "5px", fontWeight: "500" }}
-                >
+                <Typography sx={{ ..._letterStyles, fontWeight: "500" }}>
                   {movie.vote_average}|Movie
                 </Typography>
               </Stack>
@@ -91,7 +90,7 @@ const MovieItem = () => {
             justifyContent="space-between"
             alignItems="center"
           >
-            <Typography sx={_letterStyles} variant="h4">
+            <Typography sx={_letterStyles} variant="h3">
               Upcoming
             </Typography>
             <Stack direction="row" spacing={1}>

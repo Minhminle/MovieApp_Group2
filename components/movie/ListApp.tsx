@@ -6,7 +6,7 @@ function ShowListApp(props: { item: string[] }) {
   return (
     <>
       <Stack
-        sx={{ p: "20px 0px 20px 0px" }}
+        sx={{ p: "0px 0px 20px 0px" }}
         direction="row"
         justifyContent="space-between"
       >

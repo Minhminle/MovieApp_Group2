@@ -47,7 +47,7 @@ const Header = (props: Props) => {
   return (
     <>
       <Stack gap={4} direction="row" sx={{ overflowX: "auto" }}>
-        {data?.results.map((movie) => (
+        {data?.results.slice(0, 2).map((movie) => (
           <Stack key={movie.id} spacing={2}>
             <Stack>
               <Box

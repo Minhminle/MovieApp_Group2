@@ -1,34 +1,47 @@
-
-import { MovieList } from '@/models/Movie';
-import { Box, Button, CardMedia, Container, Stack } from '@mui/material';
-import axios from 'axios';
-import Link from 'next/link';
-import React from 'react'
-import useSWR from 'swr';
+import { MovieList } from "@/models/Movie";
+import {
+  Box,
+  Button,
+  CardMedia,
+  Container,
+  Stack,
+  Typography,
+} from "@mui/material";
+import axios from "axios";
+import Link from "next/link";
+import React from "react";
+import useSWR from "swr";
 import StarRateIcon from "@mui/icons-material/StarRate";
-import { useRouter } from 'next/router';
+import { useRouter } from "next/router";
 
 const MovieCard = () => {
-    const router = useRouter();
-    const fetcher = (url: string) =>
-      axios.get(url).then((response) => response.data);
-    const { data, isLoading, error } = useSWR<MovieList>(
-      "/movie/upcoming",
-      fetcher
-    );
-    console.log(data);
-    
- const handleDetailClick = (movieId: string) => {
-   router.push(`/detail/movie/${movieId}`);
- };
-   
+  const router = useRouter();
+  const fetcher = (url: string) =>
+    axios.get(url).then((response) => response.data);
+  const { data, isLoading, error } = useSWR<MovieList>(
+    "/movie/upcoming",
+    fetcher
+  );
+  console.log(data);
+
+  const handleDetailClick = (movieId: string) => {
+    router.push(`/detail/movie/${movieId}`);
+  };
+  const _letterStyles = {
+    color: "white",
+    fontWeight: "700",
+  };
+
   return (
     <>
+      <Typography variant="h4" sx={{ ..._letterStyles, padding: "10px" }}>
+        Just Release
+      </Typography>
       <Stack
         gap={4}
         direction="row"
         alignItems="center"
-        sx={{ overflowX: "auto" }} // Thêm kiểm soát tràn ngang
+        sx={{ overflowX: "auto", padding: "10px" }} // Thêm kiểm soát tràn ngang
       >
         {data?.results.map((movie) => (
           <Stack key={movie.id} direction="column" alignItems="center">
@@ -54,9 +67,6 @@ const MovieCard = () => {
       </Stack>
     </>
   );
- 
-  
-}
+};
 
-export default MovieCard
-
+export default MovieCard;

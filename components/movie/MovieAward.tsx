@@ -22,10 +22,17 @@ const MovieAward: NextPageWithLayout = () => {
   const handleDetailClick = (movieId: string) => {
     router.push(`/detail/movie/${movieId}`);
   };
+  const _letterStyles = {
+    color: "white",
+    fontWeight: "700",
+  };
 
   console.log(data);
   return (
     <>
+      <Typography variant="h4" sx={{ ..._letterStyles, padding: "10px" }}>
+        Movies On Awars
+      </Typography>
       <Stack
         direction="row"
         sx={{ overflowX: "auto" }} // Thêm kiểm soát tràn ngang

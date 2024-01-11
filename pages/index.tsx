@@ -5,9 +5,11 @@ import ListApp from "@/components/movie/ListApp";
 import MovieCard from "@/components/movie/MovieCard";
 import MovieItem from "@/components/movie/MovieItem";
 import Footter from "@/components/movie/Footer";
+import Header from "@/components/movie/Header";
 const Home: React.FC = () => {
   return (
     <Box sx={{ backgroundColor: "black", color: "white" }}>
+      <Header />
       <ListApp />
       <MovieCard />
       <MovieCategory />

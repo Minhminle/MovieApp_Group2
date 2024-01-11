@@ -47,10 +47,18 @@ const MovieContent = (props: Props) => {
   console.log(data);
   return (
     <>
-      <Stack gap={4} direction="row" sx={{ overflowX: "auto" }}>
+      <Stack
+        gap={4}
+        direction="row"
+        sx={{ overflowX: "auto", padding: "10px" }}
+      >
         {data?.results.map((movie) => (
           <Stack key={movie.id}>
-            <Box fontSize={"50px"} onClick={() => handleDetailClick(movie.id)}>
+            <Box
+              fontSize={"50px"}
+              sx={{ width: "375px" }}
+              onClick={() => handleDetailClick(movie.id)}
+            >
               {movie.title}
             </Box>
             <Stack direction={"row"} spacing={2}>

@@ -83,5 +83,4 @@ const MovieCategory: NextPageWithLayout = () => {
 MovieCategory.getLayout = function getLayout(page: ReactElement) {
   return <>{page}</>;
 };
-
 export default MovieCategory;

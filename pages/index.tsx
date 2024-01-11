@@ -7,16 +7,14 @@ import MovieItem from "@/components/movie/MovieItem";
 import Footter from "@/components/movie/Footer";
 const Home: React.FC = () => {
   return (
-    <Box sx={{ backgroundColor: "black" }}>
+    <Box sx={{ backgroundColor: "black", color: "white" }}>
       <ListApp />
       <MovieCard />
       <MovieCategory />
       <MovieItem />
-        <Footter />
+      <Footter />
     </Box>
   );
 };
 
 export default Home;
-
-

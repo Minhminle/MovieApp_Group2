@@ -32,5 +32,6 @@ export interface Movie {
   videos: VideoList;
   credits: CreditSection;
   vote_average: number;
+  vote_count: number;
   images: Images;
 }

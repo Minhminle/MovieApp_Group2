@@ -5,6 +5,7 @@ import styles from '@/styles/Home.module.css'
 import MovieCard from '@/components/movie/MovieCard'
 import { Box, Container } from '@mui/material'
 
+
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
@@ -13,6 +14,7 @@ export default function Home() {
       <Box sx={{ background: "black" }}>
        
           <MovieCard/>
+         
        
       </Box>
     </>

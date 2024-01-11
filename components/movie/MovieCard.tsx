@@ -6,9 +6,10 @@ import Link from 'next/link';
 import React from 'react'
 import useSWR from 'swr';
 import StarRateIcon from "@mui/icons-material/StarRate";
-type Props = {}
+import { useRouter } from 'next/router';
 
 const MovieCard = () => {
+  const router = useRouter();
     const fetcher = (url: string) =>
       axios.get(url).then((response) => response.data);
     const { data, isLoading, error } = useSWR<MovieList>(
@@ -16,7 +17,11 @@ const MovieCard = () => {
       fetcher
     );
     console.log(data);
-    
+    const handleDetailClick = (movieId: string) => {
+      router.push(`/detail/movie/${movieId}`);
+    };
+
+
   return (
     <>
       <Stack
@@ -33,6 +38,7 @@ const MovieCard = () => {
               width={300}
               height={500}
               sx={{ borderRadius: "10%" }}
+              onClick={() => handleDetailClick(movie.id)}
             />
             <Box sx={{ flexGrow: 1, color: "white", marginTop: "20px" }}>
               {movie.title}

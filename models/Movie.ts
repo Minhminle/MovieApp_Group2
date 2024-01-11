@@ -31,4 +31,5 @@ export interface Movie {
   videos: VideoList;
   credits: CreditSection;
   vote_average:number;
+  
 }

@@ -1,7 +1,7 @@
 import { Box, Button, Chip, Stack, Typography } from "@mui/material";
 import React, { useState } from "react";
 import StarIcon from "@mui/icons-material/Star";
-import AddCircleIcon from "@mui/icons-material/AddCircle";
+import PlayCircleFilledIcon from "@mui/icons-material/PlayCircleFilled";
 import TurnedInNotIcon from "@mui/icons-material/TurnedInNot";
 import { useRouter } from "next/router";
 import useSWR from "swr";
@@ -9,25 +9,6 @@ import axios from "axios";
 import { MovieList } from "@/models/Movie";
 
 type Props = {};
-
-// Create a reusable Read More/Less component
-const ExpandableText = ({ children, descriptionLength }) => {
-  const fullText = children;
-  // Set the initial state of the text to be collapsed
-  const [isExpanded, setIsExpanded] = useState(false);
-  // This function is called when the read more/less button is clicked
-  const toggleText = () => {
-    setIsExpanded(!isExpanded);
-  };
-  return (
-    <p className="text">
-      {isExpanded ? fullText : `${fullText.slice(0, descriptionLength)}...`}
-      <span onClick={toggleText} className="toggle-button">
-        {isExpanded ? "Read less" : "Read more"}
-      </span>
-    </p>
-  );
-};
 
 const MovieContent = (props: Props) => {
   const router = useRouter();
@@ -43,7 +24,11 @@ const MovieContent = (props: Props) => {
   const handleDetailClick = (movieId: string) => {
     router.push(`/detail/movie/${movieId}`);
   };
+  const [expandedOverview, setExpandedOverview] = useState<string | null>(null);
 
+  const toggleText = (overview: string) => {
+    setExpandedOverview((prev) => (prev === overview ? null : overview));
+  };
   console.log(data);
   return (
     <>
@@ -54,45 +39,60 @@ const MovieContent = (props: Props) => {
       >
         {data?.results.slice(0, 2).map((movie) => (
           <Stack key={movie.id}>
-            <Box
-              fontSize={"50px"}
-              sx={{ width: "375px" }}
-              onClick={() => handleDetailClick(movie.id)}
-            >
-              {movie.title}
-            </Box>
-            <Stack direction={"row"} spacing={2}>
-              <StarIcon sx={{ color: "yellow" }} className="star-icon" />
-              <Box>{movie.vote_average}</Box>
-              <Box>{movie.release_date}</Box>
-              <Box>
-                <Typography>genre</Typography>
-              </Box>
-            </Stack>
             <Box>
-              {/* Only show 100 characters in the beginning */}
-              <ExpandableText descriptionLength={100}>
-                {movie.overview}
-              </ExpandableText>
-            </Box>
-            <Stack direction={"row"} spacing={3}>
-              <Button
+              <Box
+                fontSize={"40px"}
+                sx={{ width: "375px" }}
                 onClick={() => handleDetailClick(movie.id)}
-                sx={{ backgroundColor: "green", width: "50%" }}
-                variant="contained"
-                startIcon={<AddCircleIcon />}
               >
-                Play Now
-              </Button>
-              <Button
-                color="inherit"
-                sx={{ width: "50%" }}
-                variant="outlined"
-                startIcon={<TurnedInNotIcon />}
-              >
-                Add watchlist
-              </Button>
-            </Stack>
+                {movie.title}
+              </Box>
+              <Stack direction={"row"} spacing={2}>
+                <StarIcon sx={{ color: "yellow" }} className="star-icon" />
+                <Box>{movie.vote_average}</Box>
+                <Box>{movie.release_date}</Box>
+                <Box>
+                  <Typography>genre</Typography>
+                </Box>
+              </Stack>
+              <Box>
+                <Typography>
+                  {expandedOverview === movie.overview
+                    ? movie.overview
+                    : movie.overview.length > 150
+                    ? `${movie.overview.slice(0, 150)}...`
+                    : movie.overview}
+                </Typography>
+                {movie.overview.length > 150 && (
+                  <Button
+                    sx={{ fontSize: "12px", color: "green" }}
+                    onClick={() => toggleText(movie.overview)}
+                  >
+                    {expandedOverview === movie.overview
+                      ? "Read less"
+                      : "Read more"}
+                  </Button>
+                )}
+              </Box>
+              <Stack direction={"row"} spacing={3}>
+                <Button
+                  onClick={() => handleDetailClick(movie.id)}
+                  sx={{ backgroundColor: "green", width: "45%" }}
+                  variant="contained"
+                  startIcon={<PlayCircleFilledIcon />}
+                >
+                  Play Now
+                </Button>
+                <Button
+                  color="inherit"
+                  sx={{ width: "45%" }}
+                  variant="outlined"
+                  startIcon={<TurnedInNotIcon />}
+                >
+                  Add watchlist
+                </Button>
+              </Stack>
+            </Box>
           </Stack>
         ))}
       </Stack>

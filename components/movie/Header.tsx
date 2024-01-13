@@ -1,6 +1,6 @@
 import { Box, Button, Chip, Stack, Typography } from "@mui/material";
 import React, { useState } from "react";
-import AddCircleIcon from "@mui/icons-material/AddCircle";
+import PlayCircleFilledIcon from "@mui/icons-material/PlayCircleFilled";
 import TurnedInNotIcon from "@mui/icons-material/TurnedInNot";
 import { useRouter } from "next/router";
 import useSWR from "swr";
@@ -41,7 +41,7 @@ const Header = (props: Props) => {
               <Box
                 component="img"
                 src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-                width={"375px"}
+                width={"390px"}
                 onClick={() => handleDetailClick(movie.id)}
               />
             </Stack>
@@ -95,18 +95,18 @@ const Header = (props: Props) => {
                   <Button
                     sx={{
                       backgroundColor: "green",
-                      width: "50%",
+                      width: "45%",
                       fontSize: "12px",
                     }}
                     variant="contained"
-                    startIcon={<AddCircleIcon />}
+                    startIcon={<PlayCircleFilledIcon />}
                     onClick={() => handleDetailClick(movie.id)}
                   >
                     Watch Trailer
                   </Button>
                   <Button
                     color="inherit"
-                    sx={{ width: "50%", fontSize: "12px" }}
+                    sx={{ width: "45%", fontSize: "12px" }}
                     variant="outlined"
                     startIcon={<TurnedInNotIcon />}
                   >

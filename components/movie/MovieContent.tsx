@@ -35,35 +35,44 @@ const MovieContent = (props: Props) => {
       <Stack
         gap={4}
         direction="row"
-        sx={{ overflowX: "auto", padding: "10px" }}
+        sx={{ overflowX: "auto", padding: "19px" }}
       >
         {data?.results.slice(0, 2).map((movie) => (
           <Stack key={movie.id}>
             <Box>
               <Box
                 fontSize={"40px"}
-                sx={{ width: "375px" }}
+                sx={{ width: "350px" }}
                 onClick={() => handleDetailClick(movie.id)}
               >
                 {movie.title}
               </Box>
-              <Stack direction={"row"} spacing={2}>
+              <Stack direction={"row"} spacing={1} alignItems={"center"}>
                 <StarIcon sx={{ color: "yellow" }} className="star-icon" />
-                <Box>{movie.vote_average}</Box>
-                <Box>{movie.release_date}</Box>
-                <Box>
-                  <Typography>genre</Typography>
+                <Box
+                  sx={{
+                    borderRight: "solid",
+                    color: "gray",
+                    width: "45px",
+                    height: "15px",
+                  }}
+                >
+                  {movie.vote_average}
                 </Box>
+                <Box sx={{ color: "gray" }}>{movie.release_date}</Box>
+                {/* <Box>
+                  <Typography>genre</Typography>
+                </Box> */}
               </Stack>
               <Box>
                 <Typography>
                   {expandedOverview === movie.overview
                     ? movie.overview
-                    : movie.overview.length > 150
-                    ? `${movie.overview.slice(0, 150)}...`
+                    : movie.overview.length > 100
+                    ? `${movie.overview.slice(0, 100)}...`
                     : movie.overview}
                 </Typography>
-                {movie.overview.length > 150 && (
+                {movie.overview.length > 100 && (
                   <Button
                     sx={{ fontSize: "12px", color: "green" }}
                     onClick={() => toggleText(movie.overview)}
@@ -77,7 +86,11 @@ const MovieContent = (props: Props) => {
               <Stack direction={"row"} spacing={3}>
                 <Button
                   onClick={() => handleDetailClick(movie.id)}
-                  sx={{ backgroundColor: "green", width: "45%" }}
+                  sx={{
+                    backgroundColor: "green",
+                    width: "45%",
+                    fontSize: "12px",
+                  }}
                   variant="contained"
                   startIcon={<PlayCircleFilledIcon />}
                 >
@@ -85,7 +98,7 @@ const MovieContent = (props: Props) => {
                 </Button>
                 <Button
                   color="inherit"
-                  sx={{ width: "45%" }}
+                  sx={{ width: "45%", fontSize: "12px" }}
                   variant="outlined"
                   startIcon={<TurnedInNotIcon />}
                 >

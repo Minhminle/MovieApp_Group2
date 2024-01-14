@@ -18,7 +18,7 @@ const Home: React.FC = () => {
       <MovieRate />
       <MovieContent />
       <MovieCategory />
-      <MovieAward></MovieAward>
+      <MovieAward />
       <MovieItem />
       <Footter />
     </Box>

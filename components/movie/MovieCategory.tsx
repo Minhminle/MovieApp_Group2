@@ -15,7 +15,7 @@ const MovieCategory: NextPageWithLayout = () => {
     axios.get(url).then((response) => response.data);
 
   const { data, isLoading, error } = useSWR<MovieList>(
-    "/movie/popular",
+    `/movie/popular?append_to_response=details`,
     fetcher
   );
 
@@ -65,7 +65,9 @@ const MovieCategory: NextPageWithLayout = () => {
                 {movie.title}
               </Typography>
               <div style={{ display: "flex", alignItems: "center" }}>
-                {/* genre here */}
+                {movie.genres?.map((genre) => (
+                  <Chip key={genre.id} label={genre.name} />
+                ))}
                 <div
                   style={{
                     marginTop: "5px",

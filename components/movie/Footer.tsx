@@ -1,25 +1,22 @@
 import { Box, Container, Stack, Typography } from "@mui/material";
 import React from "react";
+import { Styles } from "@/stylescomponents/style";
 type Props = {};
-const _textfooterStyles = {
-  color: "white",
-  fontWeight: "500",
-};
 const socialItem = ["instagram", "facebook", "twitter", "google"];
 const menuItem = ["Home", "Discover", "Influence", "Release"];
 const policyItem = ["Privacy policy", "Term of Service", "Language"];
 function ShowSocialItem(props: { item: string[] }) {
   return (
     <>
-      <Stack direction="row" gap={1.5}>
+      <Stack direction="row" gap={2.5}>
         {props.item.map((item) => (
           <Box
             key={item}
             component="img"
             src={`/icons/${item}.svg`}
             alt=""
-            width={30}
-            height={30}
+            width={35}
+            height={35}
           />
         ))}
       </Stack>
@@ -31,7 +28,7 @@ function ShowMenuItem(props: { item: string[] }) {
     <>
       <Stack direction="row" justifyContent="space-between">
         {props.item.map((item) => (
-          <Typography sx={{ color: "white" }} variant="h6" key={item}>
+          <Typography sx={{ color: "white" }} variant="subtitle1" key={item}>
             {item}
           </Typography>
         ))}
@@ -44,7 +41,7 @@ function ShowPolicyItem(props: { item: string[] }) {
     <>
       <Stack direction="row" justifyContent="space-between">
         {props.item.map((item) => (
-          <Typography variant="body1" sx={{ color: "gray" }} key={item}>
+          <Typography variant="subtitle1" sx={{ color: "gray" }} key={item}>
             {item}
           </Typography>
         ))}
@@ -55,9 +52,9 @@ function ShowPolicyItem(props: { item: string[] }) {
 const Footter = (props: Props) => {
   return (
     <>
-      <Container sx={{ pt: "20px" }}>
+      <Container>
         <Stack direction="column" gap={2}>
-          <Typography sx={_textfooterStyles} variant="h5">
+          <Typography sx={Styles._title} variant="h6">
             Our platform is trusted by milions & fearture best updated movies
             all around the world.
           </Typography>
@@ -70,7 +67,7 @@ const Footter = (props: Props) => {
               textAlign: "center",
             }}
           >
-            2023
+            @2023
           </Typography>
         </Stack>
       </Container>

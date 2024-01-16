@@ -1,21 +1,22 @@
 import { useRouter } from "next/router";
-import type { ReactElement } from "react";
+import { useEffect, type ReactElement, useState } from "react";
 import { NextPageWithLayout } from "@/pages/_app";
 import { Box, Button, Chip, Stack, Typography } from "@mui/material";
 import axios from "axios";
 import useSWR from "swr";
-import { MovieList } from "@/models/Movie";
+import { Movie, MovieList } from "@/models/Movie";
 import { Card, CardContent, CardMedia } from "@mui/material";
 import StarIcon from "@mui/icons-material/Star";
 
 const MovieCategory: NextPageWithLayout = () => {
   const router = useRouter();
+  const [movieData, setMovieData] = useState<MovieList | undefined>();
 
   const fetcher = (url: string) =>
     axios.get(url).then((response) => response.data);
 
   const { data, isLoading, error } = useSWR<MovieList>(
-    "/movie/popular",
+    `/movie/popular?append_to_response=details`,
     fetcher
   );
   const {
@@ -37,7 +38,29 @@ const MovieCategory: NextPageWithLayout = () => {
     color: "white",
     fontWeight: "700",
   };
-  console.log(data);
+  const fetchMovieDetails = async (movieId: string) => {
+    const response = await axios.get(`/movie/${movieId}`);
+    return response.data;
+  };
+  useEffect(() => {
+    const fetchData = async () => {
+      const movies = await fetcher("/movie/popular");
+      const movieDetailsPromises = movies.results.map((movie: Movie) =>
+        fetchMovieDetails(movie.id)
+      );
+      const movieDetails = await Promise.all(movieDetailsPromises);
+      const moviesWithDetails = movies.results.map(
+        (movie: Movie, index: number) => ({
+          ...movie,
+          genres: movieDetails[index]?.genres,
+        })
+      );
+
+      setMovieData({ ...movies, results: moviesWithDetails });
+    };
+
+    fetchData();
+  }, []);
   return (
     <>
       <Typography variant="h4" sx={{ ..._letterStyles, padding: "10px" }}>
@@ -76,7 +99,10 @@ const MovieCategory: NextPageWithLayout = () => {
                 {movie.title}
               </Typography>
               <div style={{ display: "flex", alignItems: "center" }}>
-                {/* genre here */}
+                {movie.genres?.map((genre) => (
+                  <Chip key={genre.id} label={genre.name} />
+                ))}
+
                 <div
                   style={{
                     marginTop: "5px",

@@ -52,7 +52,7 @@ function ShowPolicyItem(props: { item: string[] }) {
 const Footter = (props: Props) => {
   return (
     <>
-      <Container>
+      <Container sx={{ backgroundColor: "black" }}>
         <Stack direction="column" gap={2}>
           <Typography sx={Styles._title} variant="h6">
             Our platform is trusted by milions & fearture best updated movies

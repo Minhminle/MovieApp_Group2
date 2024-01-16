@@ -19,6 +19,7 @@ const MovieFeature = () => {
      "/movie/upcoming",
      fetcher
    );
+ 
 
    console.log(data);
 
@@ -37,7 +38,10 @@ const MovieFeature = () => {
   };
   return (
     <>
-      <Box color="white" fontSize={"30px"} padding={4}> FeaTured in SaintStream</Box>
+      <Box color="white" fontSize={"30px"} padding={4}>
+        {" "}
+        FeaTured in SaintStream
+      </Box>
       <Stack sx={{ overflowX: "auto" }} direction="column">
         <Box>
           <Stack
@@ -61,6 +65,7 @@ const MovieFeature = () => {
                   sx={{ borderRadius: "10%" }}
                   onClick={() => handleDetailClick(movie.id)}
                 />
+               
                 <Box
                   position={"absolute"}
                   zIndex={"1"}

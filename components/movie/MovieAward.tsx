@@ -18,7 +18,7 @@ const MovieAward: NextPageWithLayout = () => {
     axios.get(url).then((response) => response.data);
 
   const { data, isLoading, error } = useSWR<MovieList>(
-    "/movie/popular",
+    "/movie/upcoming",
     fetcher
   );
   const [expandedOverview, setExpandedOverview] = useState<string | null>(null);

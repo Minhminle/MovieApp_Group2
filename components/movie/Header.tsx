@@ -21,7 +21,7 @@ const Header = (props: Props) => {
   );
 
   const handleDetailClick = (movieId: string) => {
-    router.push(`/detail/movie/${movieId}`);
+    router.push(/detail/movie/${movieId});
   };
 
   const [expandedOverview, setExpandedOverview] = useState<string | null>(null);
@@ -77,7 +77,7 @@ const Header = (props: Props) => {
                     {expandedOverview === movie.overview
                       ? movie.overview
                       : movie.overview.length > 100
-                      ? `${movie.overview.slice(0, 100)}...`
+                      ? ${movie.overview.slice(0, 100)}...
                       : movie.overview}
                     {movie.overview.length > 100 && (
                       <Button

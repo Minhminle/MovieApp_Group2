@@ -1,4 +1,5 @@
 import { CreditSection } from "./Credit";
+import { Images } from "./Images";
 import { VideoList } from "./Video";
 
 export interface MovieList {
@@ -29,7 +30,9 @@ export interface Movie {
   release_date: string;
   runtime: number;
   video: boolean;
+  release_dat: string;
   production_countries: ProductionCountry[];
   videos: VideoList;
   credits: CreditSection;
+  images: Images;
 }

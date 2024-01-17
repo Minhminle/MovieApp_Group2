@@ -60,7 +60,7 @@ const MovieFeature = () => {
                   src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
                   width={300}
                   height={500}
-                  sx={{ borderRadius: "10%" }}
+                  sx={{ borderRadius: "15%" }}
                   onClick={() => handleDetailClick(movie.id)}
                 />
 

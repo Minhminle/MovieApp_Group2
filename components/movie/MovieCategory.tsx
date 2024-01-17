@@ -10,7 +10,6 @@ import StarIcon from "@mui/icons-material/Star";
 
 const MovieCategory: NextPageWithLayout = () => {
   const router = useRouter();
-  const [movieData, setMovieData] = useState<MovieList | undefined>();
 
   const fetcher = (url: string) =>
     axios.get(url).then((response) => response.data);
@@ -38,29 +37,6 @@ const MovieCategory: NextPageWithLayout = () => {
     color: "white",
     fontWeight: "700",
   };
-  const fetchMovieDetails = async (movieId: string) => {
-    const response = await axios.get(`/movie/${movieId}`);
-    return response.data;
-  };
-  useEffect(() => {
-    const fetchData = async () => {
-      const movies = await fetcher("/movie/popular");
-      const movieDetailsPromises = movies.results.map((movie: Movie) =>
-        fetchMovieDetails(movie.id)
-      );
-      const movieDetails = await Promise.all(movieDetailsPromises);
-      const moviesWithDetails = movies.results.map(
-        (movie: Movie, index: number) => ({
-          ...movie,
-          genres: movieDetails[index]?.genres,
-        })
-      );
-
-      setMovieData({ ...movies, results: moviesWithDetails });
-    };
-
-    fetchData();
-  }, []);
   return (
     <>
       <Typography variant="h4" sx={{ ..._letterStyles, padding: "10px" }}>
@@ -99,9 +75,9 @@ const MovieCategory: NextPageWithLayout = () => {
                 {movie.title}
               </Typography>
               <div style={{ display: "flex", alignItems: "center" }}>
-                {movie.genres?.map((genre) => (
-                  <Chip key={genre.id} label={genre.name} />
-                ))}
+                {/* <Box>
+                  Genre: {movie.genres.map((genre) => genre.name).join(", ")}
+                </Box> */}
 
                 <div
                   style={{
@@ -112,7 +88,9 @@ const MovieCategory: NextPageWithLayout = () => {
                   }}
                 >
                   <StarIcon style={{ marginRight: "4px", color: "#ffeb3b" }} />
-                  <Typography variant="body2">{movie.vote_average}</Typography>
+                  <Typography variant="body2">
+                    {(movie.vote_average * 0.5).toFixed(1)}
+                  </Typography>
                 </div>
               </div>
             </CardContent>
@@ -169,7 +147,9 @@ const MovieCategory: NextPageWithLayout = () => {
                   }}
                 >
                   <StarIcon style={{ marginRight: "4px", color: "#ffeb3b" }} />
-                  <Typography variant="body2">{movie.vote_average}</Typography>
+                  <Typography variant="body2">
+                    {(movie.vote_average * 0.5).toFixed(1)}
+                  </Typography>
                 </div>
               </div>
             </CardContent>
@@ -226,7 +206,9 @@ const MovieCategory: NextPageWithLayout = () => {
                   }}
                 >
                   <StarIcon style={{ marginRight: "4px", color: "#ffeb3b" }} />
-                  <Typography variant="body2">{movie.vote_average}</Typography>
+                  <Typography variant="body2">
+                    {(movie.vote_average * 0.5).toFixed(1)}
+                  </Typography>
                 </div>
               </div>
             </CardContent>

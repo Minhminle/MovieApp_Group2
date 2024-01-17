@@ -81,7 +81,11 @@ const MovieAward: NextPageWithLayout = () => {
                 sx={{ width: "350px" }}
                 onClick={() => handleDetailClick(movie.id)}
               >
-                {movie.title}
+                {expandedOverview === movie.title
+                  ? movie.title
+                  : movie.title.length > 10
+                  ? `${movie.title.slice(0, 10)}...`
+                  : movie.title}
               </Box>
               <Stack direction={"row"} spacing={1} alignItems={"center"}>
                 <StarIcon sx={{ color: "yellow" }} className="star-icon" />
@@ -93,7 +97,7 @@ const MovieAward: NextPageWithLayout = () => {
                     height: "15px",
                   }}
                 >
-                  {movie.vote_average}
+                  {(movie.vote_average * 0.5).toFixed(1)}
                 </Box>
                 <Box sx={{ color: "gray" }}>{movie.release_date}</Box>
                 {/* <Box>
@@ -104,11 +108,11 @@ const MovieAward: NextPageWithLayout = () => {
                 <Typography>
                   {expandedOverview === movie.overview
                     ? movie.overview
-                    : movie.overview.length > 100
-                    ? `${movie.overview.slice(0, 100)}...`
+                    : movie.overview.length > 90
+                    ? `${movie.overview.slice(0, 90)}...`
                     : movie.overview}
                 </Typography>
-                {movie.overview.length > 100 && (
+                {movie.overview.length > 90 && (
                   <Button
                     sx={{ fontSize: "12px", color: "green" }}
                     onClick={() => toggleText(movie.overview)}

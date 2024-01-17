@@ -9,6 +9,7 @@ import Header from "@/components/movie/Header";
 import MovieAward from "@/components/movie/MovieAward";
 import MovieRate from "@/components/movie/MovieRate";
 import MovieFeature from "@/components/movie/MovieFeature";
+import MovieContent from "@/components/movie/MovieContent";
 const Home: React.FC = () => {
   return (
     <Box sx={{ backgroundColor: "black", color: "white" }}>
@@ -21,6 +22,7 @@ const Home: React.FC = () => {
       <MovieAward />
       <MovieItem />
       <Footter />
+      {/* <MovieContent></MovieContent> */}
     </Box>
   );
 };

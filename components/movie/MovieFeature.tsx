@@ -1,35 +1,33 @@
-import { MovieList } from '@/models/Movie';
-import { Box, Button, Stack, Typography } from '@mui/material';
-import axios from 'axios';
-import { useRouter } from 'next/router';
-import useSWR from 'swr';
+import { MovieList } from "@/models/Movie";
+import { Box, Button, Stack, Typography } from "@mui/material";
+import axios from "axios";
+import { useRouter } from "next/router";
+import useSWR from "swr";
 import StarRateIcon from "@mui/icons-material/StarRate";
 import StarIcon from "@mui/icons-material/Star";
 import PlayCircleFilledIcon from "@mui/icons-material/PlayCircleFilled";
 import TurnedInNotIcon from "@mui/icons-material/TurnedInNot";
 import React, { useState } from "react";
 
-
 const MovieFeature = () => {
-   const router = useRouter();
-   
-   const fetcher = (url: string) =>
-     axios.get(url).then((response) => response.data);
-   const { data, isLoading, error } = useSWR<MovieList>(
-     "/movie/upcoming",
-     fetcher
-   );
- 
+  const router = useRouter();
 
-   console.log(data);
+  const fetcher = (url: string) =>
+    axios.get(url).then((response) => response.data);
+  const { data, isLoading, error } = useSWR<MovieList>(
+    "/movie/upcoming",
+    fetcher
+  );
 
-   const handleDetailClick = (movieId: string) => {
-     router.push(`/detail/movie/${movieId}`);
-   };
-   const _letterStyles = {
-     color: "white",
-     fontWeight: "700",
-   };
+  console.log(data);
+
+  const handleDetailClick = (movieId: string) => {
+    router.push(`/detail/movie/${movieId}`);
+  };
+  const _letterStyles = {
+    color: "white",
+    fontWeight: "700",
+  };
 
   const [expandedOverview, setExpandedOverview] = useState<string | null>(null);
 
@@ -65,7 +63,7 @@ const MovieFeature = () => {
                   sx={{ borderRadius: "10%" }}
                   onClick={() => handleDetailClick(movie.id)}
                 />
-               
+
                 <Box
                   position={"absolute"}
                   zIndex={"1"}
@@ -127,7 +125,7 @@ const MovieFeature = () => {
                         height: "15px",
                       }}
                     >
-                      {movie.vote_average}
+                      {(movie.vote_average * 0.5).toFixed(1)}
                     </Box>
                     <Box sx={{ color: "gray" }}>{movie.release_date}</Box>
                     {/* <Box>
@@ -183,6 +181,6 @@ const MovieFeature = () => {
       </Stack>
     </>
   );
-}
+};
 
-export default MovieFeature
+export default MovieFeature;

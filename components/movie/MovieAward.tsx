@@ -93,7 +93,7 @@ const MovieAward: NextPageWithLayout = () => {
                     height: "15px",
                   }}
                 >
-                  {movie.vote_average}
+                  {(movie.vote_average * 0.5).toFixed(1)}
                 </Box>
                 <Box sx={{ color: "gray" }}>{movie.release_date}</Box>
                 {/* <Box>

@@ -75,9 +75,9 @@ const MovieCategory: NextPageWithLayout = () => {
                 {movie.title}
               </Typography>
               <div style={{ display: "flex", alignItems: "center" }}>
-                <Box>
+                {/* <Box>
                   Genre: {movie.genres.map((genre) => genre.name).join(", ")}
-                </Box>
+                </Box> */}
 
                 <div
                   style={{
@@ -88,7 +88,9 @@ const MovieCategory: NextPageWithLayout = () => {
                   }}
                 >
                   <StarIcon style={{ marginRight: "4px", color: "#ffeb3b" }} />
-                  <Typography variant="body2">{movie.vote_average}</Typography>
+                  <Typography variant="body2">
+                    {(movie.vote_average * 0.5).toFixed(1)}
+                  </Typography>
                 </div>
               </div>
             </CardContent>
@@ -145,7 +147,9 @@ const MovieCategory: NextPageWithLayout = () => {
                   }}
                 >
                   <StarIcon style={{ marginRight: "4px", color: "#ffeb3b" }} />
-                  <Typography variant="body2">{movie.vote_average}</Typography>
+                  <Typography variant="body2">
+                    {(movie.vote_average * 0.5).toFixed(1)}
+                  </Typography>
                 </div>
               </div>
             </CardContent>
@@ -202,7 +206,9 @@ const MovieCategory: NextPageWithLayout = () => {
                   }}
                 >
                   <StarIcon style={{ marginRight: "4px", color: "#ffeb3b" }} />
-                  <Typography variant="body2">{movie.vote_average}</Typography>
+                  <Typography variant="body2">
+                    {(movie.vote_average * 0.5).toFixed(1)}
+                  </Typography>
                 </div>
               </div>
             </CardContent>

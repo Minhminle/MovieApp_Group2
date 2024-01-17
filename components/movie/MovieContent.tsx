@@ -26,9 +26,6 @@ const MovieContent = (props: Props) => {
   };
   const [expandedOverview, setExpandedOverview] = useState<string | null>(null);
 
-  const toggleText = (overview: string) => {
-    setExpandedOverview((prev) => (prev === overview ? null : overview));
-  };
   console.log(data);
   return (
     <>
@@ -37,7 +34,7 @@ const MovieContent = (props: Props) => {
         direction="row"
         sx={{ overflowX: "auto", padding: "19px" }}
       >
-        {data?.results.slice(0, 2).map((movie) => (
+        {data?.results.map((movie) => (
           <Stack key={movie.id}>
             <Box>
               <Box
@@ -45,7 +42,11 @@ const MovieContent = (props: Props) => {
                 sx={{ width: "350px" }}
                 onClick={() => handleDetailClick(movie.id)}
               >
-                {movie.title}
+                {expandedOverview === movie.title
+                  ? movie.title
+                  : movie.title.length > 10
+                  ? `${movie.title.slice(0, 10)}...`
+                  : movie.title}
               </Box>
               <Stack direction={"row"} spacing={1} alignItems={"center"}>
                 <StarIcon sx={{ color: "yellow" }} className="star-icon" />
@@ -68,15 +69,12 @@ const MovieContent = (props: Props) => {
                 <Typography>
                   {expandedOverview === movie.overview
                     ? movie.overview
-                    : movie.overview.length > 100
-                    ? `${movie.overview.slice(0, 100)}...`
+                    : movie.overview.length > 90
+                    ? `${movie.overview.slice(0, 90)}...`
                     : movie.overview}
                 </Typography>
-                {movie.overview.length > 100 && (
-                  <Button
-                    sx={{ fontSize: "12px", color: "green" }}
-                    onClick={() => toggleText(movie.overview)}
-                  >
+                {movie.overview.length > 90 && (
+                  <Button sx={{ fontSize: "12px", color: "green" }}>
                     {expandedOverview === movie.overview
                       ? "Read less"
                       : "Read more"}

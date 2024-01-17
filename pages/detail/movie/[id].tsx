@@ -21,7 +21,6 @@ export interface Cast {
   name: string;
   character: string;
   profile_path: string;
-  // Thêm các thuộc tính khác của cast nếu cần
 }
 
 const MovieDetail = () => {

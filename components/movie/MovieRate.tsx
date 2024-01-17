@@ -67,7 +67,7 @@ const MovieRate = () => {
               src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
               width={200}
               height={300}
-              sx={{ borderRadius: "10%" }}
+              sx={{ borderRadius: "20%" }}
               onClick={() => handleDetailClick(movie.id)}
             />
             <Stack direction="column" alignItems="center">

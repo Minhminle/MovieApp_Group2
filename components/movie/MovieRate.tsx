@@ -66,7 +66,7 @@ const MovieRate = () => {
               component="img"
               src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
               width={200}
-              height={200}
+              height={300}
               sx={{ borderRadius: "10%" }}
               onClick={() => handleDetailClick(movie.id)}
             />

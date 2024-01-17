@@ -113,7 +113,11 @@ const MovieFeature = () => {
                     sx={{ width: "300px" }}
                     onClick={() => handleDetailClick(movie.id)}
                   >
-                    {movie.title}
+                    {expandedOverview === movie.title
+                      ? movie.title
+                      : movie.title.length > 10
+                      ? `${movie.title.slice(0, 10)}...`
+                      : movie.title}
                   </Box>
                   <Stack direction={"row"} spacing={1} alignItems={"center"}>
                     <StarIcon sx={{ color: "yellow" }} className="star-icon" />
@@ -136,11 +140,11 @@ const MovieFeature = () => {
                     <Typography>
                       {expandedOverview === movie.overview
                         ? movie.overview
-                        : movie.overview.length > 100
-                        ? `${movie.overview.slice(0, 100)}...`
+                        : movie.overview.length > 80
+                        ? `${movie.overview.slice(0, 80)}...`
                         : movie.overview}
                     </Typography>
-                    {movie.overview.length > 100 && (
+                    {movie.overview.length > 80 && (
                       <Button
                         sx={{ fontSize: "12px", color: "green" }}
                         onClick={() => toggleText(movie.overview)}

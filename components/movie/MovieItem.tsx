@@ -19,12 +19,13 @@ const MovieItem = () => {
   const [topRatedIdx, setTopRatedIdx] = useState(0);
   const { data: upcomingData } = useSWR<MovieList>(`/movie/upcoming`);
   const { data: topRatedData } = useSWR<MovieList>("/movie/top_rated");
+  const { data: dataGenre } = useSWR("/genre/movie/list");
   // const { data: gennerData } = useSWR<GenreList>(`/genre/movie/list`);
 
   const handleDetailClick = (movieId: string) => {
     router.push(`/detail/movie/${movieId}`);
   };
-
+  const genres = dataGenre?.genres || [];
   const Moviecard = ({ movie }: Props) => {
     return (
       <Stack>
@@ -45,13 +46,25 @@ const MovieItem = () => {
           />
           <Stack>
             <Typography sx={Styles._title}>{movie.title}</Typography>
-            {/* <Stack>
-              {movie.genres?.map((genre) => (
-                <Typography sx={Styles._typefilm} key={genre.id}>
-                  {genre.name}
-                </Typography>
-              ))}
-            </Stack> */}
+            <Typography
+              variant="body2"
+              sx={{
+                color: "#9e9e9e",
+                fontSize: "15px",
+              }}
+            >
+              {movie.genre_ids && movie.genre_ids.length > 0
+                ? movie.genre_ids
+                    .slice(0, 2)
+                    .map((genreId) => {
+                      const foundGenre = genres.find(
+                        (genre) => genre.id === genreId
+                      );
+                      return foundGenre ? foundGenre.name : "Unknown Genre";
+                    })
+                    .join(" - ")
+                : "Unknown Genre"}
+            </Typography>
             <Stack direction="row" alignItems="center" spacing={1}>
               <Box
                 component="img"
@@ -59,7 +72,7 @@ const MovieItem = () => {
                 alt="star"
               />
               <Typography variant="body2" sx={Styles._content}>
-                {(movie.vote_average * 0.5).toFixed(1)} |Movie
+                {(movie.vote_average * 0.5).toFixed(1)} | Movie
               </Typography>
             </Stack>
           </Stack>

@@ -6,9 +6,7 @@ import { useRouter } from "next/router";
 import useSWR from "swr";
 import axios from "axios";
 import { MovieList } from "@/models/Movie";
-import SearchIcon from "@mui/icons-material/Search";
-import MenuIcon from "@mui/icons-material/Menu";
-import { Styles } from "@/stylescomponents/style";
+
 type Props = {};
 const ExpandableText = ({ children, descriptionLength }) => {
   const fullText = children;
@@ -27,7 +25,6 @@ const ExpandableText = ({ children, descriptionLength }) => {
 };
 
 const Header = (props: Props) => {
-  const findLink = "/detail/Find";
   const router = useRouter();
   const fetcher = (url: string) =>
     axios.get(url).then((response) => response.data);
@@ -48,24 +45,7 @@ const Header = (props: Props) => {
   console.log(data);
   return (
     <>
-      <Box sx={{ position: "absolute", zIndex: "1" }}>
-        <Stack direction="row" justifyContent="space-between">
-          <Stack direction="row">
-            <Box component="img" src="/icons/Logo.svg" />
-            <Box component="img" src="/icons/SaintStream.svg" />
-          </Stack>
-          <Stack direction="row" spacing={3}>
-            <SearchIcon
-              onClick={() => {
-                router.push(findLink);
-              }}
-              sx={Styles._iconheaderhome}
-            />
-            <MenuIcon sx={Styles._iconheaderhome} />
-          </Stack>
-        </Stack>
-      </Box>
-      <Box sx={{ position: "relative" }}>
+      <Box>
         <Stack gap={4} direction="row" sx={{ overflowX: "auto" }}>
           {data?.results.slice(0, 2).map((movie) => (
             <Stack key={movie.id} spacing={2}>

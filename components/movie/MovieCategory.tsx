@@ -11,24 +11,20 @@ import StarIcon from "@mui/icons-material/Star";
 const MovieCategory: NextPageWithLayout = () => {
   const router = useRouter();
   const [movieData, setMovieData] = useState<MovieList | undefined>();
-
-  const fetcher = (url: string) =>
-    axios.get(url).then((response) => response.data);
-
   const { data, isLoading, error } = useSWR<MovieList>(
-    `/movie/popular?append_to_response=details`,
-    fetcher
+    `/movie/popular?append_to_response=details`
   );
+  const { data: dataGenre } = useSWR("/genre/movie/list");
   const {
     data: data2,
     isLoading: isLoading2,
     error: error2,
-  } = useSWR<MovieList>("/movie/upcoming", fetcher);
+  } = useSWR<MovieList>("/movie/upcoming");
   const {
     data: data3,
     isLoading: isLoading3,
     error: error3,
-  } = useSWR<MovieList>("/movie/top_rated", fetcher);
+  } = useSWR<MovieList>("/movie/top_rated");
 
   const handleDetailClick = (movieId: string) => {
     router.push(`/detail/movie/${movieId}`);
@@ -38,29 +34,7 @@ const MovieCategory: NextPageWithLayout = () => {
     color: "white",
     fontWeight: "700",
   };
-  const fetchMovieDetails = async (movieId: string) => {
-    const response = await axios.get(`/movie/${movieId}`);
-    return response.data;
-  };
-  useEffect(() => {
-    const fetchData = async () => {
-      const movies = await fetcher("/movie/popular");
-      const movieDetailsPromises = movies.results.map((movie: Movie) =>
-        fetchMovieDetails(movie.id)
-      );
-      const movieDetails = await Promise.all(movieDetailsPromises);
-      const moviesWithDetails = movies.results.map(
-        (movie: Movie, index: number) => ({
-          ...movie,
-          genres: movieDetails[index]?.genres,
-        })
-      );
-
-      setMovieData({ ...movies, results: moviesWithDetails });
-    };
-
-    fetchData();
-  }, []);
+  const genres = dataGenre?.genres || [];
   return (
     <>
       <Typography variant="h4" sx={{ ..._letterStyles, padding: "10px" }}>
@@ -98,11 +72,7 @@ const MovieCategory: NextPageWithLayout = () => {
               >
                 {movie.title}
               </Typography>
-              <div style={{ display: "flex", alignItems: "center" }}>
-                {movie.genres?.map((genre) => (
-                  <Chip key={genre.id} label={genre.name} />
-                ))}
-
+              <Stack direction={"row"}>
                 <div
                   style={{
                     marginTop: "5px",
@@ -114,7 +84,28 @@ const MovieCategory: NextPageWithLayout = () => {
                   <StarIcon style={{ marginRight: "4px", color: "#ffeb3b" }} />
                   <Typography variant="body2">{movie.vote_average}</Typography>
                 </div>
-              </div>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: "#9e9e9e",
+                    marginRight: "65px",
+                    fontSize: "15px",
+                    marginTop: "5px",
+                  }}
+                >
+                  |{" "}
+                  {movie.genre_ids && movie.genre_ids.length > 0
+                    ? movie.genre_ids
+                        .map((genreId) => {
+                          const foundGenre = genres.find(
+                            (genre) => genre.id === genreId
+                          );
+                          return foundGenre ? foundGenre.name : "Unknown Genre";
+                        })
+                        .join(" - ")
+                    : "Unknown Genre"}
+                </Typography>
+              </Stack>
             </CardContent>
           </Box>
         ))}
@@ -122,7 +113,7 @@ const MovieCategory: NextPageWithLayout = () => {
 
       <Typography
         variant="h4"
-        sx={{ ..._letterStyles, padding: "10px", marginTop: "-60px" }}
+        sx={{ ..._letterStyles, padding: "10px", marginTop: "-70px" }}
       >
         Series
       </Typography>

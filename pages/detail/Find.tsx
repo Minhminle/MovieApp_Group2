@@ -15,14 +15,6 @@ const Find = () => {
   const handleDetailClick = (movieId: string) => {
     router.push(`/detail/movie/${movieId}`);
   };
-
-  // const handleSearch = () => {
-  //   // Trigger a re-fetch when the search button is clicked
-  //   if (searchQuery) {
-  //     // SWR will automatically re-fetch with the updated URL
-  //   }
-  // };
-
   return (
     <>
       <Stack direction="column" spacing={2}>
@@ -30,6 +22,7 @@ const Find = () => {
           <TextField
             fullWidth
             id="fullWidth"
+            placeholder="Movie name"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             sx={{ backgroundColor: "white" }}

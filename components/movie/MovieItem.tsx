@@ -3,7 +3,6 @@ import useSWR from "swr";
 import ArrowBackIosNewTwoToneIcon from "@mui/icons-material/ArrowBackIosNewTwoTone";
 import ArrowForwardIosTwoToneIcon from "@mui/icons-material/ArrowForwardIosTwoTone";
 import { Movie, MovieList } from "@/models/Movie";
-import { Genres, GenreList } from "@/models/Geners";
 import { useRouter } from "next/router";
 import { Box, Container, Stack, Typography } from "@mui/material";
 import config from "@/config";
@@ -20,7 +19,7 @@ const MovieItem = () => {
   const [topRatedIdx, setTopRatedIdx] = useState(0);
   const { data: upcomingData } = useSWR<MovieList>(`/movie/upcoming`);
   const { data: topRatedData } = useSWR<MovieList>("/movie/top_rated");
-  const { data: gennerData } = useSWR<GenreList>(`/genre/movie/list`);
+  // const { data: gennerData } = useSWR<GenreList>(`/genre/movie/list`);
 
   const handleDetailClick = (movieId: string) => {
     router.push(`/detail/movie/${movieId}`);
@@ -60,7 +59,7 @@ const MovieItem = () => {
                 alt="star"
               />
               <Typography variant="body2" sx={Styles._content}>
-                {movie.vote_average}|Movie
+                {(movie.vote_average * 0.5).toFixed(1)} |Movie
               </Typography>
             </Stack>
           </Stack>
@@ -157,7 +156,9 @@ const MovieItem = () => {
           startIndex={topRatedIdx}
         />
       </Box>
-      <Box>
+
+      {/* <Box>
+>>>>>>> develop
         {gennerData?.results ? (
           gennerData.results.map((genres) => (
             <Typography sx={{ color: "white" }} key={genres.id}>
@@ -168,7 +169,7 @@ const MovieItem = () => {
           <Typography sx={{ color: "white" }}>No data available</Typography>
         )}
       </Box>
-      <Box>Genre: {genres.map((genre: Genres) => genre.name).join(", ")}</Box>
+      <Box>Genre: {gennerData.map((genre: Genres) => genre.name).join(", ")}</Box> */}
     </Container>
   );
 };

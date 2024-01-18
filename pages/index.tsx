@@ -1,18 +1,37 @@
-import Head from "next/head";
-import Image from "next/image";
-import { Inter } from "next/font/google";
+import React from "react";
+import MovieCategory from "@/components/movie/MovieCategory";
 import { Box } from "@mui/material";
+import ListApp from "@/components/movie/ListApp";
+import MovieCard from "@/components/movie/MovieCard";
 import MovieItem from "@/components/movie/MovieItem";
 import Footter from "@/components/movie/Footer";
-const inter = Inter({ subsets: ["latin"] });
-
-export default function Home() {
+import Header from "@/components/movie/Header";
+import MovieAward from "@/components/movie/MovieAward";
+import MovieRate from "@/components/movie/MovieRate";
+import MovieFeature from "@/components/movie/MovieFeature";
+import MovieContent from "@/components/movie/MovieContent";
+import HeaderHome from "@/components/layout_Header/HeaderHome";
+const Home: React.FC = () => {
   return (
     <>
-      <Box sx={{ background: "black" }}>
+      <Box sx={{ position: "absolute", zIndex: "1" }}>
+        <HeaderHome />
+      </Box>
+      <Box
+        sx={{ backgroundColor: "black", color: "white", position: "relative" }}
+      >
+        <Header />
+        <ListApp />
+        <MovieCard />
+        <MovieRate />
+        <MovieFeature />
+        <MovieCategory />
+        <MovieAward />
         <MovieItem />
         <Footter />
+        {/* <MovieContent></MovieContent> */}
       </Box>
     </>
   );
-}
+};
+export default Home;

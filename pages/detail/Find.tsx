@@ -6,6 +6,7 @@ import { MovieList } from "@/models/Movie";
 import { ReactElement } from "react";
 import config from "@/config";
 import { Styles } from "@/stylescomponents/style";
+import SearchIcon from "@mui/icons-material/Search";
 const Find = () => {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
@@ -17,6 +18,12 @@ const Find = () => {
   };
   return (
     <>
+      <Stack direction="row" justifyContent="space-between">
+        <Typography sx={Styles._title} variant="subtitle1">
+          Tìm Kiếm{" "}
+        </Typography>
+        <SearchIcon sx={Styles._iconheaderhome} />
+      </Stack>
       <Stack direction="column" spacing={2}>
         <Box>
           <TextField

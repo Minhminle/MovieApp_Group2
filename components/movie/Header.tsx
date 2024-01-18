@@ -26,12 +26,8 @@ const ExpandableText = ({ children, descriptionLength }) => {
 
 const Header = (props: Props) => {
   const router = useRouter();
-  const fetcher = (url: string) =>
-    axios.get(url).then((response) => response.data);
-  const { data, isLoading, error } = useSWR<MovieList>(
-    "/movie/popular",
-    fetcher
-  );
+  const { data, isLoading, error } = useSWR<MovieList>("/movie/popular");
+  const { data: dataGenre } = useSWR("/genre/movie/list");
 
   const handleDetailClick = (movieId: string) => {
     router.push(`/detail/movie/${movieId}`);
@@ -43,6 +39,7 @@ const Header = (props: Props) => {
   };
 
   console.log(data);
+  const genres = dataGenre?.genres || [];
   return (
     <>
       <Box>
@@ -72,10 +69,29 @@ const Header = (props: Props) => {
                   {movie.title}
                 </Box>
                 <Stack direction={"row"} spacing={2}>
-                  <Box>{movie.release_date}</Box>
-                  <Box>
-                    <Typography>genre</Typography>
-                  </Box>
+                  <Box sx={{ paddingTop: "2px" }}>{movie.release_date}</Box>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      color: "#9e9e9e",
+                      fontSize: "15px",
+                    }}
+                  >
+                    |{" "}
+                    {movie.genre_ids && movie.genre_ids.length > 0
+                      ? movie.genre_ids
+                          .slice(0, 2)
+                          .map((genreId) => {
+                            const foundGenre = genres.find(
+                              (genre) => genre.id === genreId
+                            );
+                            return foundGenre
+                              ? foundGenre.name
+                              : "Unknown Genre";
+                          })
+                          .join(" - ")
+                      : "Unknown Genre"}
+                  </Typography>
                 </Stack>
                 <Box>
                   <ExpandableText descriptionLength={100}>

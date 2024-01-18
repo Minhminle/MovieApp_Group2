@@ -13,18 +13,12 @@ import TurnedInNotIcon from "@mui/icons-material/TurnedInNot";
 
 const MovieAward: NextPageWithLayout = () => {
   const router = useRouter();
-
-  const fetcher = (url: string) =>
-    axios.get(url).then((response) => response.data);
-
-  const { data, isLoading, error } = useSWR<MovieList>(
-    "/movie/upcoming",
-    fetcher
-  );
+  const { data, isLoading, error } = useSWR<MovieList>("/movie/upcoming");
   const [expandedOverview, setExpandedOverview] = useState<string | null>(null);
   const toggleText = (overview: string) => {
     setExpandedOverview((prev) => (prev === overview ? null : overview));
   };
+  const { data: dataGenre } = useSWR("/genre/movie/list");
 
   const handleDetailClick = (movieId: string) => {
     router.push(`/detail/movie/${movieId}`);
@@ -35,6 +29,7 @@ const MovieAward: NextPageWithLayout = () => {
   };
 
   console.log(data);
+  const genres = dataGenre?.genres || [];
   return (
     <>
       <Typography variant="h4" sx={{ ..._letterStyles, padding: "10px" }}>
@@ -100,9 +95,26 @@ const MovieAward: NextPageWithLayout = () => {
                   {(movie.vote_average * 0.5).toFixed(1)}
                 </Box>
                 <Box sx={{ color: "gray" }}>{movie.release_date}</Box>
-                {/* <Box>
-                  <Typography>genre</Typography>
-                </Box> */}
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: "#9e9e9e",
+                    fontSize: "15px",
+                  }}
+                >
+                  |{" "}
+                  {movie.genre_ids && movie.genre_ids.length > 0
+                    ? movie.genre_ids
+                        .slice(0, 2)
+                        .map((genreId) => {
+                          const foundGenre = genres.find(
+                            (genre) => genre.id === genreId
+                          );
+                          return foundGenre ? foundGenre.name : "Unknown Genre";
+                        })
+                        .join(" - ")
+                    : "Unknown Genre"}
+                </Typography>
               </Stack>
               <Box>
                 <Typography>

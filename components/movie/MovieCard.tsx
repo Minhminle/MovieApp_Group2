@@ -16,12 +16,8 @@ import { useRouter } from "next/router";
 
 const MovieCard = () => {
   const router = useRouter();
-  const fetcher = (url: string) =>
-    axios.get(url).then((response) => response.data);
-  const { data, isLoading, error } = useSWR<MovieList>(
-    "/movie/upcoming",
-    fetcher
-  );
+  const { data, isLoading, error } = useSWR<MovieList>("/movie/upcoming");
+  const { data: dataGenre } = useSWR("/genre/movie/list");
   console.log(data);
 
   const handleDetailClick = (movieId: string) => {
@@ -31,7 +27,7 @@ const MovieCard = () => {
     color: "white",
     fontWeight: "700",
   };
-
+  const genres = dataGenre?.genres || [];
   return (
     <>
       <Stack
@@ -77,6 +73,27 @@ const MovieCard = () => {
                 <Box sx={{ color: "white" }}>
                   {(movie.vote_average * 0.5).toFixed(1)}/5
                 </Box>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: "#9e9e9e",
+                    fontSize: "15px",
+                    marginLeft: "5px",
+                  }}
+                >
+                  |{" "}
+                  {movie.genre_ids && movie.genre_ids.length > 0
+                    ? movie.genre_ids
+                        .slice(0, 2)
+                        .map((genreId) => {
+                          const foundGenre = genres.find(
+                            (genre) => genre.id === genreId
+                          );
+                          return foundGenre ? foundGenre.name : "Unknown Genre";
+                        })
+                        .join(" - ")
+                    : "Unknown Genre"}
+                </Typography>
               </Stack>
             </Box>
             <Box

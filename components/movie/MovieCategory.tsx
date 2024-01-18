@@ -72,11 +72,9 @@ const MovieCategory: NextPageWithLayout = () => {
               >
                 {movie.title}
               </Typography>
-              <Stack direction={"row"}>
+              <Stack direction={"row"} spacing={2}>
                 <div
                   style={{
-                    marginTop: "5px",
-                    marginRight: "auto",
                     display: "flex",
                     alignItems: "center",
                   }}
@@ -90,14 +88,13 @@ const MovieCategory: NextPageWithLayout = () => {
                   variant="body2"
                   sx={{
                     color: "#9e9e9e",
-                    marginRight: "65px",
                     fontSize: "15px",
-                    marginTop: "5px",
                   }}
                 >
                   |{" "}
                   {movie.genre_ids && movie.genre_ids.length > 0
                     ? movie.genre_ids
+                        .slice(0, 2)
                         .map((genreId) => {
                           const foundGenre = genres.find(
                             (genre) => genre.id === genreId
@@ -151,12 +148,9 @@ const MovieCategory: NextPageWithLayout = () => {
               >
                 {movie.title}
               </Typography>
-              <div style={{ display: "flex", alignItems: "center" }}>
-                {/* genre here */}
+              <Stack direction={"row"} spacing={2}>
                 <div
                   style={{
-                    marginTop: "5px",
-                    marginRight: "auto",
                     display: "flex",
                     alignItems: "center",
                   }}
@@ -166,7 +160,27 @@ const MovieCategory: NextPageWithLayout = () => {
                     {(movie.vote_average * 0.5).toFixed(1)}
                   </Typography>
                 </div>
-              </div>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: "#9e9e9e",
+                    fontSize: "15px",
+                  }}
+                >
+                  |{" "}
+                  {movie.genre_ids && movie.genre_ids.length > 0
+                    ? movie.genre_ids
+                        .slice(0, 2)
+                        .map((genreId) => {
+                          const foundGenre = genres.find(
+                            (genre) => genre.id === genreId
+                          );
+                          return foundGenre ? foundGenre.name : "Unknown Genre";
+                        })
+                        .join(" - ")
+                    : "Unknown Genre"}
+                </Typography>
+              </Stack>
             </CardContent>
           </Box>
         ))}
@@ -210,12 +224,9 @@ const MovieCategory: NextPageWithLayout = () => {
               >
                 {movie.title}
               </Typography>
-              <div style={{ display: "flex", alignItems: "center" }}>
-                {/* genre here */}
+              <Stack direction={"row"} spacing={2}>
                 <div
                   style={{
-                    marginTop: "5px",
-                    marginRight: "auto",
                     display: "flex",
                     alignItems: "center",
                   }}
@@ -225,7 +236,27 @@ const MovieCategory: NextPageWithLayout = () => {
                     {(movie.vote_average * 0.5).toFixed(1)}
                   </Typography>
                 </div>
-              </div>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: "#9e9e9e",
+                    fontSize: "15px",
+                  }}
+                >
+                  |{" "}
+                  {movie.genre_ids && movie.genre_ids.length > 0
+                    ? movie.genre_ids
+                        .slice(0, 2)
+                        .map((genreId) => {
+                          const foundGenre = genres.find(
+                            (genre) => genre.id === genreId
+                          );
+                          return foundGenre ? foundGenre.name : "Unknown Genre";
+                        })
+                        .join(" - ")
+                    : "Unknown Genre"}
+                </Typography>
+              </Stack>
             </CardContent>
           </Box>
         ))}

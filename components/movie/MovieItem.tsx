@@ -7,7 +7,8 @@ import { useRouter } from "next/router";
 import { Box, Container, Stack, Typography } from "@mui/material";
 import config from "@/config";
 import { Styles } from "@/stylescomponents/style";
-
+import axios from "axios";
+import { Console } from "console";
 type Props = {
   movie: Movie;
 };
@@ -16,8 +17,9 @@ const MovieItem = () => {
   const router = useRouter();
   const [upcomingIdx, setUpcomingIdx] = useState(0);
   const [topRatedIdx, setTopRatedIdx] = useState(0);
-  const { data: upcomingData } = useSWR<MovieList>("/movie/upcoming");
+  const { data: upcomingData } = useSWR<MovieList>(`/movie/upcoming`);
   const { data: topRatedData } = useSWR<MovieList>("/movie/top_rated");
+  // const { data: gennerData } = useSWR<GenreList>(`/genre/movie/list`);
 
   const handleDetailClick = (movieId: string) => {
     router.push(`/detail/movie/${movieId}`);
@@ -43,7 +45,13 @@ const MovieItem = () => {
           />
           <Stack>
             <Typography sx={Styles._title}>{movie.title}</Typography>
-            <Typography sx={Styles._typefilm}>{movie.release_date}</Typography>
+            {/* <Stack>
+              {movie.genres?.map((genre) => (
+                <Typography sx={Styles._typefilm} key={genre.id}>
+                  {genre.name}
+                </Typography>
+              ))}
+            </Stack> */}
             <Stack direction="row" alignItems="center" spacing={1}>
               <Box
                 component="img"
@@ -51,7 +59,7 @@ const MovieItem = () => {
                 alt="star"
               />
               <Typography variant="body2" sx={Styles._content}>
-                {movie.vote_average}|Movie
+                {(movie.vote_average * 0.5).toFixed(1)} |Movie
               </Typography>
             </Stack>
           </Stack>
@@ -97,7 +105,6 @@ const MovieItem = () => {
   };
   // useEffect(() => {
   // }, []);
-
   return (
     <Container>
       <Box>
@@ -149,6 +156,18 @@ const MovieItem = () => {
           startIndex={topRatedIdx}
         />
       </Box>
+      {/* <Box>
+        {gennerData?.results ? (
+          gennerData.results.map((genres) => (
+            <Typography sx={{ color: "white" }} key={genres.id}>
+              {genres.name}
+            </Typography>
+          ))
+        ) : (
+          <Typography sx={{ color: "white" }}>No data available</Typography>
+        )}
+      </Box>
+      <Box>Genre: {gennerData.map((genre: Genres) => genre.name).join(", ")}</Box> */}
     </Container>
   );
 };

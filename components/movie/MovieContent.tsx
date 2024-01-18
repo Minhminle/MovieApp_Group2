@@ -1,107 +1,82 @@
-import { Box, Button, Chip, Stack, Typography } from "@mui/material";
-import React, { useState } from "react";
-import StarIcon from "@mui/icons-material/Star";
-import AddCircleIcon from "@mui/icons-material/AddCircle";
-import TurnedInNotIcon from "@mui/icons-material/TurnedInNot";
 import { useRouter } from "next/router";
-import useSWR from "swr";
+import type { ReactElement } from "react";
+import { NextPageWithLayout } from "@/pages/_app";
+import { Box, Button, Chip, Stack, Typography } from "@mui/material";
 import axios from "axios";
+import useSWR from "swr";
 import { MovieList } from "@/models/Movie";
+import { Card, CardContent, CardMedia } from "@mui/material";
+import StarIcon from "@mui/icons-material/Star";
+import React, { useState } from "react";
+import PlayCircleFilledIcon from "@mui/icons-material/PlayCircleFilled";
+import TurnedInNotIcon from "@mui/icons-material/TurnedInNot";
+import { Genre } from "@/models/Movie";
+import { Movie } from "@/models/Movie";
 
-type Props = {};
-
-// Create a reusable Read More/Less component
-const ExpandableText = ({ children, descriptionLength }) => {
-  const fullText = children;
-  // Set the initial state of the text to be collapsed
-  const [isExpanded, setIsExpanded] = useState(false);
-  // This function is called when the read more/less button is clicked
-  const toggleText = () => {
-    setIsExpanded(!isExpanded);
-  };
-  return (
-    <p className="text">
-      {isExpanded ? fullText : `${fullText.slice(0, descriptionLength)}...`}
-      <span onClick={toggleText} className="toggle-button">
-        {isExpanded ? "Read less" : "Read more"}
-      </span>
-    </p>
-  );
-};
-
-const MovieContent = (props: Props) => {
-  const router = useRouter();
-
+const MovieContent: NextPageWithLayout = () => {
   const fetcher = (url: string) =>
     axios.get(url).then((response) => response.data);
+  const { data, isLoading, error } = useSWR("/genre/movie/list", fetcher);
+  const {
+    data: dataMovies,
+    isLoading: isLoading2,
+    error: error2,
+  } = useSWR<MovieList>("/movie/upcoming", fetcher);
 
-  const { data, isLoading, error } = useSWR<MovieList>(
-    "/movie/popular",
-    fetcher
-  );
-
-  const handleDetailClick = (movieId: string) => {
-    router.push(`/detail/movie/${movieId}`);
-  };
-
-  console.log(data);
   const _letterStyles = {
     color: "white",
     fontWeight: "700",
   };
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error loading genres</div>;
+
+  const genres = data?.genres || [];
+  const movies = dataMovies?.results || [];
   return (
     <>
-      <Stack
-        gap={4}
-        direction="row"
-        sx={{ overflowX: "auto", padding: "10px" }}
-      >
-        {data?.results.slice(0, 2).map((movie) => (
-          <Stack key={movie.id}>
-            <Box
-              fontSize={"30px"}
-              sx={{ ..._letterStyles, width: "375px" }}
-              onClick={() => handleDetailClick(movie.id)}
-            >
-              {movie.title}
-            </Box>
-            <Stack direction={"row"} spacing={2}>
-              <StarIcon sx={{ color: "yellow" }} className="star-icon" />
-              <Box>{movie.vote_average}</Box>
-              <Box>{movie.release_date}</Box>
-              <Box>
-                <Typography>genre</Typography>
-              </Box>
-            </Stack>
-            <Box>
-              {/* Only show 100 characters in the beginning */}
-              <ExpandableText descriptionLength={100}>
-                {movie.overview}
-              </ExpandableText>
-            </Box>
-            <Stack direction={"row"} spacing={3}>
-              <Button
-                onClick={() => handleDetailClick(movie.id)}
-                sx={{ backgroundColor: "green", width: "50%" }}
-                variant="contained"
-                startIcon={<AddCircleIcon />}
-              >
-                Play Now
-              </Button>
-              <Button
-                color="inherit"
-                sx={{ width: "50%" }}
-                variant="outlined"
-                startIcon={<TurnedInNotIcon />}
-              >
-                Add watchlist
-              </Button>
-            </Stack>
-          </Stack>
+      <Stack>
+        {movies.map((movie: Movie) => (
+          <Card
+            key={movie.id}
+            sx={{
+              margin: "10px",
+              backgroundColor: "black",
+              color: "white",
+            }}
+          >
+            <CardContent>
+              <Typography variant="h5" component="div">
+                Tên phim: {movie.title}
+              </Typography>
+              <Typography variant="body2" sx={{ color: "#42a5f5" }}>
+                ID phim: {movie.id}
+              </Typography>
+              <Typography variant="body2" sx={{ color: "#42a5f5" }}>
+                Thể loại:{" "}
+                {movie.genre_ids && movie.genre_ids.length > 0
+                  ? movie.genre_ids
+                      .map((genreId) => {
+                        const foundGenre = genres.find(
+                          (genre) => genre.id === genreId
+                        );
+                        return foundGenre ? foundGenre.name : "Unknown Genre";
+                      })
+                      .join(", ")
+                  : "Unknown Genre"}
+              </Typography>
+            </CardContent>
+          </Card>
         ))}
       </Stack>
+      {/* 
+      <Box>Genre: {genres.map((genre: Genre) => genre.name).join(", ")}</Box> */}
     </>
   );
+};
+
+MovieContent.getLayout = function getLayout(page: ReactElement) {
+  return <>{page}</>;
 };
 
 export default MovieContent;

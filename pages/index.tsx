@@ -7,21 +7,31 @@ import MovieItem from "@/components/movie/MovieItem";
 import Footter from "@/components/movie/Footer";
 import Header from "@/components/movie/Header";
 import MovieAward from "@/components/movie/MovieAward";
-import MovieContent from "@/components/movie/MovieContent";
 import MovieRate from "@/components/movie/MovieRate";
+import MovieFeature from "@/components/movie/MovieFeature";
+import MovieContent from "@/components/movie/MovieContent";
+import HeaderHome from "@/components/layout_Header/HeaderHome";
 const Home: React.FC = () => {
   return (
-    <Box sx={{ backgroundColor: "black", color: "white" }}>
-      <Header />
-      <ListApp />
-      <MovieCard />
-      <MovieRate />
-      <MovieContent />
-      <MovieCategory />
-      <MovieAward></MovieAward>
-      <MovieItem />
-      <Footter />
-    </Box>
+    <>
+      <Box sx={{ position: "absolute", zIndex: "1" }}>
+        <HeaderHome />
+      </Box>
+      <Box
+        sx={{ backgroundColor: "black", color: "white", position: "relative" }}
+      >
+        <Header />
+        <ListApp />
+        <MovieCard />
+        <MovieRate />
+        <MovieFeature />
+        <MovieCategory />
+        <MovieAward />
+        <MovieItem />
+        <Footter />
+        {/* <MovieContent></MovieContent> */}
+      </Box>
+    </>
   );
 };
 export default Home;

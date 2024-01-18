@@ -82,7 +82,9 @@ const MovieCategory: NextPageWithLayout = () => {
                   }}
                 >
                   <StarIcon style={{ marginRight: "4px", color: "#ffeb3b" }} />
-                  <Typography variant="body2">{movie.vote_average}</Typography>
+                  <Typography variant="body2">
+                    {(movie.vote_average * 0.5).toFixed(1)}
+                  </Typography>
                 </div>
                 <Typography
                   variant="body2"
@@ -160,7 +162,9 @@ const MovieCategory: NextPageWithLayout = () => {
                   }}
                 >
                   <StarIcon style={{ marginRight: "4px", color: "#ffeb3b" }} />
-                  <Typography variant="body2">{movie.vote_average}</Typography>
+                  <Typography variant="body2">
+                    {(movie.vote_average * 0.5).toFixed(1)}
+                  </Typography>
                 </div>
               </div>
             </CardContent>
@@ -217,7 +221,9 @@ const MovieCategory: NextPageWithLayout = () => {
                   }}
                 >
                   <StarIcon style={{ marginRight: "4px", color: "#ffeb3b" }} />
-                  <Typography variant="body2">{movie.vote_average}</Typography>
+                  <Typography variant="body2">
+                    {(movie.vote_average * 0.5).toFixed(1)}
+                  </Typography>
                 </div>
               </div>
             </CardContent>

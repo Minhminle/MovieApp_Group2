@@ -21,7 +21,6 @@ export interface Cast {
   name: string;
   character: string;
   profile_path: string;
-  // Thêm các thuộc tính khác của cast nếu cần
 }
 
 const MovieDetail = () => {
@@ -70,9 +69,14 @@ const MovieDetail = () => {
               readOnly
               sx={{ color: "#FFD700", fontSize: 24 }}
             />
-            <Typography variant="h5" sx={{ color: "#d32f2f" }}>
-              Votes: {data.vote_count}
-            </Typography>
+            <Stack direction="row" spacing={3}>
+              <Typography variant="h6" sx={{ color: "yellow" }}>
+                {(data.vote_average * 0.5).toFixed(1)}
+              </Typography>
+              <Typography variant="h5" sx={{ color: "#d32f2f" }}>
+                Votes: {data.vote_count}
+              </Typography>
+            </Stack>
           </Stack>
           <Typography variant="h5" sx={{ color: "#42a5f5", marginTop: "10px" }}>
             Genres:

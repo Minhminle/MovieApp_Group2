@@ -37,6 +37,11 @@ const Header = (props: Props) => {
     color: "white",
     fontWeight: "700",
   };
+  const [expandedOverview, setExpandedOverview] = useState<string | null>(null);
+
+  const toggleText = (overview: string) => {
+    setExpandedOverview((prev) => (prev === overview ? null : overview));
+  };
 
   console.log(data);
   const genres = dataGenre?.genres || [];
@@ -66,7 +71,11 @@ const Header = (props: Props) => {
                   fontSize={"50px"}
                   onClick={() => handleDetailClick(movie.id)}
                 >
-                  {movie.title}
+                  {expandedOverview === movie.title
+                    ? movie.title
+                    : movie.title.length > 15
+                    ? `${movie.title.slice(0, 15)}...`
+                    : movie.title}
                 </Box>
                 <Stack direction={"row"} spacing={2}>
                   <Box sx={{ paddingTop: "2px" }}>{movie.release_date}</Box>
@@ -94,9 +103,23 @@ const Header = (props: Props) => {
                   </Typography>
                 </Stack>
                 <Box>
-                  <ExpandableText descriptionLength={100}>
-                    {movie.overview}
-                  </ExpandableText>
+                  <Typography>
+                    {expandedOverview === movie.overview
+                      ? movie.overview
+                      : movie.overview.length > 90
+                      ? `${movie.overview.slice(0, 90)}...`
+                      : movie.overview}
+                    {movie.overview.length > 90 && (
+                      <Button
+                        sx={{ fontSize: "12px", color: "green" }}
+                        onClick={() => toggleText(movie.overview)}
+                      >
+                        {expandedOverview === movie.overview
+                          ? "Read less"
+                          : "Read more"}
+                      </Button>
+                    )}
+                  </Typography>
                 </Box>
                 <Stack direction={"row"} spacing={3}>
                   <Button

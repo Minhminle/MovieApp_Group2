@@ -1,20 +1,36 @@
-import { Box, Button, Chip, Stack, Typography } from "@mui/material";
-import React, { useState } from "react";
-import PlayCircleFilledIcon from "@mui/icons-material/PlayCircleFilled";
+import { Box, Button, Stack, Typography } from "@mui/material";
+import React, { useState } from "react"; // Import useState
+import AddCircleIcon from "@mui/icons-material/AddCircle";
 import TurnedInNotIcon from "@mui/icons-material/TurnedInNot";
 import { useRouter } from "next/router";
 import useSWR from "swr";
 import axios from "axios";
-import { MovieList, Genre } from "@/models/Movie";
-
+import { MovieList } from "@/models/Movie";
+import SearchIcon from "@mui/icons-material/Search";
+import MenuIcon from "@mui/icons-material/Menu";
+import { Styles } from "@/stylescomponents/style";
 type Props = {};
+const ExpandableText = ({ children, descriptionLength }) => {
+  const fullText = children;
+  const [isExpanded, setIsExpanded] = useState(false);
+  const toggleText = () => {
+    setIsExpanded(!isExpanded);
+  };
+  return (
+    <p className="text">
+      {isExpanded ? fullText : `${fullText.slice(0, descriptionLength)}...`}
+      <span onClick={toggleText} className="toggle-button">
+        {isExpanded ? "Read less" : "Read more"}
+      </span>
+    </p>
+  );
+};
 
 const Header = (props: Props) => {
+  const findLink = "/detail/Find";
   const router = useRouter();
-
   const fetcher = (url: string) =>
     axios.get(url).then((response) => response.data);
-
   const { data, isLoading, error } = useSWR<MovieList>(
     "/movie/popular",
     fetcher
@@ -24,100 +40,91 @@ const Header = (props: Props) => {
     router.push(`/detail/movie/${movieId}`);
   };
 
-  const [expandedOverview, setExpandedOverview] = useState<string | null>(null);
-
-  const toggleText = (overview: string) => {
-    setExpandedOverview((prev) => (prev === overview ? null : overview));
+  const _letterStyles = {
+    color: "white",
+    fontWeight: "700",
   };
 
   console.log(data);
-
   return (
     <>
-      <Stack gap={4} direction="row" sx={{ overflowX: "auto" }}>
-        {data?.results.slice(0, 2).map((movie) => (
-          <Stack key={movie.id} spacing={2} sx={{ position: "relative" }}>
-            <Stack>
-              <Box
-                component="img"
-                src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-                width={"390px"}
-                onClick={() => handleDetailClick(movie.id)}
-              />
-            </Stack>
-            <Box
-              padding={"20px"}
-              sx={{
-                background:
-                  "linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1))",
-                position: "absolute",
-                bottom: 0,
-                zIndex: 1,
+      <Box sx={{ position: "absolute", zIndex: "1" }}>
+        <Stack direction="row" justifyContent="space-between">
+          <Stack direction="row">
+            <Box component="img" src="/icons/Logo.svg" />
+            <Box component="img" src="/icons/SaintStream.svg" />
+          </Stack>
+          <Stack direction="row" spacing={3}>
+            <SearchIcon
+              onClick={() => {
+                router.push(findLink);
               }}
-            >
-              <Stack spacing={1}>
+              sx={Styles._iconheaderhome}
+            />
+            <MenuIcon sx={Styles._iconheaderhome} />
+          </Stack>
+        </Stack>
+      </Box>
+      <Box sx={{ position: "relative" }}>
+        <Stack gap={4} direction="row" sx={{ overflowX: "auto" }}>
+          {data?.results.slice(0, 2).map((movie) => (
+            <Stack key={movie.id} spacing={2}>
+              <Stack>
                 <Box
-                  fontSize={"40px"}
+                  component="img"
+                  src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+                  width={"375px"}
+                  onClick={() => handleDetailClick(movie.id)}
+                />
+              </Stack>
+              <Box
+                sx={{
+                  padding: "10px",
+                  background:
+                    "linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.7))",
+                }}
+              >
+                <Box
+                  sx={_letterStyles}
+                  fontSize={"50px"}
                   onClick={() => handleDetailClick(movie.id)}
                 >
                   {movie.title}
                 </Box>
                 <Stack direction={"row"} spacing={2}>
-                  <Box sx={{ color: "gray", fontSize: "13px" }}>
-                    {movie.release_date}
-                  </Box>
+                  <Box>{movie.release_date}</Box>
                   <Box>
-                    {movie.genres?.map((genre) => (
-                      <Box key={genre.id}>{genre.name}</Box>
-                    ))}
+                    <Typography>genre</Typography>
                   </Box>
                 </Stack>
                 <Box>
-                  <Typography>
-                    {expandedOverview === movie.overview
-                      ? movie.overview
-                      : movie.overview.length > 100
-                      ? `${movie.overview.slice(0, 100)}...`
-                      : movie.overview}
-                    {movie.overview.length > 100 && (
-                      <Button
-                        sx={{ fontSize: "12px", color: "green" }}
-                        onClick={() => toggleText(movie.overview)}
-                      >
-                        {expandedOverview === movie.overview
-                          ? "Read less"
-                          : "Read more"}
-                      </Button>
-                    )}
-                  </Typography>
+                  <ExpandableText descriptionLength={100}>
+                    {movie.overview}
+                  </ExpandableText>
                 </Box>
                 <Stack direction={"row"} spacing={3}>
                   <Button
-                    sx={{
-                      backgroundColor: "green",
-                      width: "45%",
-                      fontSize: "12px",
-                    }}
+                    sx={{ backgroundColor: "green", width: "50%" }}
                     variant="contained"
-                    startIcon={<PlayCircleFilledIcon />}
+                    startIcon={<AddCircleIcon />}
                     onClick={() => handleDetailClick(movie.id)}
                   >
-                    Watch Trailer
+                    Play Now
                   </Button>
                   <Button
                     color="inherit"
-                    sx={{ width: "45%", fontSize: "12px" }}
+                    sx={{ width: "50%" }}
                     variant="outlined"
                     startIcon={<TurnedInNotIcon />}
                   >
                     Add watchlist
                   </Button>
                 </Stack>
-              </Stack>
-            </Box>
-          </Stack>
-        ))}
-      </Stack>
+              </Box>
+            </Stack>
+          ))}
+        </Stack>
+      </Box>
     </>
   );
 };

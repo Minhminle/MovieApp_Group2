@@ -2,7 +2,6 @@ import { Box, Button, Chip, Stack, Typography, TextField } from "@mui/material";
 import React, { useState } from "react";
 import { useRouter } from "next/router";
 import useSWR from "swr";
-import axios from "axios";
 import { MovieList } from "@/models/Movie";
 import { ReactElement } from "react";
 
@@ -10,12 +9,8 @@ const Find = () => {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
 
-  const fetcher = (url: string) =>
-    axios.get(url).then((response) => response.data);
-
   const { data, isLoading, error } = useSWR<MovieList>(
-    searchQuery ? `/search/movie?query=${searchQuery}` : null,
-    fetcher
+    searchQuery ? `/search/movie?query=${searchQuery}` : null
   );
 
   const handleDetailClick = (movieId: string) => {

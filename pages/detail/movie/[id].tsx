@@ -4,6 +4,7 @@ import useSWR from "swr";
 import axios from "axios";
 import {
   Box,
+  Button,
   Card,
   CardContent,
   CardMedia,
@@ -14,6 +15,10 @@ import {
 import { ReactElement } from "react";
 import { Movie } from "@/models/Movie";
 import { Rating, Chip } from "@mui/material";
+import PlayCircleFilledIcon from "@mui/icons-material/PlayCircleFilled";
+import TurnedInNotIcon from "@mui/icons-material/TurnedInNot";
+import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
+import DownloadIcon from "@mui/icons-material/Download";
 
 export interface Cast {
   id: number;
@@ -46,65 +51,64 @@ const MovieDetail = () => {
           boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.3)",
         }}
       />
-      <Box
-        sx={{
-          margin: "20px",
-        }}
-      >
+      <Stack>
         <Typography variant="h3" sx={{}}>
           {data.title}
         </Typography>
-        <Typography
-          variant="body1"
-          sx={{ fontSize: "18px", color: "#555", marginBottom: "20px" }}
-        >
-          {data.overview}
-        </Typography>
         <Stack direction={"row"}>
-          <Rating
-            name="movie-rating"
-            value={data.vote_average ? data.vote_average / 2 : 0}
-            precision={0.5}
-            readOnly
-            sx={{ color: "#FFD700", fontSize: 24 }}
-          />
-          <Typography variant="h5" sx={{ color: "#d32f2f" }}>
-            Votes: {data.vote_count}
+          <Typography color={"gray"}>{data.release_date}</Typography>
+          <Typography>
+            {data.genres?.map((genre) => (
+              <Typography
+                key={genre.id}
+                sx={{
+                  display: "inline-block",
+                  color: "gray",
+                }}
+              >
+                -{genre.name}
+              </Typography>
+            ))}
           </Typography>
         </Stack>
-        <Typography variant="h5" sx={{ color: "#42a5f5", marginTop: "10px" }}>
-          Genres:
-          {data.genres?.map((genre) => (
-            <Chip
-              key={genre.id}
-              label={genre.name}
-              sx={{
-                margin: "3px",
-                backgroundColor: "#673ab7",
-                color: "white",
-                marginRight: "5px",
-                marginBottom: "5px",
-              }}
-            />
-          ))}
-        </Typography>
-        <Typography variant="h5" sx={{ color: "#1de9b6", marginTop: "10px" }}>
-          Cast:
-          {data.credits?.cast?.slice(0, 5).map((actor) => (
-            <Chip
-              key={actor.id}
-              label={`${actor.name} as ${actor.character}`}
-              sx={{
-                margin: "3px",
-                backgroundColor: "#66bb6a",
-                color: "white",
-                marginRight: "5px",
-                marginBottom: "5px",
-              }}
-            />
-          ))}
-        </Typography>
-      </Box>
+        <Stack direction={"row"} spacing={1}>
+          <Button
+            sx={{
+              backgroundColor: "green",
+              fontSize: "10px",
+            }}
+            variant="contained"
+            startIcon={<PlayCircleFilledIcon />}
+            // onClick={() => handleDetailClick(movie.id)}
+          >
+            Continue Watching
+          </Button>
+          <Button
+            color="inherit"
+            sx={{ fontSize: "10px" }}
+            variant="outlined"
+            startIcon={<TurnedInNotIcon />}
+          />
+          <Button
+            color="inherit"
+            sx={{ fontSize: "10px" }}
+            variant="outlined"
+            startIcon={<ThumbUpOffAltIcon />}
+          />
+          <Button
+            color="inherit"
+            sx={{ fontSize: "10px" }}
+            variant="outlined"
+            startIcon={<DownloadIcon />}
+          />
+        </Stack>
+      </Stack>
+      <Typography
+        variant="body1"
+        sx={{ fontSize: "18px", color: "#555", marginBottom: "20px" }}
+      >
+        {data.overview}
+      </Typography>
     </Stack>
   );
 };

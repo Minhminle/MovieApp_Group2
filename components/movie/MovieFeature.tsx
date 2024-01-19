@@ -32,10 +32,13 @@ const MovieFeature = () => {
   const genres = dataGenre?.genres || [];
   return (
     <>
-      <Box color="white" fontSize={"30px"} padding={4}>
-        {" "}
-        FeaTured in SaintStream
-      </Box>
+      <Typography
+        color="white"
+        variant="h4"
+        sx={{ ..._letterStyles, padding: "10px" }}
+      >
+        FeaTured SaintStream
+      </Typography>
       <Stack sx={{ overflowX: "auto" }} direction="column">
         <Box>
           <Stack

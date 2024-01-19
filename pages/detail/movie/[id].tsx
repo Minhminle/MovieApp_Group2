@@ -1,8 +1,8 @@
-// pages/detail/[id].tsx
 import { useRouter } from "next/router";
 import useSWR from "swr";
 import axios from "axios";
 import {
+  Avatar,
   Box,
   Card,
   CardContent,
@@ -94,7 +94,7 @@ const MovieDetail = () => {
               />
             ))}
           </Typography>
-          <Typography variant="h5" sx={{ color: "#1de9b6", marginTop: "10px" }}>
+          {/* <Typography variant="h5" sx={{ color: "#1de9b6", marginTop: "10px" }}>
             Cast:
             {data.credits?.cast?.slice(0, 5).map((actor) => (
               <Chip
@@ -109,9 +109,43 @@ const MovieDetail = () => {
                 }}
               />
             ))}
+          </Typography> */}
+          <Typography variant="h5" sx={{ color: "#1de9b6", marginTop: "10px" }}>
+            Cast:
+            <Grid container spacing={2}>
+              {data.credits?.cast?.slice(0, 5).map((actor) => (
+                <Grid item key={actor.id} xs={12} sm={6} md={4} lg={3}>
+                  <Box
+                    sx={{
+                      color: "white",
+                      padding: "10px",
+                      borderRadius: "8px",
+                    }}
+                  >
+                    <Stack direction="row" alignItems="center">
+                      <Avatar
+                        src={`https://image.tmdb.org/t/p/w500${actor.profile_path}`}
+                        alt={actor.name}
+                        sx={{ marginRight: "10px" }}
+                      />
+                      <Box>
+                        <Typography
+                          variant="subtitle1"
+                          sx={{ fontWeight: "bold" }}
+                        >
+                          {actor.name}
+                        </Typography>
+                        <Typography variant="body2">{`${actor.character}`}</Typography>
+                      </Box>
+                    </Stack>
+                  </Box>
+                </Grid>
+              ))}
+            </Grid>
           </Typography>
         </Box>
       </Stack>
+      <Stack></Stack>
       <Footter></Footter>
     </>
   );

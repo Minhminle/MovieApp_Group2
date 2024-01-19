@@ -9,16 +9,13 @@ import React from "react";
 
 const MovieRate = () => {
   const router = useRouter();
-  const fetcher = (url: string) =>
-    axios.get(url).then((response) => response.data);
-  const { data, isLoading, error } = useSWR<MovieList>(
-    "/movie/popular",
-    fetcher
-  );
+  const { data, isLoading, error } = useSWR<MovieList>("/movie/popular");
+  const { data: dataGenre } = useSWR("/genre/movie/list");
   console.log(data);
   const handleDetailClick = (movieId: string) => {
     router.push(`/detail/movie/${movieId}`);
   };
+  const genres = dataGenre?.genres || [];
 
   const Counter = ({ count }) => {
     const numbers = [];
@@ -70,17 +67,37 @@ const MovieRate = () => {
               sx={{ borderRadius: "20%" }}
               onClick={() => handleDetailClick(movie.id)}
             />
-            <Stack direction="column" alignItems="center">
+            <Stack direction="column">
               <Box
                 sx={{
-                  padding: "5px",
-                  flexGrow: 1,
+                  marginLeft: "5px",
                   color: "white",
                   marginTop: "20px",
                 }}
               >
                 {movie.title}
               </Box>
+              <Typography
+                variant="body2"
+                sx={{
+                  marginLeft: "5px",
+                  color: "#9e9e9e",
+                  fontSize: "15px",
+                  width: "100px",
+                }}
+              >
+                {movie.genre_ids && movie.genre_ids.length > 0
+                  ? movie.genre_ids
+                      .slice(0, 2)
+                      .map((genreId) => {
+                        const foundGenre = genres.find(
+                          (genre) => genre.id === genreId
+                        );
+                        return foundGenre ? foundGenre.name : "Unknown Genre";
+                      })
+                      .join(" - ")
+                  : "Unknown Genre"}
+              </Typography>
               <Stack direction="row" alignItems="center">
                 <Box>
                   <StarRateIcon sx={{ color: "yellow" }}></StarRateIcon>

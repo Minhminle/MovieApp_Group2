@@ -10,7 +10,6 @@ import StarIcon from "@mui/icons-material/Star";
 import React, { useState } from "react";
 import PlayCircleFilledIcon from "@mui/icons-material/PlayCircleFilled";
 import TurnedInNotIcon from "@mui/icons-material/TurnedInNot";
-import { Genre } from "@/models/Movie";
 import { Movie } from "@/models/Movie";
 
 const MovieContent: NextPageWithLayout = () => {

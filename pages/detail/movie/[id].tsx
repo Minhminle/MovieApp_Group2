@@ -1,4 +1,3 @@
-// pages/detail/[id].tsx
 import { useRouter } from "next/router";
 import useSWR from "swr";
 import axios from "axios";
@@ -96,8 +95,27 @@ const MovieDetail = () => {
               />
             ))}
           </Typography>
+          {/* <Typography variant="h5" sx={{ color: "#1de9b6", marginTop: "10px" }}>
+            Cast:
+<<<<<<< HEAD
+=======
+            {data.credits?.cast?.slice(0, 5).map((actor) => (
+              <Chip
+                key={actor.id}
+                label={`${actor.name} as ${actor.character}`}
+                sx={{
+                  margin: "3px",
+                  backgroundColor: "#66bb6a",
+                  color: "white",
+                  marginRight: "5px",
+                  marginBottom: "5px",
+                }}
+              />
+            ))}
+          </Typography> */}
           <Typography variant="h5" sx={{ color: "#1de9b6", marginTop: "10px" }}>
             Cast:
+>>>>>>> develop
             <Grid container spacing={2}>
               {data.credits?.cast?.slice(0, 5).map((actor) => (
                 <Grid item key={actor.id} xs={12} sm={6} md={4} lg={3}>
@@ -131,7 +149,11 @@ const MovieDetail = () => {
           </Typography>
         </Box>
       </Stack>
+<<<<<<< HEAD
       <Box></Box>
+=======
+      <Stack></Stack>
+>>>>>>> develop
       <Footter></Footter>
     </>
   );

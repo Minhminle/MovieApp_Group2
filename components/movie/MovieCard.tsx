@@ -13,15 +13,12 @@ import React from "react";
 import useSWR from "swr";
 import StarRateIcon from "@mui/icons-material/StarRate";
 import { useRouter } from "next/router";
+import { useState } from "react";
 
 const MovieCard = () => {
   const router = useRouter();
-  const fetcher = (url: string) =>
-    axios.get(url).then((response) => response.data);
-  const { data, isLoading, error } = useSWR<MovieList>(
-    "/movie/upcoming",
-    fetcher
-  );
+  const { data, isLoading, error } = useSWR<MovieList>("/movie/upcoming");
+  const { data: dataGenre } = useSWR("/genre/movie/list");
   console.log(data);
 
   const handleDetailClick = (movieId: string) => {
@@ -31,7 +28,8 @@ const MovieCard = () => {
     color: "white",
     fontWeight: "700",
   };
-
+  const genres = dataGenre?.genres || [];
+  const [expandedOverview, setExpandedOverview] = useState<string | null>(null);
   return (
     <>
       <Stack
@@ -69,14 +67,40 @@ const MovieCard = () => {
                   marginLeft: "5px",
                   fontSize: "20px",
                 }}
+                onClick={() => handleDetailClick(movie.id)}
               >
-                {movie.title}
+                {expandedOverview === movie.title
+                  ? movie.title
+                  : movie.title.length > 15
+                  ? `${movie.title.slice(0, 15)}...`
+                  : movie.title}
               </Box>
               <Stack direction="row" alignItems="center">
                 <StarRateIcon sx={{ color: "yellow" }}></StarRateIcon>
                 <Box sx={{ color: "white" }}>
                   {(movie.vote_average * 0.5).toFixed(1)}/5
                 </Box>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: "#9e9e9e",
+                    fontSize: "15px",
+                    marginLeft: "5px",
+                  }}
+                >
+                  |{" "}
+                  {movie.genre_ids && movie.genre_ids.length > 0
+                    ? movie.genre_ids
+                        .slice(0, 2)
+                        .map((genreId) => {
+                          const foundGenre = genres.find(
+                            (genre) => genre.id === genreId
+                          );
+                          return foundGenre ? foundGenre.name : "Unknown Genre";
+                        })
+                        .join(" - ")
+                    : "Unknown Genre"}
+                </Typography>
               </Stack>
             </Box>
             <Box

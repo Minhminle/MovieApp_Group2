@@ -7,27 +7,25 @@ import useSWR from "swr";
 import { Movie, MovieList } from "@/models/Movie";
 import { Card, CardContent, CardMedia } from "@mui/material";
 import StarIcon from "@mui/icons-material/Star";
+import { Genres } from "@/models/Geners";
 
 const MovieCategory: NextPageWithLayout = () => {
   const router = useRouter();
-
-  const fetcher = (url: string) =>
-    axios.get(url).then((response) => response.data);
-
+  const [movieData, setMovieData] = useState<MovieList | undefined>();
   const { data, isLoading, error } = useSWR<MovieList>(
-    `/movie/popular?append_to_response=details`,
-    fetcher
+    `/movie/popular?append_to_response=details`
   );
+  const { data: dataGenre } = useSWR("/genre/movie/list");
   const {
     data: data2,
     isLoading: isLoading2,
     error: error2,
-  } = useSWR<MovieList>("/movie/upcoming", fetcher);
+  } = useSWR<MovieList>("/movie/upcoming");
   const {
     data: data3,
     isLoading: isLoading3,
     error: error3,
-  } = useSWR<MovieList>("/movie/top_rated", fetcher);
+  } = useSWR<MovieList>("/movie/top_rated");
 
   const handleDetailClick = (movieId: string) => {
     router.push(`/detail/movie/${movieId}`);
@@ -37,6 +35,8 @@ const MovieCategory: NextPageWithLayout = () => {
     color: "white",
     fontWeight: "700",
   };
+  const genres = dataGenre?.genres || [];
+  const [expandedOverview, setExpandedOverview] = useState<string | null>(null);
   return (
     <>
       <Typography variant="h4" sx={{ ..._letterStyles, padding: "10px" }}>
@@ -72,17 +72,15 @@ const MovieCategory: NextPageWithLayout = () => {
                 component="div"
                 onClick={() => handleDetailClick(movie.id)}
               >
-                {movie.title}
+                {expandedOverview === movie.title
+                  ? movie.title
+                  : movie.title.length > 15
+                  ? `${movie.title.slice(0, 15)}...`
+                  : movie.title}
               </Typography>
-              <div style={{ display: "flex", alignItems: "center" }}>
-                {/* <Box>
-                  Genre: {movie.genres.map((genre) => genre.name).join(", ")}
-                </Box> */}
-
+              <Stack direction={"row"} spacing={2}>
                 <div
                   style={{
-                    marginTop: "5px",
-                    marginRight: "auto",
                     display: "flex",
                     alignItems: "center",
                   }}
@@ -92,16 +90,33 @@ const MovieCategory: NextPageWithLayout = () => {
                     {(movie.vote_average * 0.5).toFixed(1)}
                   </Typography>
                 </div>
-              </div>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: "#9e9e9e",
+                    fontSize: "15px",
+                  }}
+                >
+                  |{" "}
+                  {movie.genre_ids && movie.genre_ids.length > 0
+                    ? movie.genre_ids
+                        .slice(0, 2)
+                        .map((genreId) => {
+                          const foundGenre = genres.find(
+                            (genre) => genre.id === genreId
+                          );
+                          return foundGenre ? foundGenre.name : "Unknown Genre";
+                        })
+                        .join(" - ")
+                    : "Unknown Genre"}
+                </Typography>
+              </Stack>
             </CardContent>
           </Box>
         ))}
       </Stack>
 
-      <Typography
-        variant="h4"
-        sx={{ ..._letterStyles, padding: "10px", marginTop: "-60px" }}
-      >
+      <Typography variant="h4" sx={{ ..._letterStyles, padding: "10px" }}>
         Series
       </Typography>
       <Stack
@@ -134,14 +149,15 @@ const MovieCategory: NextPageWithLayout = () => {
                 component="div"
                 onClick={() => handleDetailClick(movie.id)}
               >
-                {movie.title}
+                {expandedOverview === movie.title
+                  ? movie.title
+                  : movie.title.length > 15
+                  ? `${movie.title.slice(0, 15)}...`
+                  : movie.title}
               </Typography>
-              <div style={{ display: "flex", alignItems: "center" }}>
-                {/* genre here */}
+              <Stack direction={"row"} spacing={2}>
                 <div
                   style={{
-                    marginTop: "5px",
-                    marginRight: "auto",
                     display: "flex",
                     alignItems: "center",
                   }}
@@ -151,16 +167,33 @@ const MovieCategory: NextPageWithLayout = () => {
                     {(movie.vote_average * 0.5).toFixed(1)}
                   </Typography>
                 </div>
-              </div>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: "#9e9e9e",
+                    fontSize: "15px",
+                  }}
+                >
+                  |{" "}
+                  {movie.genre_ids && movie.genre_ids.length > 0
+                    ? movie.genre_ids
+                        .slice(0, 2)
+                        .map((genreId) => {
+                          const foundGenre = genres.find(
+                            (genre) => genre.id === genreId
+                          );
+                          return foundGenre ? foundGenre.name : "Unknown Genre";
+                        })
+                        .join(" - ")
+                    : "Unknown Genre"}
+                </Typography>
+              </Stack>
             </CardContent>
           </Box>
         ))}
       </Stack>
 
-      <Typography
-        variant="h4"
-        sx={{ ..._letterStyles, padding: "10px", marginTop: "-30px" }}
-      >
+      <Typography variant="h4" sx={{ ..._letterStyles, padding: "10px" }}>
         Korean Series
       </Typography>
       <Stack
@@ -193,14 +226,15 @@ const MovieCategory: NextPageWithLayout = () => {
                 component="div"
                 onClick={() => handleDetailClick(movie.id)}
               >
-                {movie.title}
+                {expandedOverview === movie.title
+                  ? movie.title
+                  : movie.title.length > 15
+                  ? `${movie.title.slice(0, 15)}...`
+                  : movie.title}
               </Typography>
-              <div style={{ display: "flex", alignItems: "center" }}>
-                {/* genre here */}
+              <Stack direction={"row"} spacing={2}>
                 <div
                   style={{
-                    marginTop: "5px",
-                    marginRight: "auto",
                     display: "flex",
                     alignItems: "center",
                   }}
@@ -210,7 +244,27 @@ const MovieCategory: NextPageWithLayout = () => {
                     {(movie.vote_average * 0.5).toFixed(1)}
                   </Typography>
                 </div>
-              </div>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: "#9e9e9e",
+                    fontSize: "15px",
+                  }}
+                >
+                  |{" "}
+                  {movie.genre_ids && movie.genre_ids.length > 0
+                    ? movie.genre_ids
+                        .slice(0, 2)
+                        .map((genreId) => {
+                          const foundGenre = genres.find(
+                            (genre) => genre.id === genreId
+                          );
+                          return foundGenre ? foundGenre.name : "Unknown Genre";
+                        })
+                        .join(" - ")
+                    : "Unknown Genre"}
+                </Typography>
+              </Stack>
             </CardContent>
           </Box>
         ))}

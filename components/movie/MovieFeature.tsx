@@ -11,13 +11,8 @@ import React, { useState } from "react";
 
 const MovieFeature = () => {
   const router = useRouter();
-
-  const fetcher = (url: string) =>
-    axios.get(url).then((response) => response.data);
-  const { data, isLoading, error } = useSWR<MovieList>(
-    "/movie/upcoming",
-    fetcher
-  );
+  const { data, isLoading, error } = useSWR<MovieList>("/movie/upcoming");
+  const { data: dataGenre } = useSWR("/genre/movie/list");
 
   console.log(data);
 
@@ -34,12 +29,16 @@ const MovieFeature = () => {
   const toggleText = (overview: string) => {
     setExpandedOverview((prev) => (prev === overview ? null : overview));
   };
+  const genres = dataGenre?.genres || [];
   return (
     <>
-      <Box color="white" fontSize={"30px"} padding={4}>
-        {" "}
-        FeaTured in SaintStream
-      </Box>
+      <Typography
+        color="white"
+        variant="h4"
+        sx={{ ..._letterStyles, padding: "10px" }}
+      >
+        FeaTured SaintStream
+      </Typography>
       <Stack sx={{ overflowX: "auto" }} direction="column">
         <Box>
           <Stack
@@ -86,6 +85,29 @@ const MovieFeature = () => {
                     <Box sx={{ color: "white" }}>
                       {(movie.vote_average * 0.5).toFixed(1)}/5
                     </Box>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        marginLeft: "5px",
+                        color: "#9e9e9e",
+                        fontSize: "15px",
+                      }}
+                    >
+                      |{" "}
+                      {movie.genre_ids && movie.genre_ids.length > 0
+                        ? movie.genre_ids
+                            .slice(0, 2)
+                            .map((genreId) => {
+                              const foundGenre = genres.find(
+                                (genre) => genre.id === genreId
+                              );
+                              return foundGenre
+                                ? foundGenre.name
+                                : "Unknown Genre";
+                            })
+                            .join(" - ")
+                        : "Unknown Genre"}
+                    </Typography>
                   </Stack>
                 </Box>
                 <Box
@@ -132,9 +154,28 @@ const MovieFeature = () => {
                       {(movie.vote_average * 0.5).toFixed(1)}
                     </Box>
                     <Box sx={{ color: "gray" }}>{movie.release_date}</Box>
-                    {/* <Box>
-                  <Typography>genre</Typography>
-                </Box> */}
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        color: "#9e9e9e",
+                        fontSize: "15px",
+                      }}
+                    >
+                      |{" "}
+                      {movie.genre_ids && movie.genre_ids.length > 0
+                        ? movie.genre_ids
+                            .slice(0, 1)
+                            .map((genreId) => {
+                              const foundGenre = genres.find(
+                                (genre) => genre.id === genreId
+                              );
+                              return foundGenre
+                                ? foundGenre.name
+                                : "Unknown Genre";
+                            })
+                            .join(" - ")
+                        : "Unknown Genre"}
+                    </Typography>
                   </Stack>
                   <Box>
                     <Typography>

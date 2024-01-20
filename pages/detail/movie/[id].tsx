@@ -20,6 +20,7 @@ import PlayCircleFilledIcon from "@mui/icons-material/PlayCircleFilled";
 import TurnedInIcon from "@mui/icons-material/TurnedIn";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import DownloadIcon from "@mui/icons-material/Download";
+import StarIcon from "@mui/icons-material/Star";
 import { format } from "date-fns";
 
 export interface Cast {
@@ -83,6 +84,17 @@ const MovieDetail = () => {
           boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.3)",
         }}
       />
+      <Chip
+        label={`Votes: ${data.vote_count}`}
+        sx={{
+          position: "absolute",
+          top: "15px",
+          right: "10px",
+          zIndex: 1,
+          backgroundColor: "yellow",
+          color: "black",
+        }}
+      />
       <Box>
         <Stack
           spacing={1}
@@ -98,7 +110,15 @@ const MovieDetail = () => {
             {data.title}
           </Typography>
           <Stack direction={"row"}>
-            <Typography>{formatRuntime(data.runtime)}-</Typography>
+            <Typography sx={{ color: "yellow" }}>
+              <StarIcon></StarIcon>
+            </Typography>
+            <Typography sx={{ color: "yellow" }}>
+              {(data.vote_average * 0.5).toFixed(1)}
+            </Typography>
+            <Typography color={"gray"}>
+              -{formatRuntime(data.runtime)}-
+            </Typography>
             <Typography color={"gray"}>
               {format(new Date(data.release_date), "yyyy")}
             </Typography>

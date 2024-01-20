@@ -47,6 +47,22 @@ const MovieDetail = () => {
   const handleTurnedIn = () => {
     setIsTurnedInPressed((prev) => !prev);
   };
+
+  const formatRuntime = (minutes: number): string => {
+    const hours = Math.floor(minutes / 60);
+    const remainingMinutes = minutes % 60;
+
+    if (hours > 0 && remainingMinutes > 0) {
+      return `${hours}h${remainingMinutes}m`;
+    } else if (hours > 0) {
+      return `${hours}h`;
+    } else if (remainingMinutes > 0) {
+      return `${remainingMinutes}m`;
+    }
+
+    return "";
+  };
+
   const fetcher = (url: string) =>
     axios.get(url).then((response) => response.data);
   const { data, error } = useSWR<Movie>(
@@ -82,6 +98,7 @@ const MovieDetail = () => {
             {data.title}
           </Typography>
           <Stack direction={"row"}>
+            <Typography>{formatRuntime(data.runtime)}-</Typography>
             <Typography color={"gray"}>
               {format(new Date(data.release_date), "yyyy")}
             </Typography>

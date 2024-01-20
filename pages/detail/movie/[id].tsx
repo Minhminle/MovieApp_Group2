@@ -9,16 +9,18 @@ import {
   CardContent,
   CardMedia,
   Grid,
+  IconButton,
   Stack,
   Typography,
 } from "@mui/material";
-import { ReactElement } from "react";
+import { ReactElement, useState } from "react";
 import { Movie } from "@/models/Movie";
 import { Rating, Chip } from "@mui/material";
 import PlayCircleFilledIcon from "@mui/icons-material/PlayCircleFilled";
 import TurnedInNotIcon from "@mui/icons-material/TurnedInNot";
 import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
 import DownloadIcon from "@mui/icons-material/Download";
+import { format } from "date-fns";
 
 export interface Cast {
   id: number;
@@ -31,7 +33,15 @@ export interface Cast {
 const MovieDetail = () => {
   const router = useRouter();
   const { id } = router.query;
+  const [expandedOverview, setExpandedOverview] = useState<string | null>(null);
+  const toggleText = (overview: string) => {
+    setExpandedOverview((prev) => (prev === overview ? null : overview));
+  };
+  const [isThumbUpPressed, setIsThumbUpPressed] = useState(false);
 
+  const handleThumbUpClick = () => {
+    setIsThumbUpPressed((prev) => !prev);
+  };
   const fetcher = (url: string) =>
     axios.get(url).then((response) => response.data);
   const { data, error } = useSWR<Movie>(
@@ -42,73 +52,96 @@ const MovieDetail = () => {
   if (error) return <div>Error loading movie details</div>;
   if (!data) return <div>Loading...</div>;
   return (
-    <Stack gap={4}>
+    <Stack>
       <Box
         component="img"
         src={`https://image.tmdb.org/t/p/w500${data.poster_path}`}
         alt={data.title}
-        style={{
+        sx={{
+          position: "relative",
           boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.3)",
         }}
       />
-      <Stack>
-        <Typography variant="h3" sx={{}}>
-          {data.title}
-        </Typography>
-        <Stack direction={"row"}>
-          <Typography color={"gray"}>{data.release_date}</Typography>
-          <Typography>
-            {data.genres?.map((genre) => (
-              <Typography
-                key={genre.id}
-                sx={{
-                  display: "inline-block",
-                  color: "gray",
-                }}
+      <Box>
+        <Stack
+          spacing={1}
+          sx={{
+            background: "linear-gradient(rgba(1, 1, 1, 0.1), rgba(0, 0, 0, 1))",
+            position: "absolute",
+            bottom: 0,
+            zIndex: 1,
+            padding: "20px",
+          }}
+        >
+          <Typography variant="h3" sx={{}}>
+            {data.title}
+          </Typography>
+          <Stack direction={"row"}>
+            <Typography color={"gray"}>
+              {format(new Date(data.release_date), "yyyy")}
+            </Typography>
+            <Typography>
+              {data.genres?.map((genre) => (
+                <Typography
+                  key={genre.id}
+                  sx={{
+                    display: "inline-block",
+                    color: "gray",
+                  }}
+                >
+                  -{genre.name}
+                </Typography>
+              ))}
+            </Typography>
+          </Stack>
+          <Stack direction={"row"} spacing={1} width={"100%"}>
+            <Button
+              sx={{
+                backgroundColor: "green",
+                fontSize: "13px",
+              }}
+              variant="contained"
+              startIcon={<PlayCircleFilledIcon />}
+              // onClick={() => handleDetailClick(movie.id)}
+            >
+              Continue Watching
+            </Button>
+            <IconButton color="inherit">
+              <TurnedInNotIcon />
+            </IconButton>
+            <IconButton color="inherit">
+              <ThumbUpOffAltIcon
+                sx={{ color: isThumbUpPressed ? "red" : "inherit" }}
+                onClick={handleThumbUpClick}
+              />
+            </IconButton>
+            <IconButton color="inherit">
+              <DownloadIcon />
+            </IconButton>
+          </Stack>
+        </Stack>
+      </Box>
+
+      <Box padding={"20px"} sx={{}}>
+        <Stack>
+          <Typography sx={{ fontSize: "30px" }}>Story Line</Typography>
+          <Typography sx={{ fontSize: "18px", color: "#555" }}>
+            {expandedOverview === data.overview
+              ? data.overview
+              : data.overview.length > 90
+              ? `${data.overview.slice(0, 90)}...`
+              : data.overview}
+            {data.overview.length > 90 && (
+              <Button
+                sx={{ fontSize: "12px", color: "green" }}
+                onClick={() => toggleText(data.overview)}
               >
-                -{genre.name}
-              </Typography>
-            ))}
+                {expandedOverview === data.overview ? "Less" : "More"}
+              </Button>
+            )}
           </Typography>
         </Stack>
-        <Stack direction={"row"} spacing={1}>
-          <Button
-            sx={{
-              backgroundColor: "green",
-              fontSize: "10px",
-            }}
-            variant="contained"
-            startIcon={<PlayCircleFilledIcon />}
-            // onClick={() => handleDetailClick(movie.id)}
-          >
-            Continue Watching
-          </Button>
-          <Button
-            color="inherit"
-            sx={{ fontSize: "10px" }}
-            variant="outlined"
-            startIcon={<TurnedInNotIcon />}
-          />
-          <Button
-            color="inherit"
-            sx={{ fontSize: "10px" }}
-            variant="outlined"
-            startIcon={<ThumbUpOffAltIcon />}
-          />
-          <Button
-            color="inherit"
-            sx={{ fontSize: "10px" }}
-            variant="outlined"
-            startIcon={<DownloadIcon />}
-          />
-        </Stack>
-      </Stack>
-      <Typography
-        variant="body1"
-        sx={{ fontSize: "18px", color: "#555", marginBottom: "20px" }}
-      >
-        {data.overview}
-      </Typography>
+      </Box>
     </Stack>
   );
 };

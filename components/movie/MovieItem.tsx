@@ -7,8 +7,6 @@ import { useRouter } from "next/router";
 import { Box, Container, Stack, Typography } from "@mui/material";
 import config from "@/config";
 import { Styles } from "@/stylescomponents/style";
-import axios from "axios";
-import { Console } from "console";
 type Props = {
   movie: Movie;
 };
@@ -20,7 +18,6 @@ const MovieItem = () => {
   const { data: upcomingData } = useSWR<MovieList>(`/movie/upcoming`);
   const { data: topRatedData } = useSWR<MovieList>("/movie/top_rated");
   const { data: dataGenre } = useSWR("/genre/movie/list");
-  // const { data: gennerData } = useSWR<GenreList>(`/genre/movie/list`);
 
   const handleDetailClick = (movieId: string) => {
     router.push(`/detail/movie/${movieId}`);
@@ -53,7 +50,7 @@ const MovieItem = () => {
                 fontSize: "15px",
               }}
             >
-              {movie.genre_ids && movie.genre_ids.length > 0
+              {/* {movie.genre_ids && movie.genre_ids.length > 0
                 ? movie.genre_ids
                     .slice(0, 2)
                     .map((genreId) => {
@@ -63,7 +60,7 @@ const MovieItem = () => {
                       return foundGenre ? foundGenre.name : "Unknown Genre";
                     })
                     .join(" - ")
-                : "Unknown Genre"}
+                : "Unknown Genre"} */}
             </Typography>
             <Stack direction="row" alignItems="center" spacing={1}>
               <Box

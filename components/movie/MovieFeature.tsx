@@ -8,6 +8,7 @@ import StarIcon from "@mui/icons-material/Star";
 import PlayCircleFilledIcon from "@mui/icons-material/PlayCircleFilled";
 import TurnedInNotIcon from "@mui/icons-material/TurnedInNot";
 import React, { useState } from "react";
+import { format } from "date-fns";
 
 const MovieFeature = () => {
   const router = useRouter();
@@ -32,10 +33,13 @@ const MovieFeature = () => {
   const genres = dataGenre?.genres || [];
   return (
     <>
-      <Box color="white" fontSize={"30px"} padding={4}>
-        {" "}
-        FeaTured in SaintStream
-      </Box>
+      <Typography
+        color="white"
+        variant="h4"
+        sx={{ ..._letterStyles, padding: "10px" }}
+      >
+        FeaTured SaintStream
+      </Typography>
       <Stack sx={{ overflowX: "auto" }} direction="column">
         <Box>
           <Stack
@@ -150,7 +154,9 @@ const MovieFeature = () => {
                     >
                       {(movie.vote_average * 0.5).toFixed(1)}
                     </Box>
-                    <Box sx={{ color: "gray" }}>{movie.release_date}</Box>
+                    <Box sx={{ paddingTop: "2px" }}>
+                      {format(new Date(movie.release_date), "dd/MM/yyyy")}
+                    </Box>
                     <Typography
                       variant="body2"
                       sx={{

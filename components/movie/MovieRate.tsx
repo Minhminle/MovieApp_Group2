@@ -1,4 +1,5 @@
 import { MovieList } from "@/models/Movie";
+import { GenreList } from "@/models/Movie";
 import { Box, Button, Container, Stack, Typography } from "@mui/material";
 import axios from "axios";
 import Link from "next/link";
@@ -6,16 +7,18 @@ import useSWR from "swr";
 import StarRateIcon from "@mui/icons-material/StarRate";
 import { useRouter } from "next/router";
 import React from "react";
+import { useState } from "react";
 
 const MovieRate = () => {
   const router = useRouter();
-  const { data, isLoading, error } = useSWR<MovieList>("/movie/popular");
-  const { data: dataGenre } = useSWR("/genre/movie/list");
+  const { data } = useSWR<MovieList>("/movie/popular");
+  const { data: dataGenre } = useSWR<GenreList>("/genre/movie/list");
   console.log(data);
   const handleDetailClick = (movieId: string) => {
     router.push(`/detail/movie/${movieId}`);
   };
   const genres = dataGenre?.genres || [];
+  const [expandedOverview, setExpandedOverview] = useState<string | null>(null);
 
   const Counter = ({ count }) => {
     const numbers = [];
@@ -74,8 +77,13 @@ const MovieRate = () => {
                   color: "white",
                   marginTop: "20px",
                 }}
+                onClick={() => handleDetailClick(movie.id)}
               >
-                {movie.title}
+                {expandedOverview === movie.title
+                  ? movie.title
+                  : movie.title.length > 15
+                  ? `${movie.title.slice(0, 15)}...`
+                  : movie.title}
               </Box>
               <Typography
                 variant="body2"

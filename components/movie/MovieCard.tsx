@@ -13,6 +13,8 @@ import React from "react";
 import useSWR from "swr";
 import StarRateIcon from "@mui/icons-material/StarRate";
 import { useRouter } from "next/router";
+import { useState } from "react";
+import { format } from "date-fns";
 
 const MovieCard = () => {
   const router = useRouter();
@@ -28,6 +30,7 @@ const MovieCard = () => {
     fontWeight: "700",
   };
   const genres = dataGenre?.genres || [];
+  const [expandedOverview, setExpandedOverview] = useState<string | null>(null);
   return (
     <>
       <Stack
@@ -65,8 +68,13 @@ const MovieCard = () => {
                   marginLeft: "5px",
                   fontSize: "20px",
                 }}
+                onClick={() => handleDetailClick(movie.id)}
               >
-                {movie.title}
+                {expandedOverview === movie.title
+                  ? movie.title
+                  : movie.title.length > 15
+                  ? `${movie.title.slice(0, 15)}...`
+                  : movie.title}
               </Box>
               <Stack direction="row" alignItems="center">
                 <StarRateIcon sx={{ color: "yellow" }}></StarRateIcon>

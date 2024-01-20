@@ -1,6 +1,8 @@
 import { useRouter } from "next/router";
+import React, { useState } from "react";
 import useSWR from "swr";
 import axios from "axios";
+import ReactPlayer from "react-player";
 import {
   Avatar,
   Box,
@@ -14,13 +16,15 @@ import {
 } from "@mui/material";
 import { ReactElement } from "react";
 import { Movie } from "@/models/Movie";
+import { Video, VideoList } from "@/models/Video";
 import { Rating, Chip } from "@mui/material";
-import Footter from "@/components/movie/Footer";
-import React, { useState } from "react";
 import StarIcon from "@mui/icons-material/Star";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
+import { Styles } from "@/stylescomponents/style";
+import ArrowBackIosNewTwoToneIcon from "@mui/icons-material/ArrowBackIosNewTwoTone";
+import ArrowForwardIosTwoToneIcon from "@mui/icons-material/ArrowForwardIosTwoTone";
 
 export interface Cast {
   id: number;
@@ -52,10 +56,22 @@ const MovieDetail = () => {
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
+  const { data: dataVideo } = useSWR(`/movie/${id}/videos`);
+  const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
+  const handleNextVideo = () => {
+    setCurrentVideoIndex((prevIndex) =>
+      prevIndex === dataVideo?.results.length - 1 ? 0 : prevIndex + 1
+    );
   };
 
+  const handlePrevVideo = () => {
+    setCurrentVideoIndex((prevIndex) =>
+      prevIndex === 0 ? dataVideo?.results.length - 1 : prevIndex - 1
+    );
+  };
   if (error) return <div>Error loading movie details</div>;
   if (!data) return <div>Loading...</div>;
+
   return (
     <>
       <Box sx={{ width: "100%", typography: "body1" }}>
@@ -154,9 +170,33 @@ const MovieDetail = () => {
           </Box>
         ))}
       </Stack>
+      <Stack>
+        {dataVideo?.results && dataVideo.results.length > 0 && (
+          <Stack alignItems="center" spacing={1}>
+            <ReactPlayer
+              key={dataVideo.results[currentVideoIndex].id}
+              url={`https://www.youtube.com/watch?v=${dataVideo.results[currentVideoIndex].key}`}
+              width="100%"
+              height="200px"
+              controls={true}
+            />
+            <Stack direction="row" spacing={1} alignItems="center">
+              <ArrowBackIosNewTwoToneIcon
+                sx={Styles._button}
+                onClick={handlePrevVideo}
+              />
+              <ArrowForwardIosTwoToneIcon
+                sx={Styles._button}
+                onClick={handleNextVideo}
+              />
+            </Stack>
+          </Stack>
+        )}
+      </Stack>
+      <Footter />
     </>
   );
-};
+};}
 
 MovieDetail.getLayout = function getLayout(page: ReactElement) {
   return <>{page}</>;

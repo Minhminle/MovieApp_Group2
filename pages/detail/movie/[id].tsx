@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 import useSWR from "swr";
 import axios from "axios";
+import React, { useState } from "react";
 import {
   Avatar,
   Box,
@@ -24,6 +25,7 @@ export interface Cast {
 }
 
 const MovieDetail = () => {
+  const [expandedOverview, setExpandedOverview] = useState<string | null>(null);
   const router = useRouter();
   const { id } = router.query;
 
@@ -120,7 +122,7 @@ const MovieDetail = () => {
               alignItems="center"
               sx={{ overflowX: "auto" }}
             >
-              {data.credits?.cast?.slice(0, 10).map((actor) => (
+              {data.credits?.cast?.map((actor) => (
                 <Stack key={actor.id}>
                   <Box
                     sx={{
@@ -133,17 +135,31 @@ const MovieDetail = () => {
                       <Avatar
                         src={`https://image.tmdb.org/t/p/w500${actor.profile_path}`}
                         alt={actor.name}
-                        sx={{ marginRight: "10px",width:"80px",height:"80px"  }}
-                        
+                        sx={{
+                          marginRight: "10px",
+                          width: "80px",
+                          height: "80px",
+                        }}
                       />
                       <Box width="100px">
+                        <Typography sx={{ fontWeight: "bold" }}>
+                          {expandedOverview === actor.name
+                            ? actor.name
+                            : actor.name.length > 15
+                            ? `${actor.name.slice(0, 15)}...`
+                            : actor.name}
+                        </Typography>
                         <Typography
-                          variant="subtitle1"
+                          color="gray"
+                          variant="body2"
                           sx={{ fontWeight: "bold" }}
                         >
-                          {actor.name}
+                          {expandedOverview === actor.character
+                            ? actor.character
+                            : actor.character.length > 15
+                            ? `${actor.character.slice(0, 15)}...`
+                            : actor.character}
                         </Typography>
-                        <Typography variant="body2" color="gray">{`${actor.character}`}</Typography>
                       </Box>
                     </Stack>
                   </Box>

@@ -77,7 +77,7 @@ const MovieDetail = () => {
                 >
                   <Tab label="Trailers" value="1" />
                   <Tab label="Reviews" value="2" />
-                  <Tab label="Item Three" value="3" />
+                  <Tab label="Discussions" value="3" />
                 </TabList>
               </Box>
             </TabContext>

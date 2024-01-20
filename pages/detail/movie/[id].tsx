@@ -2,6 +2,8 @@ import { useRouter } from "next/router";
 import useSWR from "swr";
 import axios from "axios";
 import React, { useState } from "react";
+import { Reviews, ListReview } from "@/models/Reviews";
+import { format } from "date-fns";
 import {
   Avatar,
   Box,
@@ -25,6 +27,12 @@ export interface Cast {
 }
 
 const MovieDetail = () => {
+  const [visibleReviews, setVisibleReviews] = useState(5); // Số lượng đánh giá hiển thị ban đầu
+
+  const loadMoreReviews = () => {
+    setVisibleReviews((prevVisibleReviews) => prevVisibleReviews + 5); // Tăng số lượng đánh giá hiển thị thêm 5
+  };
+
   const [expandedOverview, setExpandedOverview] = useState<string | null>(null);
   const router = useRouter();
   const { id } = router.query;
@@ -32,10 +40,10 @@ const MovieDetail = () => {
   const fetcher = (url: string) =>
     axios.get(url).then((response) => response.data);
   const { data, error } = useSWR<Movie>(
-    `/movie/${id}?append_to_response=credits`,
+    `/movie/${id}?append_to_response=credits,`,
     fetcher
   );
-   const { data: dataCredit } = useSWR<Movie>(`/movie/${id}/credits`);
+  const { data: datareview } = useSWR(`/movie/${id}/reviews`);
 
   if (error) return <div>Error loading movie details</div>;
   if (!data) return <div>Loading...</div>;
@@ -169,7 +177,32 @@ const MovieDetail = () => {
           </Typography>
         </Box>
       </Stack>
-      <Stack></Stack>
+      <Stack gap={2} direction="column" alignItems="center">
+        {datareview?.results.slice(0, visibleReviews).map((review) => (
+          <Stack key={review.id}>
+            <Box color="white">{review.author}</Box>
+            <Box>
+              <Avatar
+                src={`https://image.tmdb.org/t/p/w500${review.author_details.avatar_path}`}
+                sx={{
+                  marginRight: "10px",
+                  width: "80px",
+                  height: "80px",
+                }}
+              />
+            </Box>
+            <Box color="white">{review.content}</Box>
+            <Box color="white">
+              {format(new Date(review.updated_at), "dd/MM/yyyy HH:mm:ss")}
+            </Box>
+          </Stack>
+        ))}
+        {datareview?.results.length > visibleReviews && (
+          <Box>
+            <button onClick={loadMoreReviews}>Load More</button>
+          </Box>
+        )}
+      </Stack>
       <Footter></Footter>
     </>
   );

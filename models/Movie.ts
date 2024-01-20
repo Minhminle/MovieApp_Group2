@@ -1,5 +1,6 @@
 import { CreditSection } from "./Credit";
 import { Images } from "./Images";
+import { ListReview } from "./Reviews";
 import { VideoList } from "./Video";
 
 export interface MovieList {
@@ -29,4 +30,5 @@ export interface Movie {
   videos: VideoList;
   credits: CreditSection;
   images: Images;
+  reviews:ListReview;
 }

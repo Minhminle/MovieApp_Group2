@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import useSWR from "swr";
 import axios from "axios";
 import ReactPlayer from "react-player";
+import Footter from "@/components/Footer";
 import {
   Avatar,
   Box,

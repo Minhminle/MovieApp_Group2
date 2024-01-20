@@ -17,12 +17,8 @@
     "@mui/styled-engine-sc": "^6.0.0-alpha.12",
     "@mui/system": "^5.15.5",
     "axios": "^1.6.5",
-<<<<<<< HEAD
-    "next": "^14.0.4",
-=======
     "date-fns": "^3.3.0",
-    "next": "14.0.4",
->>>>>>> develop
+    "next": "^14.0.4",
     "react": "^18",
     "react-dom": "^18",
     "react-id-swiper": "^4.0.0",

@@ -10,6 +10,7 @@ import StarIcon from "@mui/icons-material/Star";
 import React, { useState } from "react";
 import PlayCircleFilledIcon from "@mui/icons-material/PlayCircleFilled";
 import TurnedInNotIcon from "@mui/icons-material/TurnedInNot";
+import { format } from "date-fns";
 
 const MovieAward: NextPageWithLayout = () => {
   const router = useRouter();
@@ -94,7 +95,9 @@ const MovieAward: NextPageWithLayout = () => {
                 >
                   {(movie.vote_average * 0.5).toFixed(1)}
                 </Box>
-                <Box sx={{ color: "gray" }}>{movie.release_date}</Box>
+                <Box sx={{ paddingTop: "2px" }}>
+                  {format(new Date(movie.release_date), "dd/MM/yyyy")}
+                </Box>
                 <Typography
                   variant="body2"
                   sx={{

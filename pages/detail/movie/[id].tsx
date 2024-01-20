@@ -1,32 +1,52 @@
+// pages/detail/[id].tsx
 import { useRouter } from "next/router";
 import useSWR from "swr";
 import axios from "axios";
 import {
-  Avatar,
   Box,
+  Button,
   Card,
   CardContent,
   CardMedia,
   Grid,
+  IconButton,
   Stack,
   Typography,
 } from "@mui/material";
-import { ReactElement } from "react";
+import { ReactElement, useState } from "react";
 import { Movie } from "@/models/Movie";
 import { Rating, Chip } from "@mui/material";
-import Footter from "@/components/movie/Footer";
+import PlayCircleFilledIcon from "@mui/icons-material/PlayCircleFilled";
+import TurnedInIcon from "@mui/icons-material/TurnedIn";
+import ThumbUpIcon from "@mui/icons-material/ThumbUp";
+import DownloadIcon from "@mui/icons-material/Download";
+import { format } from "date-fns";
 
 export interface Cast {
   id: number;
   name: string;
   character: string;
   profile_path: string;
+  // Thêm các thuộc tính khác của cast nếu cần
 }
 
 const MovieDetail = () => {
   const router = useRouter();
   const { id } = router.query;
+  const [expandedOverview, setExpandedOverview] = useState<string | null>(null);
+  const toggleText = (overview: string) => {
+    setExpandedOverview((prev) => (prev === overview ? null : overview));
+  };
+  const [isThumbUpPressed, setIsThumbUpPressed] = useState(false);
 
+  const handleThumbUp = () => {
+    setIsThumbUpPressed((prev) => !prev);
+  };
+  const [isTurnedInPressed, setIsTurnedInPressed] = useState(false);
+
+  const handleTurnedIn = () => {
+    setIsTurnedInPressed((prev) => !prev);
+  };
   const fetcher = (url: string) =>
     axios.get(url).then((response) => response.data);
   const { data, error } = useSWR<Movie>(
@@ -37,117 +57,100 @@ const MovieDetail = () => {
   if (error) return <div>Error loading movie details</div>;
   if (!data) return <div>Loading...</div>;
   return (
-    <>
-      <Stack gap={4} sx={{ backgroundColor: "black", color: "white" }}>
-        <Box
-          component="img"
-          src={`https://image.tmdb.org/t/p/w500${data.poster_path}`}
-          alt={data.title}
-          style={{
-            boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.3)",
-          }}
-        />
-        <Box
+    <Stack>
+      <Box
+        component="img"
+        src={`https://image.tmdb.org/t/p/w500${data.poster_path}`}
+        alt={data.title}
+        sx={{
+          position: "relative",
+          boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.3)",
+        }}
+      />
+      <Box>
+        <Stack
+          spacing={1}
           sx={{
-            margin: "20px",
+            background: "linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1))",
+            position: "absolute",
+            bottom: "100px",
+            zIndex: 1,
+            padding: "20px",
           }}
         >
           <Typography variant="h3" sx={{}}>
             {data.title}
           </Typography>
-          <Typography
-            variant="body1"
-            sx={{ fontSize: "18px", color: "#555", marginBottom: "20px" }}
-          >
-            {data.overview}
-          </Typography>
           <Stack direction={"row"}>
-            <Rating
-              name="movie-rating"
-              value={data.vote_average ? data.vote_average / 2 : 0}
-              precision={0.5}
-              readOnly
-              sx={{ color: "#FFD700", fontSize: 24 }}
-            />
-            <Stack direction="row" spacing={3}>
-              <Typography variant="h6" sx={{ color: "yellow" }}>
-                {(data.vote_average * 0.5).toFixed(1)}
-              </Typography>
-              <Typography variant="h5" sx={{ color: "#d32f2f" }}>
-                Votes: {data.vote_count}
-              </Typography>
-            </Stack>
-          </Stack>
-          <Typography variant="h5" sx={{ color: "#42a5f5", marginTop: "10px" }}>
-            Genres:
-            {data.genres?.map((genre) => (
-              <Chip
-                key={genre.id}
-                label={genre.name}
-                sx={{
-                  margin: "3px",
-                  backgroundColor: "#673ab7",
-                  color: "white",
-                  marginRight: "5px",
-                  marginBottom: "5px",
-                }}
-              />
-            ))}
-          </Typography>
-          {/* <Typography variant="h5" sx={{ color: "#1de9b6", marginTop: "10px" }}>
-            Cast:
-            {data.credits?.cast?.slice(0, 5).map((actor) => (
-              <Chip
-                key={actor.id}
-                label={`${actor.name} as ${actor.character}`}
-                sx={{
-                  margin: "3px",
-                  backgroundColor: "#66bb6a",
-                  color: "white",
-                  marginRight: "5px",
-                  marginBottom: "5px",
-                }}
-              />
-            ))}
-          </Typography> */}
-          <Typography variant="h5" sx={{ color: "#1de9b6", marginTop: "10px" }}>
-            Cast:
-            <Grid container spacing={2}>
-              {data.credits?.cast?.slice(0, 5).map((actor) => (
-                <Grid item key={actor.id} xs={12} sm={6} md={4} lg={3}>
-                  <Box
-                    sx={{
-                      color: "white",
-                      padding: "10px",
-                      borderRadius: "8px",
-                    }}
-                  >
-                    <Stack direction="row" alignItems="center">
-                      <Avatar
-                        src={`https://image.tmdb.org/t/p/w500${actor.profile_path}`}
-                        alt={actor.name}
-                        sx={{ marginRight: "10px" }}
-                      />
-                      <Box>
-                        <Typography
-                          variant="subtitle1"
-                          sx={{ fontWeight: "bold" }}
-                        >
-                          {actor.name}
-                        </Typography>
-                        <Typography variant="body2">{`${actor.character}`}</Typography>
-                      </Box>
-                    </Stack>
-                  </Box>
-                </Grid>
+            <Typography color={"gray"}>
+              {format(new Date(data.release_date), "yyyy")}
+            </Typography>
+            <Typography>
+              {data.genres?.map((genre) => (
+                <Typography
+                  key={genre.id}
+                  sx={{
+                    display: "inline-block",
+                    color: "gray",
+                  }}
+                >
+                  -{genre.name}
+                </Typography>
               ))}
-            </Grid>
+            </Typography>
+          </Stack>
+          <Stack direction={"row"} spacing={1} width={"100%"}>
+            <Button
+              sx={{
+                backgroundColor: "green",
+                fontSize: "13px",
+              }}
+              variant="contained"
+              startIcon={<PlayCircleFilledIcon />}
+              // onClick={() => handleDetailClick(movie.id)}
+            >
+              Continue Watching
+            </Button>
+            <IconButton color="inherit">
+              <TurnedInIcon
+                sx={{ color: isTurnedInPressed ? "yellow" : "inherit" }}
+                onClick={handleTurnedIn}
+              />
+            </IconButton>
+            <IconButton color="inherit">
+              <ThumbUpIcon
+                sx={{ color: isThumbUpPressed ? "red" : "inherit" }}
+                onClick={handleThumbUp}
+              />
+            </IconButton>
+            <IconButton color="inherit">
+              <DownloadIcon />
+            </IconButton>
+          </Stack>
+        </Stack>
+      </Box>
+
+      <Box padding={"20px"}>
+        <Stack>
+          <Typography sx={{ fontSize: "30px" }}>Story Line</Typography>
+          <Typography sx={{ fontSize: "18px", color: "#555" }}>
+            {expandedOverview === data.overview
+              ? data.overview
+              : data.overview.length > 90
+              ? `${data.overview.slice(0, 90)}...`
+              : data.overview}
+            {data.overview.length > 90 && (
+              <Button
+                sx={{ fontSize: "12px", color: "green" }}
+                onClick={() => toggleText(data.overview)}
+              >
+                {expandedOverview === data.overview ? "Less" : "More"}
+              </Button>
+            )}
           </Typography>
-        </Box>
-      </Stack>
-      <Stack></Stack>
-      <Footter></Footter>
-    </>
+        </Stack>
+      </Box>
+    </Stack>
   );
 };
 

@@ -34,12 +34,8 @@ export interface Cast {
 const MovieDetail = () => {
   const router = useRouter();
   const { id } = router.query;
-
-  const fetcher = (url: string) =>
-    axios.get(url).then((response) => response.data);
   const { data, error } = useSWR<Movie>(
-    `/movie/${id}?append_to_response=credits`,
-    fetcher
+    `/movie/${id}?append_to_response=credits`
   );
   const { data: dataVideo } = useSWR(`/movie/${id}/videos`);
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
@@ -54,6 +50,8 @@ const MovieDetail = () => {
       prevIndex === 0 ? dataVideo?.results.length - 1 : prevIndex - 1
     );
   };
+  if (error) return <div>Error loading movie details</div>;
+  if (!data) return <div>Loading...</div>;
 
   return (
     <>

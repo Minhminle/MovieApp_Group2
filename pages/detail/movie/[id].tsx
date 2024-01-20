@@ -97,8 +97,7 @@ const MovieDetail = () => {
           </Typography>
           {/* <Typography variant="h5" sx={{ color: "#1de9b6", marginTop: "10px" }}>
             Cast:
-<<<<<<< HEAD
-=======
+
             {data.credits?.cast?.slice(0, 5).map((actor) => (
               <Chip
                 key={actor.id}
@@ -114,11 +113,15 @@ const MovieDetail = () => {
             ))}
           </Typography> */}
           <Typography variant="h5" sx={{ color: "#1de9b6", marginTop: "10px" }}>
-            Cast:
->>>>>>> develop
-            <Grid container spacing={2}>
-              {data.credits?.cast?.slice(0, 5).map((actor) => (
-                <Grid item key={actor.id} xs={12} sm={6} md={4} lg={3}>
+            Top Cast:
+            <Stack
+              gap={2}
+              direction="row"
+              alignItems="center"
+              sx={{ overflowX: "auto" }}
+            >
+              {data.credits?.cast?.slice(0, 10).map((actor) => (
+                <Stack key={actor.id}>
                   <Box
                     sx={{
                       color: "white",
@@ -130,30 +133,27 @@ const MovieDetail = () => {
                       <Avatar
                         src={`https://image.tmdb.org/t/p/w500${actor.profile_path}`}
                         alt={actor.name}
-                        sx={{ marginRight: "10px" }}
+                        sx={{ marginRight: "10px",width:"80px",height:"80px"  }}
+                        
                       />
-                      <Box>
+                      <Box width="100px">
                         <Typography
                           variant="subtitle1"
                           sx={{ fontWeight: "bold" }}
                         >
                           {actor.name}
                         </Typography>
-                        <Typography variant="body2">{`${actor.character}`}</Typography>
+                        <Typography variant="body2" color="gray">{`${actor.character}`}</Typography>
                       </Box>
                     </Stack>
                   </Box>
-                </Grid>
+                </Stack>
               ))}
-            </Grid>
+            </Stack>
           </Typography>
         </Box>
       </Stack>
-<<<<<<< HEAD
-      <Box></Box>
-=======
       <Stack></Stack>
->>>>>>> develop
       <Footter></Footter>
     </>
   );

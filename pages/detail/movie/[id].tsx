@@ -111,7 +111,7 @@ const MovieDetail = () => {
           </Typography>
         </Box>
       </Stack>
-      <Stack></Stack>
+
       <Footter></Footter>
     </>
   );

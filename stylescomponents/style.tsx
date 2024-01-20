@@ -4,4 +4,5 @@ export const Styles = {
   _typefilm: { color: "gray" },
   _button: { color: "white", width: "20px", height: "20px" },
   _iconheaderhome: { color: "white", fontSize: "30px" },
+  _iconresultfind: { color: "white" },
 };

@@ -10,6 +10,14 @@ export interface ProductionCountry {
   name: string;
 }
 
+export interface Genres {
+  id: string;
+  name: string;
+}
+
+export interface GenreList {
+  genres: Genres[];
+}
 export interface Movie {
   id: string;
   title: string;

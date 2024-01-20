@@ -7,6 +7,7 @@ import useSWR from "swr";
 import { Movie, MovieList } from "@/models/Movie";
 import { Card, CardContent, CardMedia } from "@mui/material";
 import StarIcon from "@mui/icons-material/Star";
+import { Genres } from "@/models/Geners";
 
 const MovieCategory: NextPageWithLayout = () => {
   const router = useRouter();
@@ -35,6 +36,7 @@ const MovieCategory: NextPageWithLayout = () => {
     fontWeight: "700",
   };
   const genres = dataGenre?.genres || [];
+  const [expandedOverview, setExpandedOverview] = useState<string | null>(null);
   return (
     <>
       <Typography variant="h4" sx={{ ..._letterStyles, padding: "10px" }}>
@@ -70,7 +72,11 @@ const MovieCategory: NextPageWithLayout = () => {
                 component="div"
                 onClick={() => handleDetailClick(movie.id)}
               >
-                {movie.title}
+                {expandedOverview === movie.title
+                  ? movie.title
+                  : movie.title.length > 15
+                  ? `${movie.title.slice(0, 15)}...`
+                  : movie.title}
               </Typography>
               <Stack direction={"row"} spacing={2}>
                 <div
@@ -110,10 +116,7 @@ const MovieCategory: NextPageWithLayout = () => {
         ))}
       </Stack>
 
-      <Typography
-        variant="h4"
-        sx={{ ..._letterStyles, padding: "10px", marginTop: "-70px" }}
-      >
+      <Typography variant="h4" sx={{ ..._letterStyles, padding: "10px" }}>
         Series
       </Typography>
       <Stack
@@ -146,7 +149,11 @@ const MovieCategory: NextPageWithLayout = () => {
                 component="div"
                 onClick={() => handleDetailClick(movie.id)}
               >
-                {movie.title}
+                {expandedOverview === movie.title
+                  ? movie.title
+                  : movie.title.length > 15
+                  ? `${movie.title.slice(0, 15)}...`
+                  : movie.title}
               </Typography>
               <Stack direction={"row"} spacing={2}>
                 <div
@@ -186,10 +193,7 @@ const MovieCategory: NextPageWithLayout = () => {
         ))}
       </Stack>
 
-      <Typography
-        variant="h4"
-        sx={{ ..._letterStyles, padding: "10px", marginTop: "-30px" }}
-      >
+      <Typography variant="h4" sx={{ ..._letterStyles, padding: "10px" }}>
         Korean Series
       </Typography>
       <Stack
@@ -222,7 +226,11 @@ const MovieCategory: NextPageWithLayout = () => {
                 component="div"
                 onClick={() => handleDetailClick(movie.id)}
               >
-                {movie.title}
+                {expandedOverview === movie.title
+                  ? movie.title
+                  : movie.title.length > 15
+                  ? `${movie.title.slice(0, 15)}...`
+                  : movie.title}
               </Typography>
               <Stack direction={"row"} spacing={2}>
                 <div

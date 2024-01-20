@@ -1,7 +1,10 @@
 import { useRouter } from "next/router";
+import React, { useState } from "react";
 import useSWR from "swr";
 import axios from "axios";
+import ReactPlayer from "react-player";
 import {
+  Avatar,
   Box,
   Card,
   CardContent,
@@ -12,8 +15,15 @@ import {
 } from "@mui/material";
 import { ReactElement } from "react";
 import { Movie } from "@/models/Movie";
+import { Video, VideoList } from "@/models/Video";
 import { Rating, Chip } from "@mui/material";
 import Footter from "@/components/movie/Footer";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import { Styles } from "@/stylescomponents/style";
+import ArrowBackIosNewTwoToneIcon from "@mui/icons-material/ArrowBackIosNewTwoTone";
+import ArrowForwardIosTwoToneIcon from "@mui/icons-material/ArrowForwardIosTwoTone";
 
 export interface Cast {
   id: number;
@@ -32,9 +42,20 @@ const MovieDetail = () => {
     `/movie/${id}?append_to_response=credits`,
     fetcher
   );
+  const { data: dataVideo } = useSWR(`/movie/${id}/videos`);
+  const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
+  const handleNextVideo = () => {
+    setCurrentVideoIndex((prevIndex) =>
+      prevIndex === dataVideo?.results.length - 1 ? 0 : prevIndex + 1
+    );
+  };
 
-  if (error) return <div>Error loading movie details</div>;
-  if (!data) return <div>Loading...</div>;
+  const handlePrevVideo = () => {
+    setCurrentVideoIndex((prevIndex) =>
+      prevIndex === 0 ? dataVideo?.results.length - 1 : prevIndex - 1
+    );
+  };
+
   return (
     <>
       <Stack gap={4} sx={{ backgroundColor: "black", color: "white" }}>
@@ -93,7 +114,7 @@ const MovieDetail = () => {
               />
             ))}
           </Typography>
-          <Typography variant="h5" sx={{ color: "#1de9b6", marginTop: "10px" }}>
+          {/* <Typography variant="h5" sx={{ color: "#1de9b6", marginTop: "10px" }}>
             Cast:
             {data.credits?.cast?.slice(0, 5).map((actor) => (
               <Chip
@@ -108,11 +129,66 @@ const MovieDetail = () => {
                 }}
               />
             ))}
+          </Typography> */}
+          <Typography variant="h5" sx={{ color: "#1de9b6", marginTop: "10px" }}>
+            Cast:
+            <Grid container spacing={2}>
+              {data.credits?.cast?.slice(0, 5).map((actor) => (
+                <Grid item key={actor.id} xs={12} sm={6} md={4} lg={3}>
+                  <Box
+                    sx={{
+                      color: "white",
+                      padding: "10px",
+                      borderRadius: "8px",
+                    }}
+                  >
+                    <Stack direction="row" alignItems="center">
+                      <Avatar
+                        src={`https://image.tmdb.org/t/p/w500${actor.profile_path}`}
+                        alt={actor.name}
+                        sx={{ marginRight: "10px" }}
+                      />
+                      <Box>
+                        <Typography
+                          variant="subtitle1"
+                          sx={{ fontWeight: "bold" }}
+                        >
+                          {actor.name}
+                        </Typography>
+                        <Typography variant="body2">{`${actor.character}`}</Typography>
+                      </Box>
+                    </Stack>
+                  </Box>
+                </Grid>
+              ))}
+            </Grid>
           </Typography>
         </Box>
       </Stack>
-
-      <Footter></Footter>
+      <Stack>
+        {dataVideo?.results && dataVideo.results.length > 0 && (
+          <Stack alignItems="center" spacing={1}>
+            <ReactPlayer
+              key={dataVideo.results[currentVideoIndex].id}
+              url={`https://www.youtube.com/watch?v=${dataVideo.results[currentVideoIndex].key}`}
+              width="100%"
+              height="200px"
+              controls={true}
+            />
+            <Stack direction="row" spacing={1} alignItems="center">
+              <ArrowBackIosNewTwoToneIcon
+                sx={Styles._button}
+                onClick={handlePrevVideo}
+              />
+              <ArrowForwardIosTwoToneIcon
+                sx={Styles._button}
+                onClick={handleNextVideo}
+              />
+            </Stack>
+          </Stack>
+        )}
+      </Stack>
+      <Footter />
     </>
   );
 };

@@ -14,7 +14,7 @@ import HeaderHome from "@/components/layout_Header/HeaderHome";
 const Home: React.FC = () => {
   return (
     <>
-      <Box sx={{ position: "absolute", zIndex: "1" }}>
+      <Box sx={{ position: "absolute", zIndex: "1", top: "20px" }}>
         <HeaderHome />
       </Box>
       <Box

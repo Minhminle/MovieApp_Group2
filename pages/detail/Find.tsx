@@ -41,7 +41,6 @@ const Find = () => {
   const handleDetailClick = (movieId: string) => {
     router.push(`/detail/movie/${movieId}`);
   };
-
   function ShowGeners() {
     return (
       <Grid container>

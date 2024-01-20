@@ -290,10 +290,17 @@
     react-is "^18.2.0"
     react-transition-group "^4.4.5"
 
+<<<<<<< HEAD
 "@mui/private-theming@^5.15.5":
   version "5.15.5"
   resolved "https://registry.npmjs.org/@mui/private-theming/-/private-theming-5.15.5.tgz"
   integrity sha512-HU1KCyGNcJFsUamTbOM539ZDZJNI/XU7sZFdsN29glktUf+T6hNvDuO2ISinBiLTZy7Ab3R6DSSoYXRrLc4uwQ==
+=======
+"@mui/private-theming@^5.15.4":
+  version "5.15.4"
+  resolved "https://registry.npmjs.org/@mui/private-theming/-/private-theming-5.15.4.tgz"
+  integrity sha512-9N5myIMEEQTM5WYWPGvvYADzjFo12LgJ7S+2iTZkBNOcJpUxQYM1tvYjkHCDV+t1ocMOEgjR2EfJ9Dus30dBlg==
+>>>>>>> develop
   dependencies:
     "@babel/runtime" "^7.23.8"
     "@mui/utils" "^5.15.5"
@@ -309,20 +316,34 @@
     hoist-non-react-statics "^3.3.2"
     prop-types "^15.8.1"
 
+<<<<<<< HEAD
 "@mui/styled-engine@^5.15.5":
   version "5.15.5"
   resolved "https://registry.npmjs.org/@mui/styled-engine/-/styled-engine-5.15.5.tgz"
   integrity sha512-xoMUd8h270thNL7ZsOzmlluIAMsQg/HT7SCdRjPBVle+XHgTKaiWiRy1ekDOsrrF0rhjME3T7xeeUq2G269UUw==
+=======
+"@mui/styled-engine@^5.15.4":
+  version "5.15.4"
+  resolved "https://registry.npmjs.org/@mui/styled-engine/-/styled-engine-5.15.4.tgz"
+  integrity sha512-vtrZUXG5XI8CNiNLcxjIirW4dEbOloR+ikfm6ePBo7jXpJdpXjVzBWetrfE+5eI0cHkKWlTptnJ2voKV8pBRfw==
+>>>>>>> develop
   dependencies:
     "@babel/runtime" "^7.23.8"
     "@emotion/cache" "^11.11.0"
     csstype "^3.1.2"
     prop-types "^15.8.1"
 
+<<<<<<< HEAD
 "@mui/system@^5.15.4", "@mui/system@^5.15.5":
   version "5.15.5"
   resolved "https://registry.npmjs.org/@mui/system/-/system-5.15.5.tgz"
   integrity sha512-DMv2vGjUKaDt/m0RlzvLjpKiS5V0LoBhiMUHf5pWdj6uoNlN4FuKUe4pFeYmQMIO5DnVZKybmpPepfkdfEH+Og==
+=======
+"@mui/system@^5.15.4":
+  version "5.15.4"
+  resolved "https://registry.npmjs.org/@mui/system/-/system-5.15.4.tgz"
+  integrity sha512-KCwkHajGBXPs2TK1HJjIyab4NDk0cZoBDYN/TTlXVo1qBAmCjY0vjqrlsjeoG+wrwwcezXMLs/e6OGP66fPCog==
+>>>>>>> develop
   dependencies:
     "@babel/runtime" "^7.23.8"
     "@mui/private-theming" "^5.15.5"
@@ -338,10 +359,17 @@
   resolved "https://registry.npmjs.org/@mui/types/-/types-7.2.13.tgz"
   integrity sha512-qP9OgacN62s+l8rdDhSFRe05HWtLLJ5TGclC9I1+tQngbssu0m2dmFZs+Px53AcOs9fD7TbYd4gc9AXzVqO/+g==
 
+<<<<<<< HEAD
 "@mui/utils@^5.15.4", "@mui/utils@^5.15.5":
   version "5.15.5"
   resolved "https://registry.npmjs.org/@mui/utils/-/utils-5.15.5.tgz"
   integrity sha512-jEywgaMGZWPSlVFO7ZZAyXxNeLmq5XBp5At9Ne/sGohRJdesUcdxvyi8TP3odJxwQuL5L6PJV+JQ4DyIDM849A==
+=======
+"@mui/utils@^5.15.4":
+  version "5.15.4"
+  resolved "https://registry.npmjs.org/@mui/utils/-/utils-5.15.4.tgz"
+  integrity sha512-E2wLQGBcs3VR52CpMRjk46cGscC4cbf3Q2uyHNaAeL36yTTm+aVNbtsTCazXtjOP4BDd8lu6VtlTpVC8Rtl4mg==
+>>>>>>> develop
   dependencies:
     "@babel/runtime" "^7.23.8"
     "@types/prop-types" "^15.7.11"
@@ -882,6 +910,11 @@ damerau-levenshtein@^1.0.8:
   version "1.0.8"
   resolved "https://registry.npmjs.org/damerau-levenshtein/-/damerau-levenshtein-1.0.8.tgz"
   integrity sha512-sdQSFB7+llfUcQHUQO3+B8ERRj0Oa4w9POWMI/puGtuf7gFywGmkaLCElnudfTiKZV+NvHqL0ifzdrI8Ro7ESA==
+
+date-fns@^3.3.0:
+  version "3.3.0"
+  resolved "https://registry.npmjs.org/date-fns/-/date-fns-3.3.0.tgz"
+  integrity sha512-xuouT0GuI2W8yXhCMn/AXbSl1Av3wu2hJXxMnnILTY3bYY0UgNK0qOwVXqdFBrobW5qbX1TuOTgMw7c2H2OuhA==
 
 debug@^3.2.7:
   version "3.2.7"
@@ -2220,11 +2253,14 @@ queue-microtask@^1.2.2:
     loose-envify "^1.1.0"
     scheduler "^0.23.0"
 
+<<<<<<< HEAD
 react-fast-compare@^3.0.1:
   version "3.2.2"
   resolved "https://registry.npmjs.org/react-fast-compare/-/react-fast-compare-3.2.2.tgz"
   integrity sha512-nsO+KSNgo1SbJqJEYRE9ERzo7YtYbou/OqjSQKxV7jcKox7+usiUVZOAC+XnDOABXggQTno0Y1CpVnuWEc1boQ==
 
+=======
+>>>>>>> develop
 react-id-swiper@^4.0.0:
   version "4.0.0"
   resolved "https://registry.npmjs.org/react-id-swiper/-/react-id-swiper-4.0.0.tgz"

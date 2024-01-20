@@ -18,7 +18,6 @@ import { Movie } from "@/models/Movie";
 import { Video, VideoList } from "@/models/Video";
 import { Rating, Chip } from "@mui/material";
 import Footter from "@/components/movie/Footer";
-import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { Styles } from "@/stylescomponents/style";

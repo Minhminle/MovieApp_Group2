@@ -14,6 +14,7 @@ import useSWR from "swr";
 import StarRateIcon from "@mui/icons-material/StarRate";
 import { useRouter } from "next/router";
 import { useState } from "react";
+import { format } from "date-fns";
 
 const MovieCard = () => {
   const router = useRouter();

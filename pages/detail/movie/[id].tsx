@@ -55,6 +55,7 @@ const MovieDetail = () => {
     `/movie/${id}/lists`
   );
   const { data: dataVideo } = useSWR(`/movie/${id}/videos`);
+  const { data: datareview } = useSWR(`/movie/${id}/reviews`);
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
   const handleNextVideo = () => {
     setCurrentVideoIndex((prevIndex) =>
@@ -107,6 +108,14 @@ const MovieDetail = () => {
   const toggleText = (overview: string) => {
     setExpandedOverview((prev) => (prev === overview ? null : overview));
   };
+  
+  const [visibleReviews, setVisibleReviews] = useState(2); // Số lượng đánh giá hiển thị ban đầu
+
+  const loadMoreReviews = () => {
+    setVisibleReviews((prevVisibleReviews) => prevVisibleReviews + 2); // Tăng số lượng đánh giá hiển thị thêm 5
+  };
+  
+
   if (error) return <div>Error loading movie details</div>;
   if (!data) return <div>Loading...</div>;
 
@@ -278,7 +287,63 @@ const MovieDetail = () => {
               )}
             </Stack>
           </TabPanel>
-          <TabPanel value="2">Item Two</TabPanel>
+          <TabPanel value="2">
+            {" "}
+            <Stack gap={4} direction="column">
+              {datareview?.results.slice(0, visibleReviews).map((review) => (
+                <Stack key={review.id}>
+                  <Stack direction="row">
+                    <Box>
+                      <Avatar
+                        src={`https://image.tmdb.org/t/p/w500${review.author_details.avatar_path}`}
+                        sx={{
+                          marginRight: "10px",
+                          width: "80px",
+                          height: "80px",
+                        }}
+                      />
+                    </Box>
+                    <Stack direction="column" sx={{ marginTop: "15px" }}>
+                      <Box color="white"> {review.author}</Box>
+                      <Box color="gray">
+                        {format(
+                          new Date(review.updated_at),
+                          "dd/MM/yyyy HH:mm:ss"
+                        )}
+                      </Box>
+                    </Stack>
+                  </Stack>
+                  <Typography>
+                    {expandedOverview === review.content
+                      ? review.content
+                      : review.content.length > 400
+                      ? `${review.content.slice(0, 400)}...`
+                      : review.content}
+                    <Button variant="text">Read More</Button>
+                  </Typography>
+                </Stack>
+              ))}
+              {datareview?.results.length > visibleReviews && (
+                <Box textAlign="center" mt={2}>
+                  <Button
+                    variant="contained"
+                    style={{
+                      backgroundColor: "black", // Đặt màu nền là đen
+                      color: "white", // Đặt màu chữ là trắng
+                      border: "1px solid white", // Đặt viền là trắng
+                      borderRadius: "8px", // Điều chỉnh góc bo
+                      padding: "12px 24px", // Điều chỉnh khoảng cách nút
+                      fontSize: "16px", // Điều chỉnh kích thước chữ
+                      textTransform: "none", // Ngăn chữ in hoa
+                    }}
+                    onClick={loadMoreReviews}
+                  >
+                    Load More
+                  </Button>
+                </Box>
+              )}
+            </Stack>
+          </TabPanel>
           <TabPanel value="3">Item Three</TabPanel>
         </TabContext>
       </Box>

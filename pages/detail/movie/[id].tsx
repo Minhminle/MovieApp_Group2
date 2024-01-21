@@ -85,23 +85,25 @@ const MovieDetail = () => {
         }}
       />
       <Chip
-        label={`Votes: ${data.vote_count}`}
+        icon={<ThumbUpIcon />}
+        label={`${data.vote_count}`}
         sx={{
           position: "absolute",
           top: "15px",
-          right: "10px",
+          right: "15px",
           zIndex: 1,
           backgroundColor: "yellow",
           color: "black",
         }}
       />
+
       <Box>
         <Stack
           spacing={1}
           sx={{
             background: "linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1))",
             position: "absolute",
-            bottom: "100px",
+            bottom: "90px",
             zIndex: 1,
             padding: "20px",
           }}

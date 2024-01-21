@@ -35,6 +35,8 @@ import PlayCircleFilledIcon from "@mui/icons-material/PlayCircleFilled";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNewTwoTone";
+import DetailHeader from "@/components/movie/DetailHeader";
 export interface Cast {
   id: number;
   name: string;
@@ -108,135 +110,19 @@ const MovieDetail = () => {
   const toggleText = (overview: string) => {
     setExpandedOverview((prev) => (prev === overview ? null : overview));
   };
-  
+
   const [visibleReviews, setVisibleReviews] = useState(2); // Số lượng đánh giá hiển thị ban đầu
 
   const loadMoreReviews = () => {
     setVisibleReviews((prevVisibleReviews) => prevVisibleReviews + 2); // Tăng số lượng đánh giá hiển thị thêm 5
   };
-  
 
   if (error) return <div>Error loading movie details</div>;
   if (!data) return <div>Loading...</div>;
 
   return (
     <>
-      <Stack>
-        <Box
-          component="img"
-          src={`https://image.tmdb.org/t/p/w500${data.poster_path}`}
-          alt={data.title}
-          sx={{
-            position: "relative",
-            boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.3)",
-          }}
-        />
-        <Chip
-          icon={<ThumbUpIcon />}
-          label={`${data.vote_count}`}
-          sx={{
-            position: "absolute",
-            top: "15px",
-            right: "15px",
-            zIndex: 1,
-            backgroundColor: "yellow",
-            color: "black",
-          }}
-        />
-
-        <Box>
-          <Stack
-            spacing={1}
-            sx={{
-              background: "linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1))",
-              position: "absolute",
-              bottom: "90px",
-              zIndex: 1,
-              padding: "20px",
-            }}
-          >
-            <Typography variant="h3" sx={{}}>
-              {data.title}
-            </Typography>
-            <Stack direction={"row"}>
-              <Typography sx={{ color: "yellow" }}>
-                <StarIcon></StarIcon>
-              </Typography>
-              <Typography sx={{ color: "yellow" }}>
-                {(data.vote_average * 0.5).toFixed(1)}
-              </Typography>
-              <Typography color={"gray"}>
-                -{formatRuntime(data.runtime)}-
-              </Typography>
-              <Typography color={"gray"}>
-                {format(new Date(data.release_date), "yyyy")}
-              </Typography>
-              <Typography>
-                {data.genres?.map((genre) => (
-                  <Typography
-                    key={genre.id}
-                    sx={{
-                      display: "inline-block",
-                      color: "gray",
-                    }}
-                  >
-                    -{genre.name}
-                  </Typography>
-                ))}
-              </Typography>
-            </Stack>
-            <Stack direction={"row"} spacing={1} width={"100%"}>
-              <Button
-                sx={{
-                  backgroundColor: "green",
-                  fontSize: "13px",
-                }}
-                variant="contained"
-                startIcon={<PlayCircleFilledIcon />}
-                // onClick={() => handleDetailClick(movie.id)}
-              >
-                Continue Watching
-              </Button>
-              <IconButton color="inherit">
-                <TurnedInIcon
-                  sx={{ color: isTurnedInPressed ? "yellow" : "inherit" }}
-                  onClick={handleTurnedIn}
-                />
-              </IconButton>
-              <IconButton color="inherit">
-                <ThumbUpIcon
-                  sx={{ color: isThumbUpPressed ? "red" : "inherit" }}
-                  onClick={handleThumbUp}
-                />
-              </IconButton>
-              <IconButton color="inherit">
-                <DownloadIcon />
-              </IconButton>
-            </Stack>
-          </Stack>
-        </Box>
-
-        <Box padding={"20px"}>
-          <Stack>
-            <Typography sx={{ fontSize: "30px" }}>Story Line</Typography>
-            <Typography sx={{ fontSize: "18px", color: "#555" }}>
-              {expandedOverview === data.overview
-                ? data.overview
-                : data.overview.length > 90
-                ? `${data.overview.slice(0, 90)}...`
-                : data.overview}
-              {data.overview.length > 90 && (
-                <Button
-                  sx={{ fontSize: "12px", color: "green" }}
-                  onClick={() => toggleText(data.overview)}
-                >
-                  {expandedOverview === data.overview ? "Less" : "More"}
-                </Button>
-              )}
-            </Typography>
-          </Stack>
-        </Box>
-      </Stack>
+      <DetailHeader></DetailHeader>
       <Typography variant="h5" sx={{ color: "#1de9b6", marginTop: "10px" }}>
         <Typography variant="h4" sx={{ ..._letterStyles, padding: "10px" }}>
           Top Cast
@@ -310,8 +196,14 @@ const MovieDetail = () => {
                   onChange={handleChange}
                   aria-label="lab API tabs example"
                 >
-                  <Tab label="Trailers" value="1" />
-                  <Tab label="Reviews" value="2" />
+                  <Tab
+                    label={`Trailers (${dataVideo?.results.length})`}
+                    value="1"
+                  />
+                  <Tab
+                    label={`Reviews (${datareview?.results.length})`}
+                    value="2"
+                  />
                   <Tab label="Discussions" value="3" />
                 </TabList>
               </Box>

@@ -7,6 +7,7 @@ import { format } from "date-fns";
 import {
   Avatar,
   Box,
+  Button,
   Card,
   CardContent,
   CardMedia,
@@ -27,10 +28,10 @@ export interface Cast {
 }
 
 const MovieDetail = () => {
-  const [visibleReviews, setVisibleReviews] = useState(5); // Số lượng đánh giá hiển thị ban đầu
+  const [visibleReviews, setVisibleReviews] = useState(2); // Số lượng đánh giá hiển thị ban đầu
 
   const loadMoreReviews = () => {
-    setVisibleReviews((prevVisibleReviews) => prevVisibleReviews + 5); // Tăng số lượng đánh giá hiển thị thêm 5
+    setVisibleReviews((prevVisibleReviews) => prevVisibleReviews + 2); // Tăng số lượng đánh giá hiển thị thêm 5
   };
 
   const [expandedOverview, setExpandedOverview] = useState<string | null>(null);
@@ -177,10 +178,15 @@ const MovieDetail = () => {
           </Typography>
         </Box>
       </Stack>
-      <Stack gap={2} direction="column" alignItems="center">
+      <Stack gap={4} direction="column">
         {datareview?.results.slice(0, visibleReviews).map((review) => (
           <Stack key={review.id}>
-            <Box color="white">{review.author}</Box>
+            <Stack direction="row">
+              <Box color="white"> CREAT BY: {review.author}</Box>
+              <Box color="gray" sx={{ marginLeft: "30px" }}>
+                {format(new Date(review.updated_at), "dd/MM/yyyy HH:mm:ss")}
+              </Box>
+            </Stack>
             <Box>
               <Avatar
                 src={`https://image.tmdb.org/t/p/w500${review.author_details.avatar_path}`}
@@ -191,15 +197,21 @@ const MovieDetail = () => {
                 }}
               />
             </Box>
-            <Box color="white">{review.content}</Box>
-            <Box color="white">
-              {format(new Date(review.updated_at), "dd/MM/yyyy HH:mm:ss")}
-            </Box>
+            <Typography>
+              {expandedOverview === review.content
+                ? review.content
+                : review.content.length > 400
+                ? `${review.content.slice(0, 400)}...`
+                : review.content}
+              <Button variant="text">ReadMore</Button>
+            </Typography>
           </Stack>
         ))}
         {datareview?.results.length > visibleReviews && (
           <Box>
-            <button onClick={loadMoreReviews}>Load More</button>
+            <Button variant="contained" onClick={loadMoreReviews}>
+              ReadMore
+            </Button>
           </Box>
         )}
       </Stack>

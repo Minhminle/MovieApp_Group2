@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import useSWR from "swr";
 import axios from "axios";
 import ReactPlayer from "react-player";
-import Footter from "@/components/Footer";
 import {
   Avatar,
   Box,
@@ -13,16 +12,14 @@ import {
   Grid,
   Stack,
   Typography,
-  Tab,
 } from "@mui/material";
 import { ReactElement } from "react";
 import { Movie } from "@/models/Movie";
 import { Video, VideoList } from "@/models/Video";
 import { Rating, Chip } from "@mui/material";
-import StarIcon from "@mui/icons-material/Star";
-import TabContext from "@mui/lab/TabContext";
-import TabList from "@mui/lab/TabList";
-import TabPanel from "@mui/lab/TabPanel";
+import Footter from "@/components/movie/Footer";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 import { Styles } from "@/stylescomponents/style";
 import ArrowBackIosNewTwoToneIcon from "@mui/icons-material/ArrowBackIosNewTwoTone";
 import ArrowForwardIosTwoToneIcon from "@mui/icons-material/ArrowForwardIosTwoTone";
@@ -33,30 +30,13 @@ export interface Cast {
   character: string;
   profile_path: string;
 }
+
 const MovieDetail = () => {
   const router = useRouter();
   const { id } = router.query;
   const { data, error } = useSWR<Movie>(
-    `/movie/${id}?append_to_response=credits,similar`
+    `/movie/${id}?append_to_response=credits`
   );
-  const { data: similarMoviesData, error: similarMoviesError } = useSWR(
-    `/movie/${id}/similar`
-  );
-  const { data: MoviesLists, error: listsMoviesError } = useSWR(
-    `/movie/${id}/lists`
-  );
-  const _letterStyles = {
-    color: "white",
-    fontWeight: "700",
-  };
-  const handleDetailClick = (movieId: string) => {
-    router.push(`/detail/movie/${movieId}`);
-  };
-  const [expandedOverview, setExpandedOverview] = useState<string | null>(null);
-  const [value, setValue] = React.useState("1");
-
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
   const { data: dataVideo } = useSWR(`/movie/${id}/videos`);
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
   const handleNextVideo = () => {
@@ -75,101 +55,112 @@ const MovieDetail = () => {
 
   return (
     <>
-      <Box sx={{ width: "100%", typography: "body1" }}>
-        <TabContext value={value}>
-          <Box sx={{ width: "100%", typography: "body1" }}>
-            <TabContext value={value}>
-              <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-                <TabList
-                  sx={{
-                    "& .MuiTab-root": {
-                      color: "#9e9e9e", // Màu chữ khi không được chọn
-                    },
-                    "& .Mui-selected": {
-                      color: "white", // Màu chữ khi được chọn
-                    },
-                  }}
-                  onChange={handleChange}
-                  aria-label="lab API tabs example"
-                >
-                  <Tab label="Trailers" value="1" />
-                  <Tab label="Reviews" value="2" />
-                  <Tab label="Discussions" value="3" />
-                </TabList>
-              </Box>
-            </TabContext>
-          </Box>
-          <TabPanel value="1">Item One</TabPanel>
-          <TabPanel value="2">Item Two</TabPanel>
-          <TabPanel value="3">Item Three</TabPanel>
-        </TabContext>
-      </Box>
-      <Typography variant="h4" sx={{ ..._letterStyles, padding: "10px" }}>
-        Similar Movies:
-      </Typography>
-
-      <Stack
-        direction="row"
-        sx={{ overflowX: "auto" }} // Thêm kiểm soát tràn ngang
-      >
-        {similarMoviesData?.results.map((movie) => (
-          <Box
-            key={movie.id}
-            sx={{
-              margin: "10px",
-              backgroundColor: "black",
-              color: "white",
-            }}
+      <Stack gap={4} sx={{ backgroundColor: "black", color: "white" }}>
+        <Box
+          component="img"
+          src={`https://image.tmdb.org/t/p/w500${data.poster_path}`}
+          alt={data.title}
+          style={{
+            boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.3)",
+          }}
+        />
+        <Box
+          sx={{
+            margin: "20px",
+          }}
+        >
+          <Typography variant="h3" sx={{}}>
+            {data.title}
+          </Typography>
+          <Typography
+            variant="body1"
+            sx={{ fontSize: "18px", color: "#555", marginBottom: "20px" }}
           >
-            <CardMedia
-              style={{
-                borderRadius: "20px",
-                height: "180px",
-                width: "300px",
-              }}
-              onClick={() => handleDetailClick(movie.id)}
-              component="img"
-              alt={movie.title}
-              image={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+            {data.overview}
+          </Typography>
+          <Stack direction={"row"}>
+            <Rating
+              name="movie-rating"
+              value={data.vote_average ? data.vote_average / 2 : 0}
+              precision={0.5}
+              readOnly
+              sx={{ color: "#FFD700", fontSize: 24 }}
             />
-            <CardContent>
-              <Typography
-                variant="h5"
-                onClick={() => handleDetailClick(movie.id)}
-              >
-                {expandedOverview === movie.title
-                  ? movie.title
-                  : movie.title.length > 15
-                  ? `${movie.title.slice(0, 15)}...`
-                  : movie.title}
+            <Stack direction="row" spacing={3}>
+              <Typography variant="h6" sx={{ color: "yellow" }}>
+                {(data.vote_average * 0.5).toFixed(1)}
               </Typography>
-              <Stack direction={"row"} spacing={2}>
-                <Box
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                  }}
-                >
-                  <StarIcon style={{ marginRight: "4px", color: "#ffeb3b" }} />
-                  <Typography variant="body2">
-                    {(movie.vote_average * 0.5).toFixed(1)}
-                  </Typography>
-                </Box>
-
-                {data.genres?.map((genre) => (
-                  <Typography
-                    key={genre.id}
-                    variant="h6"
-                    style={{ marginTop: "-1px" }}
-                    sx={{ color: "#9e9e9e" }}
+              <Typography variant="h5" sx={{ color: "#d32f2f" }}>
+                Votes: {data.vote_count}
+              </Typography>
+            </Stack>
+          </Stack>
+          <Typography variant="h5" sx={{ color: "#42a5f5", marginTop: "10px" }}>
+            Genres:
+            {data.genres?.map((genre) => (
+              <Chip
+                key={genre.id}
+                label={genre.name}
+                sx={{
+                  margin: "3px",
+                  backgroundColor: "#673ab7",
+                  color: "white",
+                  marginRight: "5px",
+                  marginBottom: "5px",
+                }}
+              />
+            ))}
+          </Typography>
+          {/* <Typography variant="h5" sx={{ color: "#1de9b6", marginTop: "10px" }}>
+            Cast:
+            {data.credits?.cast?.slice(0, 5).map((actor) => (
+              <Chip
+                key={actor.id}
+                label={`${actor.name} as ${actor.character}`}
+                sx={{
+                  margin: "3px",
+                  backgroundColor: "#66bb6a",
+                  color: "white",
+                  marginRight: "5px",
+                  marginBottom: "5px",
+                }}
+              />
+            ))}
+          </Typography> */}
+          <Typography variant="h5" sx={{ color: "#1de9b6", marginTop: "10px" }}>
+            Cast:
+            <Grid container spacing={2}>
+              {data.credits?.cast?.slice(0, 5).map((actor) => (
+                <Grid item key={actor.id} xs={12} sm={6} md={4} lg={3}>
+                  <Box
+                    sx={{
+                      color: "white",
+                      padding: "10px",
+                      borderRadius: "8px",
+                    }}
                   >
-                    {genre.name}
-                  </Typography>
-                ))}
-              </Stack>
-            </CardContent>
-          </Box>
-        ))}
+                    <Stack direction="row" alignItems="center">
+                      <Avatar
+                        src={`https://image.tmdb.org/t/p/w500${actor.profile_path}`}
+                        alt={actor.name}
+                        sx={{ marginRight: "10px" }}
+                      />
+                      <Box>
+                        <Typography
+                          variant="subtitle1"
+                          sx={{ fontWeight: "bold" }}
+                        >
+                          {actor.name}
+                        </Typography>
+                        <Typography variant="body2">{`${actor.character}`}</Typography>
+                      </Box>
+                    </Stack>
+                  </Box>
+                </Grid>
+              ))}
+            </Grid>
+          </Typography>
+        </Box>
       </Stack>
       <Stack>
         {dataVideo?.results && dataVideo.results.length > 0 && (
@@ -197,7 +188,7 @@ const MovieDetail = () => {
       <Footter />
     </>
   );
-};}
+};
 
 MovieDetail.getLayout = function getLayout(page: ReactElement) {
   return <>{page}</>;

@@ -237,6 +237,8 @@ const MovieDetail = () => {
           </Stack>
         </Box>
       </Stack>
+
+      
       <Box sx={{ width: "100%", typography: "body1" }}>
         <TabContext value={value}>
           <Box sx={{ width: "100%", typography: "body1" }}>
@@ -347,10 +349,13 @@ const MovieDetail = () => {
           <TabPanel value="3">Item Three</TabPanel>
         </TabContext>
       </Box>
+
+
+
+
       <Typography variant="h4" sx={{ ..._letterStyles, padding: "10px" }}>
         Similar Movies:
       </Typography>
-
       <Stack
         direction="row"
         sx={{ overflowX: "auto" }} // Thêm kiểm soát tràn ngang

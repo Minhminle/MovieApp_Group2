@@ -182,35 +182,47 @@ const MovieDetail = () => {
         {datareview?.results.slice(0, visibleReviews).map((review) => (
           <Stack key={review.id}>
             <Stack direction="row">
-              <Box color="white"> CREAT BY: {review.author}</Box>
-              <Box color="gray" sx={{ marginLeft: "30px" }}>
-                {format(new Date(review.updated_at), "dd/MM/yyyy HH:mm:ss")}
+              <Box>
+                <Avatar
+                  src={`https://image.tmdb.org/t/p/w500${review.author_details.avatar_path}`}
+                  sx={{
+                    marginRight: "10px",
+                    width: "80px",
+                    height: "80px",
+                  }}
+                />
               </Box>
+              <Stack direction="column" sx={{ marginTop: "15px" }}>
+                <Box color="white"> {review.author}</Box>
+                <Box color="gray">
+                  {format(new Date(review.updated_at), "dd/MM/yyyy HH:mm:ss")}
+                </Box>
+              </Stack>
             </Stack>
-            <Box>
-              <Avatar
-                src={`https://image.tmdb.org/t/p/w500${review.author_details.avatar_path}`}
-                sx={{
-                  marginRight: "10px",
-                  width: "80px",
-                  height: "80px",
-                }}
-              />
-            </Box>
             <Typography>
               {expandedOverview === review.content
                 ? review.content
                 : review.content.length > 400
                 ? `${review.content.slice(0, 400)}...`
                 : review.content}
-              <Button variant="text">ReadMore</Button>
+              <Button variant="text">Read More</Button>
             </Typography>
           </Stack>
         ))}
         {datareview?.results.length > visibleReviews && (
-          <Box>
-            <Button variant="contained" onClick={loadMoreReviews}>
-              ReadMore
+          <Box textAlign="center" mt={2}>
+            <Button
+              variant="contained"
+              color="primary" // Chọn màu sắc phù hợp
+              onClick={loadMoreReviews}
+              style={{
+                borderRadius: "8px", // Điều chỉnh góc bo
+                padding: "12px 24px", // Điều chỉnh khoảng cách nút
+                fontSize: "16px", // Điều chỉnh kích thước chữ
+                textTransform: "none", // Ngăn chữ in hoa
+              }}
+            >
+              Load More
             </Button>
           </Box>
         )}

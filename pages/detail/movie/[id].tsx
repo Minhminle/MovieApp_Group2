@@ -237,8 +237,62 @@ const MovieDetail = () => {
           </Stack>
         </Box>
       </Stack>
+      <Typography variant="h5" sx={{ color: "#1de9b6", marginTop: "10px" }}>
+        <Typography variant="h4" sx={{ ..._letterStyles, padding: "10px" }}>
+          Top Cast
+        </Typography>
+        <Stack
+          gap={2}
+          direction="row"
+          alignItems="center"
+          sx={{ overflowX: "auto" }}
+        >
+          {data.credits?.cast?.map((actor) => (
+            <Stack key={actor.id}>
+              <Box
+                sx={{
+                  color: "white",
+                  padding: "10px",
+                  borderRadius: "8px",
+                }}
+              >
+                <Stack direction="row" alignItems="center">
+                  <Avatar
+                    src={`https://image.tmdb.org/t/p/w500${actor.profile_path}`}
+                    alt={actor.name}
+                    sx={{
+                      marginRight: "10px",
+                      width: "80px",
+                      height: "80px",
+                    }}
+                  />
+                  <Box width="100px">
+                    <Typography sx={{ fontWeight: "bold" }}>
+                      {expandedOverview === actor.name
+                        ? actor.name
+                        : actor.name.length > 15
+                        ? `${actor.name.slice(0, 15)}...`
+                        : actor.name}
+                    </Typography>
+                    <Typography
+                      color="gray"
+                      variant="body2"
+                      sx={{ fontWeight: "bold" }}
+                    >
+                      {expandedOverview === actor.character
+                        ? actor.character
+                        : actor.character.length > 15
+                        ? `${actor.character.slice(0, 15)}...`
+                        : actor.character}
+                    </Typography>
+                  </Box>
+                </Stack>
+              </Box>
+            </Stack>
+          ))}
+        </Stack>
+      </Typography>
 
-      
       <Box sx={{ width: "100%", typography: "body1" }}>
         <TabContext value={value}>
           <Box sx={{ width: "100%", typography: "body1" }}>
@@ -349,9 +403,6 @@ const MovieDetail = () => {
           <TabPanel value="3">Item Three</TabPanel>
         </TabContext>
       </Box>
-
-
-
 
       <Typography variant="h4" sx={{ ..._letterStyles, padding: "10px" }}>
         Similar Movies:

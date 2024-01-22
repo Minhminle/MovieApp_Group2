@@ -85,7 +85,7 @@ const DetailHeader = () => {
           onClick={() => {
             router.push("/");
           }}
-          sx={{ fontSize: "30px" }}
+          sx={{ fontSize: "40px" }}
         />
         <Chip
           icon={<FavoriteIcon />}
@@ -104,12 +104,13 @@ const DetailHeader = () => {
           component="img"
           src={
             data.poster_path
-              ? `https://image.tmdb.org/t/p/w500${data.poster_path}`
+              ? `https://image.tmdb.org/t/p/w400${data.poster_path}`
               : "/images/DefaultPoster.png" // Đường dẫn đến hình ảnh mặc định
           }
           alt={data.title}
           sx={{
             boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.3)",
+            width: "385px",
           }}
         />
         <Box

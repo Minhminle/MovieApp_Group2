@@ -23,6 +23,7 @@ import DownloadIcon from "@mui/icons-material/Download";
 import StarIcon from "@mui/icons-material/Star";
 import { format } from "date-fns";
 import ArrowCircleLeftIcon from "@mui/icons-material/ArrowCircleLeft";
+import FavoriteIcon from "@mui/icons-material/Favorite";
 export interface Cast {
   id: number;
   name: string;
@@ -75,41 +76,55 @@ const DetailHeader = () => {
   if (!data) return <div>Loading...</div>;
   return (
     <>
-      <Stack  direction="row" spacing={32} sx={{position:"absolute",zIndex:"1",left:"20px",top:"20px"}}>
+      <Stack
+        direction="row"
+        spacing={32}
+        sx={{ position: "absolute", zIndex: "1", left: "20px", top: "20px" }}
+      >
         <ArrowCircleLeftIcon
           onClick={() => {
             router.push("/");
           }}
-          sx={{fontSize:"30px"}}
+          sx={{ fontSize: "30px" }}
         />
         <Chip
-          icon={<ThumbUpIcon />}
+          icon={<FavoriteIcon />}
           label={`${data.vote_count}`}
           sx={{
-          
             top: "15px",
             right: "15px",
-         
+
             backgroundColor: "yellow",
             color: "black",
           }}
         />
       </Stack>
-      <Box sx={{position:"relative"}}>
+      <Box sx={{ position: "relative" }}>
         <Box
           component="img"
-          src={`https://image.tmdb.org/t/p/w500${data.poster_path}`}
+          src={
+            data.poster_path
+              ? `https://image.tmdb.org/t/p/w500${data.poster_path}`
+              : "/images/DefaultPoster.png" // Đường dẫn đến hình ảnh mặc định
+          }
           alt={data.title}
           sx={{
             boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.3)",
           }}
         />
-        <Box sx={{position:"absolute", zIndex:"1", bottom:"0px",right:"-11px"}}>
+        <Box
+          sx={{
+            position: "absolute",
+            zIndex: "1",
+            bottom: "0px",
+            right: "-11px",
+          }}
+        >
           <Stack
             spacing={1}
             sx={{
               background: "linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1))",
-              width:"350px",
+              width: "350px",
               bottom: "0px",
               zIndex: 1,
               padding: "20px",
@@ -164,7 +179,7 @@ const DetailHeader = () => {
                 />
               </IconButton>
               <IconButton color="inherit">
-                <ThumbUpIcon
+                <FavoriteIcon
                   sx={{ color: isThumbUpPressed ? "red" : "inherit" }}
                   onClick={handleThumbUp}
                 />
@@ -176,19 +191,6 @@ const DetailHeader = () => {
           </Stack>
         </Box>
       </Box>
-
-
-
-
-
-
-
-
-
-
-
-
-
 
       <Stack>
         <Box padding={"20px"}>

@@ -321,7 +321,11 @@ const MovieDetail = () => {
               onClick={() => handleDetailClick(movie.id)}
               component="img"
               alt={movie.title}
-              image={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+              image={
+                movie.poster_path
+                  ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
+                  : "/images/DefaultPoster.png" // Đường dẫn đến hình ảnh mặc định
+              }
             />
             <CardContent>
               <Typography

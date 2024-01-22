@@ -48,7 +48,11 @@ const MovieCard = () => {
           >
             <Box
               component="img"
-              src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+              src={
+                movie.poster_path
+                  ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
+                  : "/images/DefaultPoster.png" // Đường dẫn đến hình ảnh mặc định
+              }
               width={300}
               height={500}
               sx={{ borderRadius: "10%" }}

@@ -261,13 +261,20 @@ const MovieDetail = () => {
                       </Box>
                     </Stack>
                   </Stack>
-                  <Typography>
+                  <Typography sx={{ fontSize: "18px", color: "white" }}>
                     {expandedOverview === review.content
                       ? review.content
-                      : review.content.length > 400
-                      ? `${review.content.slice(0, 400)}...`
+                      : review.content.length > 90
+                      ? `${review.content.slice(0, 90)}...`
                       : review.content}
-                    <Button variant="text">Read More</Button>
+                    {review.content.length > 90 && (
+                      <Button
+                        sx={{ fontSize: "12px", color: "blue" }}
+                        onClick={() => toggleText(review.content)}
+                      >
+                        {expandedOverview === review.content ? "Less" : "More"}
+                      </Button>
+                    )}
                   </Typography>
                 </Stack>
               ))}

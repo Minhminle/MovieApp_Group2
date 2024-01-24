@@ -46,12 +46,8 @@ function LoggedInAvatar(props: { data: User }) {
 
   return (
     <>
-      <Button
-        onClick={handleMenuClick}
-        variant="text"
-        sx={{ color: "white", marginBottom: "100px" }}
-      >
-        <Stack direction="row" sx={{ marginRight: "40px" }}>
+      <Button onClick={handleMenuClick} variant="text" sx={{ color: "white"}}>
+        <Stack direction="row" sx={{marginRight:"40px"}}>
           {avatar_path ? <Box component="img" src={avatar_path} /> : <Person />}
         </Stack>
       </Button>
@@ -104,7 +100,7 @@ function NotLoggedInAvatar() {
           .get<RequestTokenResponse>("authentication/token/new")
           .then((res) =>
             window.open(
-              `https://www.themoviedb.org/authenticate/${res.data.request_token}?redirect_to=http://localhost:3000/detail/authorize`,
+              `https://www.themoviedb.org/authenticate/${res.data.request_token}?redirect_to=https://wealthy-cardinal-thankfully.ngrok-free.app/detail/authorize`,
               "_blank",
               "noopener,noreferrer"
             )

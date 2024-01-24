@@ -157,8 +157,8 @@ const MovieDetail = () => {
                       {expandedOverview === actor.name
                         ? actor.name
                         : actor.name.length > 15
-                        ? `${actor.name.slice(0, 15)}...`
-                        : actor.name}
+                          ? `${actor.name.slice(0, 15)}...`
+                          : actor.name}
                     </Typography>
                     <Typography
                       color="gray"
@@ -168,8 +168,8 @@ const MovieDetail = () => {
                       {expandedOverview === actor.character
                         ? actor.character
                         : actor.character.length > 15
-                        ? `${actor.character.slice(0, 15)}...`
-                        : actor.character}
+                          ? `${actor.character.slice(0, 15)}...`
+                          : actor.character}
                     </Typography>
                   </Box>
                 </Stack>
@@ -210,30 +210,21 @@ const MovieDetail = () => {
             </TabContext>
           </Box>
           <TabPanel value="1">
-            {" "}
-            <Stack>
-              {dataVideo?.results && dataVideo.results.length > 0 && (
-                <Stack alignItems="center" spacing={1}>
+
+            <Stack alignItems="center" direction="row" spacing={1} sx={{ overflowX: "auto" }}>
+              {dataVideo?.results.map((video) => (
+                <Stack key={video.id} >
                   <ReactPlayer
-                    key={dataVideo.results[currentVideoIndex].id}
-                    url={`https://www.youtube.com/watch?v=${dataVideo.results[currentVideoIndex].key}`}
-                    width="100%"
-                    height="200px"
+                    key={video.id}
+                    url={`https://www.youtube.com/watch?v=${video.key}`}
+                    width="320px"
+                    height="100%"
                     controls={true}
                   />
-                  <Stack direction="row" spacing={1} alignItems="center">
-                    <ArrowBackIosNewTwoToneIcon
-                      sx={Styles._button}
-                      onClick={handlePrevVideo}
-                    />
-                    <ArrowForwardIosTwoToneIcon
-                      sx={Styles._button}
-                      onClick={handleNextVideo}
-                    />
-                  </Stack>
                 </Stack>
-              )}
+              ))}
             </Stack>
+
           </TabPanel>
           <TabPanel value="2">
             {" "}
@@ -265,8 +256,8 @@ const MovieDetail = () => {
                     {expandedOverview === review.content
                       ? review.content
                       : review.content.length > 90
-                      ? `${review.content.slice(0, 90)}...`
-                      : review.content}
+                        ? `${review.content.slice(0, 90)}...`
+                        : review.content}
                     {review.content.length > 90 && (
                       <Button
                         sx={{ fontSize: "12px", color: "blue" }}
@@ -342,8 +333,8 @@ const MovieDetail = () => {
                 {expandedOverview === movie.title
                   ? movie.title
                   : movie.title.length > 15
-                  ? `${movie.title.slice(0, 15)}...`
-                  : movie.title}
+                    ? `${movie.title.slice(0, 15)}...`
+                    : movie.title}
               </Typography>
               <Stack direction={"row"} spacing={2}>
                 <Box

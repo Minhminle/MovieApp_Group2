@@ -22,6 +22,7 @@ import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import DownloadIcon from "@mui/icons-material/Download";
 import StarIcon from "@mui/icons-material/Star";
 import { format } from "date-fns";
+import DetailHeader from "@/components/movie/DeatailHeader";
 
 export interface Cast {
   id: number;
@@ -74,101 +75,8 @@ const MovieDetail = () => {
   if (error) return <div>Error loading movie details</div>;
   if (!data) return <div>Loading...</div>;
   return (
-    <Stack>
-      <Box
-        component="img"
-        src={`https://image.tmdb.org/t/p/w500${data.poster_path}`}
-        alt={data.title}
-        sx={{
-          position: "relative",
-          boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.3)",
-        }}
-      />
-      <Chip
-        icon={<ThumbUpIcon />}
-        label={`${data.vote_count}`}
-        sx={{
-          position: "absolute",
-          top: "15px",
-          right: "15px",
-          zIndex: 1,
-          backgroundColor: "yellow",
-          color: "black",
-        }}
-      />
-
-      <Box>
-        <Stack
-          spacing={1}
-          sx={{
-            background: "linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1))",
-            position: "absolute",
-            bottom: "90px",
-            zIndex: 1,
-            padding: "20px",
-          }}
-        >
-          <Typography variant="h3" sx={{}}>
-            {data.title}
-          </Typography>
-          <Stack direction={"row"}>
-            <Typography sx={{ color: "yellow" }}>
-              <StarIcon></StarIcon>
-            </Typography>
-            <Typography sx={{ color: "yellow" }}>
-              {(data.vote_average * 0.5).toFixed(1)}
-            </Typography>
-            <Typography color={"gray"}>
-              -{formatRuntime(data.runtime)}-
-            </Typography>
-            <Typography color={"gray"}>
-              {format(new Date(data.release_date), "yyyy")}
-            </Typography>
-            <Typography>
-              {data.genres?.map((genre) => (
-                <Typography
-                  key={genre.id}
-                  sx={{
-                    display: "inline-block",
-                    color: "gray",
-                  }}
-                >
-                  -{genre.name}
-                </Typography>
-              ))}
-            </Typography>
-          </Stack>
-          <Stack direction={"row"} spacing={1} width={"100%"}>
-            <Button
-              sx={{
-                backgroundColor: "green",
-                fontSize: "13px",
-              }}
-              variant="contained"
-              startIcon={<PlayCircleFilledIcon />}
-              // onClick={() => handleDetailClick(movie.id)}
-            >
-              Continue Watching
-            </Button>
-            <IconButton color="inherit">
-              <TurnedInIcon
-                sx={{ color: isTurnedInPressed ? "yellow" : "inherit" }}
-                onClick={handleTurnedIn}
-              />
-            </IconButton>
-            <IconButton color="inherit">
-              <ThumbUpIcon
-                sx={{ color: isThumbUpPressed ? "red" : "inherit" }}
-                onClick={handleThumbUp}
-              />
-            </IconButton>
-            <IconButton color="inherit">
-              <DownloadIcon />
-            </IconButton>
-          </Stack>
-        </Stack>
-      </Box>
-
+    <>
+      <DetailHeader></DetailHeader>
       <Box padding={"20px"}>
         <Stack>
           <Typography sx={{ fontSize: "30px" }}>Story Line</Typography>
@@ -189,7 +97,7 @@ const MovieDetail = () => {
           </Typography>
         </Stack>
       </Box>
-    </Stack>
+    </>
   );
 };
 

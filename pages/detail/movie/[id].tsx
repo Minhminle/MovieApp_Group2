@@ -116,6 +116,9 @@ const MovieDetail = () => {
   const loadMoreReviews = () => {
     setVisibleReviews((prevVisibleReviews) => prevVisibleReviews + 2); // Tăng số lượng đánh giá hiển thị thêm 5
   };
+  const handleDetailCastClick = (actorid: number) => {
+    router.push(`/detail/cast/${actorid}`);
+  };
 
   if (error) return <div>Error loading movie details</div>;
   if (!data) return <div>Loading...</div>;
@@ -142,6 +145,7 @@ const MovieDetail = () => {
                   borderRadius: "8px",
                 }}
               >
+                <Box color="white">{actor.id}</Box>
                 <Stack direction="row" alignItems="center">
                   <Avatar
                     src={`https://image.tmdb.org/t/p/w500${actor.profile_path}`}
@@ -151,6 +155,7 @@ const MovieDetail = () => {
                       width: "80px",
                       height: "80px",
                     }}
+                    onClick={() => handleDetailCastClick(actor.id)}
                   />
                   <Box width="100px">
                     <Typography sx={{ fontWeight: "bold" }}>

@@ -214,13 +214,15 @@ const MovieDetail = () => {
             <Stack>
               {dataVideo?.results && dataVideo.results.length > 0 && (
                 <Stack alignItems="center" spacing={1}>
-                  <ReactPlayer
-                    key={dataVideo.results[currentVideoIndex].id}
-                    url={`https://www.youtube.com/watch?v=${dataVideo.results[currentVideoIndex].key}`}
-                    width="100%"
-                    height="200px"
-                    controls={true}
-                  />
+                  <Box sx={{ overflow: "auto" }}>
+                    <ReactPlayer
+                      key={dataVideo.results[currentVideoIndex].id}
+                      url={`https://www.youtube.com/watch?v=${dataVideo.results[currentVideoIndex].key}`}
+                      width="100%"
+                      height="200px"
+                    />
+                  </Box>
+
                   <Stack direction="row" spacing={1} alignItems="center">
                     <ArrowBackIosNewTwoToneIcon
                       sx={Styles._button}

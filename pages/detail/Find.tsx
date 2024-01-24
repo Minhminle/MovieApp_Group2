@@ -79,8 +79,12 @@ const Find = () => {
                   backgroundColor: "#454545",
                   borderRadius: 20,
                   paddingRight: "60px",
+                  "& .MuiOutlinedInput-root": {
+                    "& fieldset": {
+                      border: "none",
+                    },
+                  },
                 }}
-                color="grey"
                 InputProps={{
                   startAdornment: (
                     <>

@@ -12,8 +12,8 @@ const HeaderHome = () => {
       <Box>
         <Stack direction="row" spacing={17}>
           <Stack direction="row">
-            <Box component="img" src="/icons/Logo.svg" />
-            <Box component="img" src="/icons/SaintStream.svg" />
+            <Box component="img" src="/icons/Logo.svg" loading="lazy" />
+            <Box component="img" src="/icons/SaintStream.svg" loading="lazy" />
           </Stack>
           <Stack direction="row" spacing={3}>
             <SearchIcon

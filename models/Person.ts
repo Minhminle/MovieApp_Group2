@@ -13,6 +13,7 @@ export interface Person {
   biography: string;
   external_ids: ExternalIds;
   movie_credits: MovieCredits;
+  known_for_department: string;
 }
 export interface MovieCredits {
   cast: Movie[];

@@ -35,7 +35,10 @@ const Find = () => {
   const handleSearchChange = (event) => {
     const newSearchQuery = event.target.value;
     setSearchQuery(newSearchQuery);
+
     if (newSearchQuery.trim() === "") {
+      setShowGenres(true);
+    } else {
       setShowGenres(false);
     }
   };

@@ -9,7 +9,7 @@ import { CreditSection } from "@/models/Credit";
 import { color } from "@mui/system";
 import { format } from "date-fns";
 import StarIcon from "@mui/icons-material/Star";
-import ArrowCircleLeftIcon from "@mui/icons-material/ArrowCircleLeft";
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 const DetailCast = () => {
     const getGenderLabel = (gender) => {
         return gender === 2 ? "Male" : gender === 1 ? "Female" : "Unknown";
@@ -35,7 +35,7 @@ const DetailCast = () => {
     };
     return (
         <>
-            <ArrowCircleLeftIcon
+            <ArrowBackIcon
                 onClick={() => router.back()}
                 sx={{ fontSize: "40px" }}
             />
@@ -81,7 +81,7 @@ const DetailCast = () => {
                 </Stack>
             )}
             <Typography variant="h4" sx={{ ..._letterStyles, padding: "10px" }}>
-                Similar Movies:
+                Know For:
             </Typography>
             <Stack
                 direction="row"

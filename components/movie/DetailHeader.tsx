@@ -24,6 +24,7 @@ import StarIcon from "@mui/icons-material/Star";
 import { format } from "date-fns";
 import ArrowCircleLeftIcon from "@mui/icons-material/ArrowCircleLeft";
 import FavoriteIcon from "@mui/icons-material/Favorite";
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 export interface Cast {
   id: number;
   name: string;
@@ -81,7 +82,7 @@ const DetailHeader = () => {
         spacing={32}
         sx={{ position: "absolute", zIndex: "1", left: "20px", top: "20px" }}
       >
-        <ArrowCircleLeftIcon
+        <ArrowBackIcon
           onClick={() => router.back()}
           sx={{ fontSize: "40px" }}
         />
@@ -108,7 +109,7 @@ const DetailHeader = () => {
           alt={data.title}
           sx={{
             boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.3)",
-            width: "385px",
+            width: "400px",
           }}
         />
         <Box

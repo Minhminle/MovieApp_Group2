@@ -12,7 +12,7 @@ import { format } from "date-fns";
 
 const MovieFeature = () => {
   const router = useRouter();
-  const { data, isLoading, error } = useSWR<MovieList>("/movie/upcoming");
+  const { data, isLoading, error } = useSWR<MovieList>("/movie/top_rated");
   const { data: dataGenre } = useSWR("/genre/movie/list");
 
   console.log(data);

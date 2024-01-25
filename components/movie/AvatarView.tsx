@@ -46,8 +46,8 @@ function LoggedInAvatar(props: { data: User }) {
 
   return (
     <>
-      <Button onClick={handleMenuClick} variant="text" sx={{ color: "white"}}>
-        <Stack direction="row" sx={{marginRight:"40px"}}>
+      <Button onClick={handleMenuClick} variant="text" sx={{ color: "white" }}>
+        <Stack direction="row" sx={{ marginRight: "40px" }}>
           {avatar_path ? <Box component="img" src={avatar_path} /> : <Person />}
         </Stack>
       </Button>

@@ -1,33 +1,57 @@
-import { Box, Button, Chip, Stack, Typography, TextField } from "@mui/material";
+import {
+  Box,
+  Button,
+  Chip,
+  Stack,
+  Typography,
+  TextField,
+  Select,
+  MenuItem,
+} from "@mui/material";
 import React, { useState } from "react";
 import { useRouter } from "next/router";
 import useSWR from "swr";
 import { MovieList } from "@/models/Movie";
+import { GenreList } from "@/models/Movie";
 import { ReactElement } from "react";
 import config from "@/config";
 import { Styles } from "@/stylescomponents/style";
+import { SelectChangeEvent } from "@mui/material/Select";
+
 const Find = () => {
   const router = useRouter();
-  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedGenre, setSelectedGenre] = useState(""); // State để lưu trữ genre được chọn
   const { data, isLoading, error } = useSWR<MovieList>(
-    searchQuery ? `/search/movie?query=${searchQuery}` : null
+    selectedGenre ? `/discover/movie?with_genres=${selectedGenre}` : null
   );
+
   const handleDetailClick = (movieId: string) => {
     router.push(`/detail/movie/${movieId}`);
   };
+
+  // Function để xử lý thay đổi của dropdown để chọn genre
+  const handleGenreChange = (event: SelectChangeEvent<string>) => {
+    setSelectedGenre(event.target.value);
+  };
+
   return (
     <>
       <Stack direction="column" spacing={2}>
         <Box>
-          <TextField
-            fullWidth
-            id="fullWidth"
-            placeholder="Movie name"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+          {/* Thêm dropdown để chọn genre */}
+          <Select
+            value={selectedGenre}
+            onChange={handleGenreChange}
             sx={{ backgroundColor: "white" }}
-            color="warning"
-          />
+            displayEmpty
+          >
+            <MenuItem value="" disabled>
+              Select Genre
+            </MenuItem>
+            <MenuItem value="28">Action</MenuItem>
+            <MenuItem value="35">Comedy</MenuItem>
+            {/* Thêm các MenuItem khác cho các genre khác */}
+          </Select>
         </Box>
         <Box>
           {data && (

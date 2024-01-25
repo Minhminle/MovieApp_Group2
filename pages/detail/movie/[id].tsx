@@ -1,8 +1,8 @@
-// pages/detail/[id].tsx
 import { useRouter } from "next/router";
+import React, { useState } from "react";
 import useSWR from "swr";
-import axios from "axios";
 import {
+  Avatar,
   Box,
   Button,
   Card,
@@ -11,43 +11,39 @@ import {
   Grid,
   IconButton,
   Stack,
+  Tab,
   Typography,
 } from "@mui/material";
-import { ReactElement, useState } from "react";
+import { ReactElement } from "react";
 import { Movie } from "@/models/Movie";
-import { Rating, Chip } from "@mui/material";
-import PlayCircleFilledIcon from "@mui/icons-material/PlayCircleFilled";
-import TurnedInIcon from "@mui/icons-material/TurnedIn";
-import ThumbUpIcon from "@mui/icons-material/ThumbUp";
-import DownloadIcon from "@mui/icons-material/Download";
-import StarIcon from "@mui/icons-material/Star";
-import { format } from "date-fns";
+import Footter from "@/components/movie/Footer";
 import DetailHeader from "@/components/movie/DeatailHeader";
-
 export interface Cast {
   id: number;
   name: string;
   character: string;
   profile_path: string;
-  // Thêm các thuộc tính khác của cast nếu cần
 }
 
 const MovieDetail = () => {
   const router = useRouter();
   const { id } = router.query;
-  const [expandedOverview, setExpandedOverview] = useState<string | null>(null);
-  const toggleText = (overview: string) => {
-    setExpandedOverview((prev) => (prev === overview ? null : overview));
-  };
-  const [isThumbUpPressed, setIsThumbUpPressed] = useState(false);
-
-  const handleThumbUp = () => {
-    setIsThumbUpPressed((prev) => !prev);
-  };
-  const [isTurnedInPressed, setIsTurnedInPressed] = useState(false);
-
-  const handleTurnedIn = () => {
-    setIsTurnedInPressed((prev) => !prev);
+  const { data, error } = useSWR<Movie>(
+    `/movie/${id}?append_to_response=credits`
+  );
+  const { data: similarMoviesData, error: similarMoviesError } = useSWR(
+    `/movie/${id}/similar`
+  );
+  const { data: MoviesLists, error: listsMoviesError } = useSWR(
+    `/movie/${id}/lists`
+  );
+  const { data: dataVideo } = useSWR(`/movie/${id}/videos`);
+  const { data: datareview } = useSWR(`/movie/${id}/reviews`);
+  const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
+  const handleNextVideo = () => {
+    setCurrentVideoIndex((prevIndex) =>
+      prevIndex === dataVideo?.results.length - 1 ? 0 : prevIndex + 1
+    );
   };
 
   const formatRuntime = (minutes: number): string => {
@@ -64,39 +60,111 @@ const MovieDetail = () => {
 
     return "";
   };
+  const _letterStyles = {
+    color: "white",
+    fontWeight: "700",
+  };
+  const [isThumbUpPressed, setIsThumbUpPressed] = useState(false);
+  const [value, setValue] = React.useState("1");
 
-  const fetcher = (url: string) =>
-    axios.get(url).then((response) => response.data);
-  const { data, error } = useSWR<Movie>(
-    `/movie/${id}?append_to_response=credits`,
-    fetcher
-  );
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
+
+  const handleThumbUp = () => {
+    setIsThumbUpPressed((prev) => !prev);
+  };
+  const [isTurnedInPressed, setIsTurnedInPressed] = useState(false);
+
+  const handleTurnedIn = () => {
+    setIsTurnedInPressed((prev) => !prev);
+  };
+  const handlePrevVideo = () => {
+    setCurrentVideoIndex((prevIndex) =>
+      prevIndex === 0 ? dataVideo?.results.length - 1 : prevIndex - 1
+    );
+  };
+  const handleDetailClick = (movieId: string) => {
+    router.push(`/detail/movie/${movieId}`);
+  };
+  const [expandedOverview, setExpandedOverview] = useState<string | null>(null);
+  const toggleText = (overview: string) => {
+    setExpandedOverview((prev) => (prev === overview ? null : overview));
+  };
+
+  const [visibleReviews, setVisibleReviews] = useState(2); // Số lượng đánh giá hiển thị ban đầu
+
+  const loadMoreReviews = () => {
+    setVisibleReviews((prevVisibleReviews) => prevVisibleReviews + 2); // Tăng số lượng đánh giá hiển thị thêm 5
+  };
+  const handleDetailCastClick = (actorid: number) => {
+    router.push(`/detail/cast/${actorid}`);
+  };
 
   if (error) return <div>Error loading movie details</div>;
   if (!data) return <div>Loading...</div>;
+
   return (
     <>
       <DetailHeader></DetailHeader>
-      <Box padding={"20px"}>
-        <Stack>
-          <Typography sx={{ fontSize: "30px" }}>Story Line</Typography>
-          <Typography sx={{ fontSize: "18px", color: "#555" }}>
-            {expandedOverview === data.overview
-              ? data.overview
-              : data.overview.length > 90
-              ? `${data.overview.slice(0, 90)}...`
-              : data.overview}
-            {data.overview.length > 90 && (
-              <Button
-                sx={{ fontSize: "12px", color: "green" }}
-                onClick={() => toggleText(data.overview)}
+      <Typography variant="h5" sx={{ color: "#1de9b6", marginTop: "10px" }}>
+        <Typography variant="h4" sx={{ ..._letterStyles, padding: "10px" }}>
+          Top Cast
+        </Typography>
+        <Stack
+          gap={2}
+          direction="row"
+          alignItems="center"
+          sx={{ overflowX: "auto" }}
+        >
+          {data.credits?.cast?.map((actor) => (
+            <Stack key={actor.id}>
+              <Box
+                sx={{
+                  color: "white",
+                  padding: "10px",
+                  borderRadius: "8px",
+                }}
               >
-                {expandedOverview === data.overview ? "Less" : "More"}
-              </Button>
-            )}
-          </Typography>
+                <Box color="white">{actor.id}</Box>
+                <Stack direction="row" alignItems="center">
+                  <Avatar
+                    src={`https://image.tmdb.org/t/p/w500${actor.profile_path}`}
+                    alt={actor.name}
+                    sx={{
+                      marginRight: "10px",
+                      width: "80px",
+                      height: "80px",
+                    }}
+                    onClick={() => handleDetailCastClick(actor.id)}
+                  />
+                  <Box width="100px">
+                    <Typography sx={{ fontWeight: "bold" }}>
+                      {expandedOverview === actor.name
+                        ? actor.name
+                        : actor.name.length > 15
+                        ? `${actor.name.slice(0, 15)}...`
+                        : actor.name}
+                    </Typography>
+                    <Typography
+                      color="gray"
+                      variant="body2"
+                      sx={{ fontWeight: "bold" }}
+                    >
+                      {expandedOverview === actor.character
+                        ? actor.character
+                        : actor.character.length > 15
+                        ? `${actor.character.slice(0, 15)}...`
+                        : actor.character}
+                    </Typography>
+                  </Box>
+                </Stack>
+              </Box>
+            </Stack>
+          ))}
         </Stack>
-      </Box>
+      </Typography>
+      <Footter />
     </>
   );
 };

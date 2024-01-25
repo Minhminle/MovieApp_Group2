@@ -22,7 +22,8 @@ import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import DownloadIcon from "@mui/icons-material/Download";
 import StarIcon from "@mui/icons-material/Star";
 import { format } from "date-fns";
-
+import ArrowCircleLeftIcon from "@mui/icons-material/ArrowCircleLeft";
+import FavoriteIcon from "@mui/icons-material/Favorite";
 export interface Cast {
   id: number;
   name: string;
@@ -75,35 +76,57 @@ const DetailHeader = () => {
   if (!data) return <div>Loading...</div>;
   return (
     <>
-      <Stack>
-        <Box
-          component="img"
-          src={`https://image.tmdb.org/t/p/w500${data.poster_path}`}
-          alt={data.title}
-          sx={{
-            position: "relative",
-            boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.3)",
+      <Stack
+        direction="row"
+        spacing={32}
+        sx={{ position: "absolute", zIndex: "1", left: "20px", top: "20px" }}
+      >
+        <ArrowCircleLeftIcon
+          onClick={() => {
+            router.push("/");
           }}
+          sx={{ fontSize: "40px" }}
         />
         <Chip
-          icon={<ThumbUpIcon />}
+          icon={<FavoriteIcon />}
           label={`${data.vote_count}`}
           sx={{
-            position: "absolute",
             top: "15px",
             right: "15px",
-            zIndex: 1,
+
             backgroundColor: "yellow",
             color: "black",
           }}
         />
-        <Box>
+      </Stack>
+      <Box sx={{ position: "relative" }}>
+        <Box
+          component="img"
+          src={
+            data.poster_path
+              ? `https://image.tmdb.org/t/p/w400${data.poster_path}`
+              : "/images/DefaultPoster.png" // Đường dẫn đến hình ảnh mặc định
+          }
+          alt={data.title}
+          sx={{
+            boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.3)",
+            width: "385px",
+          }}
+        />
+        <Box
+          sx={{
+            position: "absolute",
+            zIndex: "1",
+            bottom: "0px",
+            right: "-11px",
+          }}
+        >
           <Stack
             spacing={1}
             sx={{
               background: "linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1))",
-              position: "absolute",
-              bottom: 0,
+              width: "350px",
+              bottom: "0px",
               zIndex: 1,
               padding: "20px",
             }}
@@ -157,7 +180,7 @@ const DetailHeader = () => {
                 />
               </IconButton>
               <IconButton color="inherit">
-                <ThumbUpIcon
+                <FavoriteIcon
                   sx={{ color: isThumbUpPressed ? "red" : "inherit" }}
                   onClick={handleThumbUp}
                 />
@@ -166,6 +189,29 @@ const DetailHeader = () => {
                 <DownloadIcon />
               </IconButton>
             </Stack>
+          </Stack>
+        </Box>
+      </Box>
+
+      <Stack>
+        <Box padding={"20px"}>
+          <Stack>
+            <Typography sx={{ fontSize: "30px" }}>Story Line</Typography>
+            <Typography sx={{ fontSize: "18px", color: "#555" }}>
+              {expandedOverview === data.overview
+                ? data.overview
+                : data.overview.length > 90
+                ? `${data.overview.slice(0, 90)}...`
+                : data.overview}
+              {data.overview.length > 90 && (
+                <Button
+                  sx={{ fontSize: "12px", color: "green" }}
+                  onClick={() => toggleText(data.overview)}
+                >
+                  {expandedOverview === data.overview ? "Less" : "More"}
+                </Button>
+              )}
+            </Typography>
           </Stack>
         </Box>
       </Stack>

@@ -14,7 +14,7 @@ import { format } from "date-fns";
 
 const MovieAward: NextPageWithLayout = () => {
   const router = useRouter();
-  const { data, isLoading, error } = useSWR<MovieList>("/movie/upcoming");
+  const { data, isLoading, error } = useSWR<MovieList>("/movie/top_rated");
   const [expandedOverview, setExpandedOverview] = useState<string | null>(null);
   const toggleText = (overview: string) => {
     setExpandedOverview((prev) => (prev === overview ? null : overview));

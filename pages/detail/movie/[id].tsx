@@ -145,7 +145,7 @@ const MovieDetail = () => {
                   borderRadius: "8px",
                 }}
               >
-                <Box color="white">{actor.id}</Box>
+
                 <Stack direction="row" alignItems="center">
                   <Avatar
                     src={`https://image.tmdb.org/t/p/w500${actor.profile_path}`}

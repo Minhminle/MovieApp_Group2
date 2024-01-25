@@ -82,9 +82,7 @@ const DetailHeader = () => {
         sx={{ position: "absolute", zIndex: "1", left: "20px", top: "20px" }}
       >
         <ArrowCircleLeftIcon
-          onClick={() => {
-            router.push("/");
-          }}
+          onClick={() => router.back()}
           sx={{ fontSize: "40px" }}
         />
         <Chip
@@ -169,7 +167,7 @@ const DetailHeader = () => {
                 }}
                 variant="contained"
                 startIcon={<PlayCircleFilledIcon />}
-                // onClick={() => handleDetailClick(movie.id)}
+              // onClick={() => handleDetailClick(movie.id)}
               >
                 Continue Watching
               </Button>
@@ -201,8 +199,8 @@ const DetailHeader = () => {
               {expandedOverview === data.overview
                 ? data.overview
                 : data.overview.length > 90
-                ? `${data.overview.slice(0, 90)}...`
-                : data.overview}
+                  ? `${data.overview.slice(0, 90)}...`
+                  : data.overview}
               {data.overview.length > 90 && (
                 <Button
                   sx={{ fontSize: "12px", color: "green" }}

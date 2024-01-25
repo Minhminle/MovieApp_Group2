@@ -82,9 +82,7 @@ const DetailHeader = () => {
         sx={{ position: "absolute", zIndex: "1", left: "20px", top: "20px" }}
       >
         <ArrowCircleLeftIcon
-          onClick={() => {
-            router.push("/");
-          }}
+          onClick={() => router.back()}
           sx={{ fontSize: "40px" }}
         />
         <Chip

@@ -7,7 +7,6 @@ import useSWR from "swr";
 import { Movie, MovieList } from "@/models/Movie";
 import { Card, CardContent, CardMedia } from "@mui/material";
 import StarIcon from "@mui/icons-material/Star";
-import { Genres } from "@/models/Geners";
 
 const MovieCategory: NextPageWithLayout = () => {
   const router = useRouter();
@@ -20,12 +19,12 @@ const MovieCategory: NextPageWithLayout = () => {
     data: data2,
     isLoading: isLoading2,
     error: error2,
-  } = useSWR<MovieList>("/movie/upcoming");
+  } = useSWR<MovieList>("/movie/top_rated");
   const {
     data: data3,
     isLoading: isLoading3,
     error: error3,
-  } = useSWR<MovieList>("/movie/top_rated");
+  } = useSWR<MovieList>("/movie/popular");
 
   const handleDetailClick = (movieId: string) => {
     router.push(`/detail/movie/${movieId}`);
@@ -64,7 +63,11 @@ const MovieCategory: NextPageWithLayout = () => {
               onClick={() => handleDetailClick(movie.id)}
               component="img"
               alt={movie.title}
-              image={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+              image={
+                movie.poster_path
+                  ? `https://image.tmdb.org/t/p/w500${movie.backdrop_path}`
+                  : "/images/DefaultPoster.png" // Đường dẫn đến hình ảnh mặc định
+              }
             />
             <CardContent>
               <Typography
@@ -141,7 +144,7 @@ const MovieCategory: NextPageWithLayout = () => {
               onClick={() => handleDetailClick(movie.id)}
               component="img"
               alt={movie.title}
-              image={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+              image={`https://image.tmdb.org/t/p/w500${movie.backdrop_path}`}
             />
             <CardContent>
               <Typography
@@ -218,7 +221,7 @@ const MovieCategory: NextPageWithLayout = () => {
               onClick={() => handleDetailClick(movie.id)}
               component="img"
               alt={movie.title}
-              image={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+              image={`https://image.tmdb.org/t/p/w500${movie.backdrop_path}`}
             />
             <CardContent>
               <Typography

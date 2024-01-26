@@ -1,4 +1,4 @@
-import { CreateSessionInput, SessionResponse } from "@/models/Auth";
+import { CreateSessionInput, SessionResponse } from "../../models/Auth";
 import { Typography } from "@mui/material";
 import axios from "axios";
 import { setCookie } from "cookies-next";

@@ -64,7 +64,7 @@ const MovieFeature = () => {
                   }
                   width={300}
                   height={500}
-                  sx={{ borderRadius: "10%" }}
+                  sx={{ borderRadius: "15%" }}
                   onClick={() => handleDetailClick(movie.id)}
                 />
 

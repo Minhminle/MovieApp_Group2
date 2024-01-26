@@ -14,7 +14,7 @@ import {
   ListItemButton,
   ListItemText,
 } from "@mui/material";
-import { RequestTokenResponse, User } from "../../models/Auth";
+import { RequestTokenResponse, User } from "@/models/Auth";
 import axios from "axios";
 import useSWR from "swr";
 import { getCookie, setCookie, deleteCookie } from "cookies-next";

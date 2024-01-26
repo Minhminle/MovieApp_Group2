@@ -25,3 +25,8 @@ export type CreateSessionInput = {
   url: string;
   token: string;
 };
+export type Authentication={
+  
+  token:string;
+
+}

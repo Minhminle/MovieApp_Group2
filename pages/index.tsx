@@ -5,7 +5,7 @@ import HomePage from "@/components/HomePage";
 const Home: React.FC = () => {
   return (
     <>
-      <HomePage />
+    <HomePage/>
     </>
   );
 };

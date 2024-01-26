@@ -1,20 +1,12 @@
-import Head from "next/head";
-import Image from "next/image";
-import { Inter } from "next/font/google";
-import styles from "@/styles/Home.module.css";
-import MovieContent from "@/components/movie/MovieContent";
-import { Box } from "@mui/material";
+import React from "react";
 
-const inter = Inter({ subsets: ["latin"] });
+import HomePage from "@/components/HomePage";
 
-export default function Home() {
+const Home: React.FC = () => {
   return (
     <>
-      <main>
-        <Box sx={{ backgroundColor: "black", color: "white" }}>
-          <MovieContent />
-        </Box>
-      </main>
+      <HomePage />
     </>
   );
-}
+};
+export default Home;

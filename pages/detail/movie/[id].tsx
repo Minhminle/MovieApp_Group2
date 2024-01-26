@@ -268,6 +268,31 @@ const MovieDetail = () => {
             </TabContext>
           </Box>
           <TabPanel value="1">
+<<<<<<< HEAD
+            {" "}
+            <Stack>
+              {dataVideo?.results && dataVideo.results.length > 0 && (
+                <Stack alignItems="center" spacing={1}>
+                  <Box sx={{ overflow: "auto" }}>
+                    <ReactPlayer
+                      key={dataVideo.results[currentVideoIndex].id}
+                      url={`https://www.youtube.com/watch?v=${dataVideo.results[currentVideoIndex].key}`}
+                      width="100%"
+                      height="200px"
+                    />
+                  </Box>
+
+                  <Stack direction="row" spacing={1} alignItems="center">
+                    <ArrowBackIosNewTwoToneIcon
+                      sx={Styles._button}
+                      onClick={handlePrevVideo}
+                    />
+                    <ArrowForwardIosTwoToneIcon
+                      sx={Styles._button}
+                      onClick={handleNextVideo}
+                    />
+                  </Stack>
+=======
             <Stack
               alignItems="center"
               direction="row"
@@ -283,6 +308,7 @@ const MovieDetail = () => {
                     height="100%"
                     controls={true}
                   />
+>>>>>>> develop
                 </Stack>
               ))}
             </Stack>

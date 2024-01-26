@@ -30,6 +30,7 @@ export interface Movie {
   id: string;
   title: string;
   Genne: string[];
+  genre_ids: number[];
   poster_path: string;
   backdrop_path: string;
   budget: string;

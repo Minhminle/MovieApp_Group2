@@ -82,9 +82,17 @@ const DetailHeader = () => {
         spacing={32}
         sx={{ position: "absolute", zIndex: "1", left: "20px", top: "20px" }}
       >
+<<<<<<< HEAD
+        <ArrowCircleLeftIcon
+          onClick={() => {
+            router.push("/");
+          }}
+          sx={{ fontSize: "30px" }}
+=======
         <ArrowBackIcon
           onClick={() => router.back()}
           sx={{ fontSize: "40px" }}
+>>>>>>> develop
         />
         <Chip
           icon={<FavoriteIcon />}
@@ -100,7 +108,15 @@ const DetailHeader = () => {
       </Stack>
       <Box sx={{ position: "relative" }}>
         <Box
+          loading="eager"
           component="img"
+<<<<<<< HEAD
+          src={`https://image.tmdb.org/t/p/w400${data.poster_path}`}
+          alt={data.title}
+          sx={{
+            boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.3)",
+            width: "385px",
+=======
           src={
             data.poster_path
               ? `https://image.tmdb.org/t/p/w400${data.poster_path}`
@@ -110,6 +126,7 @@ const DetailHeader = () => {
           sx={{
             boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.3)",
             width: "400px",
+>>>>>>> develop
           }}
         />
         <Box

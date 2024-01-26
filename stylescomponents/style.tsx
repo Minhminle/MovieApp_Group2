@@ -6,3 +6,6 @@ export const Styles = {
   _iconheaderhome: { color: "white", fontSize: "30px" },
   _iconresultfind: { color: "white" },
 };
+export const Color = {
+  Grey500: "red",
+};

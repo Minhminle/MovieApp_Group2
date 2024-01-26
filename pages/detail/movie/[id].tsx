@@ -2,13 +2,7 @@ import { useRouter } from "next/router";
 import React, { useState } from "react";
 import useSWR from "swr";
 import axios from "axios";
-<<<<<<< HEAD
-import React, { useState } from "react";
-import { Reviews, ListReview } from "@/models/Reviews";
-import { format } from "date-fns";
-=======
 import ReactPlayer from "react-player";
->>>>>>> develop
 import {
   Avatar,
   Box,
@@ -51,22 +45,9 @@ export interface Cast {
 }
 
 const MovieDetail = () => {
-  const [visibleReviews, setVisibleReviews] = useState(2); // Số lượng đánh giá hiển thị ban đầu
-
-  const loadMoreReviews = () => {
-    setVisibleReviews((prevVisibleReviews) => prevVisibleReviews + 2); // Tăng số lượng đánh giá hiển thị thêm 5
-  };
-
-  const [expandedOverview, setExpandedOverview] = useState<string | null>(null);
   const router = useRouter();
   const { id } = router.query;
   const { data, error } = useSWR<Movie>(
-<<<<<<< HEAD
-    `/movie/${id}?append_to_response=credits,`,
-    fetcher
-  );
-  const { data: datareview } = useSWR(`/movie/${id}/reviews`);
-=======
     `/movie/${id}?append_to_response=credits`
   );
   const { data: similarMoviesData, error: similarMoviesError } = useSWR(
@@ -138,7 +119,6 @@ const MovieDetail = () => {
   const handleDetailCastClick = (actorid: number) => {
     router.push(`/detail/cast/${actorid}`);
   };
->>>>>>> develop
 
   if (error) return <div>Error loading movie details</div>;
   if (!data) return <div>Loading...</div>;
@@ -164,45 +144,12 @@ const MovieDetail = () => {
                   padding: "10px",
                   borderRadius: "8px",
                 }}
-<<<<<<< HEAD
-              />
-            ))}
-          </Typography>
-          {/* <Typography variant="h5" sx={{ color: "#1de9b6", marginTop: "10px" }}>
-            Cast:
-
-            {data.credits?.cast?.slice(0, 5).map((actor) => (
-              <Chip
-                key={actor.id}
-                label={`${actor.name} as ${actor.character}`}
-                sx={{
-                  margin: "3px",
-                  backgroundColor: "#66bb6a",
-                  color: "white",
-                  marginRight: "5px",
-                  marginBottom: "5px",
-                }}
-              />
-            ))}
-          </Typography> */}
-          <Typography variant="h5" sx={{ color: "#1de9b6", marginTop: "10px" }}>
-            Top Cast:
-            <Stack
-              gap={2}
-              direction="row"
-              alignItems="center"
-              sx={{ overflowX: "auto" }}
-            >
-              {data.credits?.cast?.map((actor) => (
-                <Stack key={actor.id}>
-                  <Box
-=======
               >
+
                 <Stack direction="row" alignItems="center">
                   <Avatar
                     src={`https://image.tmdb.org/t/p/w500${actor.profile_path}`}
                     alt={actor.name}
->>>>>>> develop
                     sx={{
                       marginRight: "10px",
                       width: "80px",
@@ -215,8 +162,8 @@ const MovieDetail = () => {
                       {expandedOverview === actor.name
                         ? actor.name
                         : actor.name.length > 15
-                        ? `${actor.name.slice(0, 15)}...`
-                        : actor.name}
+                          ? `${actor.name.slice(0, 15)}...`
+                          : actor.name}
                     </Typography>
                     <Typography
                       color="gray"
@@ -226,8 +173,8 @@ const MovieDetail = () => {
                       {expandedOverview === actor.character
                         ? actor.character
                         : actor.character.length > 15
-                        ? `${actor.character.slice(0, 15)}...`
-                        : actor.character}
+                          ? `${actor.character.slice(0, 15)}...`
+                          : actor.character}
                     </Typography>
                   </Box>
                 </Stack>
@@ -268,39 +215,10 @@ const MovieDetail = () => {
             </TabContext>
           </Box>
           <TabPanel value="1">
-<<<<<<< HEAD
-            {" "}
-            <Stack>
-              {dataVideo?.results && dataVideo.results.length > 0 && (
-                <Stack alignItems="center" spacing={1}>
-                  <Box sx={{ overflow: "auto" }}>
-                    <ReactPlayer
-                      key={dataVideo.results[currentVideoIndex].id}
-                      url={`https://www.youtube.com/watch?v=${dataVideo.results[currentVideoIndex].key}`}
-                      width="100%"
-                      height="200px"
-                    />
-                  </Box>
 
-                  <Stack direction="row" spacing={1} alignItems="center">
-                    <ArrowBackIosNewTwoToneIcon
-                      sx={Styles._button}
-                      onClick={handlePrevVideo}
-                    />
-                    <ArrowForwardIosTwoToneIcon
-                      sx={Styles._button}
-                      onClick={handleNextVideo}
-                    />
-                  </Stack>
-=======
-            <Stack
-              alignItems="center"
-              direction="row"
-              spacing={1}
-              sx={{ overflowX: "auto" }}
-            >
+            <Stack alignItems="center" direction="row" spacing={1} sx={{ overflowX: "auto" }}>
               {dataVideo?.results.map((video) => (
-                <Stack key={video.id}>
+                <Stack key={video.id} >
                   <ReactPlayer
                     key={video.id}
                     url={`https://www.youtube.com/watch?v=${video.key}`}
@@ -308,10 +226,10 @@ const MovieDetail = () => {
                     height="100%"
                     controls={true}
                   />
->>>>>>> develop
                 </Stack>
               ))}
             </Stack>
+
           </TabPanel>
           <TabPanel value="2">
             {" "}
@@ -321,98 +239,13 @@ const MovieDetail = () => {
                   <Stack direction="row">
                     <Box>
                       <Avatar
-<<<<<<< HEAD
-                        src={`https://image.tmdb.org/t/p/w500${actor.profile_path}`}
-                        alt={actor.name}
-=======
                         src={`https://image.tmdb.org/t/p/w500${review.author_details.avatar_path}`}
->>>>>>> develop
                         sx={{
                           marginRight: "10px",
                           width: "80px",
                           height: "80px",
                         }}
                       />
-<<<<<<< HEAD
-                      <Box width="100px">
-                        <Typography sx={{ fontWeight: "bold" }}>
-                          {expandedOverview === actor.name
-                            ? actor.name
-                            : actor.name.length > 15
-                            ? `${actor.name.slice(0, 15)}...`
-                            : actor.name}
-                        </Typography>
-                        <Typography
-                          color="gray"
-                          variant="body2"
-                          sx={{ fontWeight: "bold" }}
-                        >
-                          {expandedOverview === actor.character
-                            ? actor.character
-                            : actor.character.length > 15
-                            ? `${actor.character.slice(0, 15)}...`
-                            : actor.character}
-                        </Typography>
-                      </Box>
-                    </Stack>
-                  </Box>
-                </Stack>
-              ))}
-            </Stack>
-          </Typography>
-        </Box>
-      </Stack>
-      <Stack gap={4} direction="column">
-        {datareview?.results.slice(0, visibleReviews).map((review) => (
-          <Stack key={review.id}>
-            <Stack direction="row">
-              <Box>
-                <Avatar
-                  src={`https://image.tmdb.org/t/p/w500${review.author_details.avatar_path}`}
-                  sx={{
-                    marginRight: "10px",
-                    width: "80px",
-                    height: "80px",
-                  }}
-                />
-              </Box>
-              <Stack direction="column" sx={{ marginTop: "15px" }}>
-                <Box color="white"> {review.author}</Box>
-                <Box color="gray">
-                  {format(new Date(review.updated_at), "dd/MM/yyyy HH:mm:ss")}
-                </Box>
-              </Stack>
-            </Stack>
-            <Typography>
-              {expandedOverview === review.content
-                ? review.content
-                : review.content.length > 400
-                ? `${review.content.slice(0, 400)}...`
-                : review.content}
-              <Button variant="text">Read More</Button>
-            </Typography>
-          </Stack>
-        ))}
-        {datareview?.results.length > visibleReviews && (
-          <Box textAlign="center" mt={2}>
-            <Button
-              variant="contained"
-              color="primary" // Chọn màu sắc phù hợp
-              onClick={loadMoreReviews}
-              style={{
-                borderRadius: "8px", // Điều chỉnh góc bo
-                padding: "12px 24px", // Điều chỉnh khoảng cách nút
-                fontSize: "16px", // Điều chỉnh kích thước chữ
-                textTransform: "none", // Ngăn chữ in hoa
-              }}
-            >
-              Load More
-            </Button>
-          </Box>
-        )}
-      </Stack>
-      <Footter></Footter>
-=======
                     </Box>
                     <Stack direction="column" sx={{ marginTop: "15px" }}>
                       <Box color="white"> {review.author}</Box>
@@ -428,8 +261,8 @@ const MovieDetail = () => {
                     {expandedOverview === review.content
                       ? review.content
                       : review.content.length > 90
-                      ? `${review.content.slice(0, 90)}...`
-                      : review.content}
+                        ? `${review.content.slice(0, 90)}...`
+                        : review.content}
                     {review.content.length > 90 && (
                       <Button
                         sx={{ fontSize: "12px", color: "blue" }}
@@ -505,8 +338,8 @@ const MovieDetail = () => {
                 {expandedOverview === movie.title
                   ? movie.title
                   : movie.title.length > 15
-                  ? `${movie.title.slice(0, 15)}...`
-                  : movie.title}
+                    ? `${movie.title.slice(0, 15)}...`
+                    : movie.title}
               </Typography>
               <Stack direction={"row"} spacing={2}>
                 <Box
@@ -537,7 +370,6 @@ const MovieDetail = () => {
         ))}
       </Stack>
       <Footter />
->>>>>>> develop
     </>
   );
 };

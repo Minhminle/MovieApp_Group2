@@ -1,4 +1,5 @@
 import { MovieList } from "@/models/Movie";
+import { GenreList } from "@/models/Movie";
 import { Box, Button, Container, Stack, Typography } from "@mui/material";
 import axios from "axios";
 import Link from "next/link";
@@ -10,8 +11,8 @@ import { useState } from "react";
 
 const MovieRate = () => {
   const router = useRouter();
-  const { data, isLoading, error } = useSWR<MovieList>("/movie/popular");
-  const { data: dataGenre } = useSWR("/genre/movie/list");
+  const { data } = useSWR<MovieList>("/movie/popular");
+  const { data: dataGenre } = useSWR<GenreList>("/genre/movie/list");
   console.log(data);
   const handleDetailClick = (movieId: string) => {
     router.push(`/detail/movie/${movieId}`);
@@ -63,7 +64,11 @@ const MovieRate = () => {
             </Typography>
             <Box
               component="img"
-              src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+              src={
+                movie.poster_path
+                  ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
+                  : "/images/DefaultPoster.png" // Đường dẫn đến hình ảnh mặc định
+              }
               width={200}
               height={300}
               sx={{ borderRadius: "20%" }}

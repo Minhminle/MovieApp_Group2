@@ -8,10 +8,11 @@ import StarIcon from "@mui/icons-material/Star";
 import PlayCircleFilledIcon from "@mui/icons-material/PlayCircleFilled";
 import TurnedInNotIcon from "@mui/icons-material/TurnedInNot";
 import React, { useState } from "react";
+import { format } from "date-fns";
 
 const MovieFeature = () => {
   const router = useRouter();
-  const { data, isLoading, error } = useSWR<MovieList>("/movie/upcoming");
+  const { data, isLoading, error } = useSWR<MovieList>("/movie/top_rated");
   const { data: dataGenre } = useSWR("/genre/movie/list");
 
   console.log(data);
@@ -56,7 +57,11 @@ const MovieFeature = () => {
               >
                 <Box
                   component="img"
-                  src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+                  src={
+                    movie.poster_path
+                      ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
+                      : "/images/DefaultPoster.png" // Đường dẫn đến hình ảnh mặc định
+                  }
                   width={300}
                   height={500}
                   sx={{ borderRadius: "15%" }}
@@ -153,7 +158,9 @@ const MovieFeature = () => {
                     >
                       {(movie.vote_average * 0.5).toFixed(1)}
                     </Box>
-                    <Box sx={{ color: "gray" }}>{movie.release_date}</Box>
+                    <Box sx={{ paddingTop: "2px" }}>
+                      {format(new Date(movie.release_date), "dd/MM/yyyy")}
+                    </Box>
                     <Typography
                       variant="body2"
                       sx={{

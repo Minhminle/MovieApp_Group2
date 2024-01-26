@@ -3,7 +3,7 @@ export interface CreditSection {
   crew: Crew[];
 }
 
-interface Credit {
+export interface Credit {
   adult: boolean;
   gender: number;
   id: number;

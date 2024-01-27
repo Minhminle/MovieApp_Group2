@@ -24,7 +24,7 @@ import StarIcon from "@mui/icons-material/Star";
 import { format } from "date-fns";
 import ArrowCircleLeftIcon from "@mui/icons-material/ArrowCircleLeft";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 export interface Cast {
   id: number;
   name: string;
@@ -35,6 +35,7 @@ export interface Cast {
 
 const DetailHeader = () => {
   const router = useRouter();
+  const findLink = "/detail/Find";
   const { id } = router.query;
   const [expandedOverview, setExpandedOverview] = useState<string | null>(null);
   const toggleText = (overview: string) => {
@@ -149,6 +150,9 @@ const DetailHeader = () => {
               <Typography>
                 {data.genres?.map((genre) => (
                   <Typography
+                    onClick={() => {
+                      router.push(findLink);
+                    }}
                     key={genre.id}
                     sx={{
                       display: "inline-block",
@@ -168,7 +172,7 @@ const DetailHeader = () => {
                 }}
                 variant="contained"
                 startIcon={<PlayCircleFilledIcon />}
-              // onClick={() => handleDetailClick(movie.id)}
+                // onClick={() => handleDetailClick(movie.id)}
               >
                 Continue Watching
               </Button>
@@ -200,8 +204,8 @@ const DetailHeader = () => {
               {expandedOverview === data.overview
                 ? data.overview
                 : data.overview.length > 90
-                  ? `${data.overview.slice(0, 90)}...`
-                  : data.overview}
+                ? `${data.overview.slice(0, 90)}...`
+                : data.overview}
               {data.overview.length > 90 && (
                 <Button
                   sx={{ fontSize: "12px", color: "green" }}

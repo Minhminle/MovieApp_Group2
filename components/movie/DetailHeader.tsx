@@ -24,7 +24,7 @@ import StarIcon from "@mui/icons-material/Star";
 import { format } from "date-fns";
 import ArrowCircleLeftIcon from "@mui/icons-material/ArrowCircleLeft";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 export interface Cast {
   id: number;
   name: string;
@@ -144,7 +144,8 @@ const DetailHeader = () => {
                 -{formatRuntime(data.runtime)}-
               </Typography>
               <Typography color={"gray"}>
-                {format(new Date(data.release_date), "yyyy")}
+                {data.release_date &&
+                  format(new Date(data.release_date), "yyyy")}
               </Typography>
               <Typography>
                 {data.genres?.map((genre) => (
@@ -168,7 +169,7 @@ const DetailHeader = () => {
                 }}
                 variant="contained"
                 startIcon={<PlayCircleFilledIcon />}
-              // onClick={() => handleDetailClick(movie.id)}
+                // onClick={() => handleDetailClick(movie.id)}
               >
                 Continue Watching
               </Button>
@@ -200,8 +201,8 @@ const DetailHeader = () => {
               {expandedOverview === data.overview
                 ? data.overview
                 : data.overview.length > 90
-                  ? `${data.overview.slice(0, 90)}...`
-                  : data.overview}
+                ? `${data.overview.slice(0, 90)}...`
+                : data.overview}
               {data.overview.length > 90 && (
                 <Button
                   sx={{ fontSize: "12px", color: "green" }}

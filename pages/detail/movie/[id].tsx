@@ -111,6 +111,9 @@ const MovieDetail = () => {
   const toggleText = (overview: string) => {
     setExpandedOverview((prev) => (prev === overview ? null : overview));
   };
+  const { data: movieBackdropData, error: movieBackdropError } = useSWR<{
+    backdrops: { file_path: string }[];
+  }>(`/movie/${id}/images`);
 
   const [visibleReviews, setVisibleReviews] = useState(2); // Số lượng đánh giá hiển thị ban đầu
 
@@ -209,7 +212,10 @@ const MovieDetail = () => {
                     label={`Reviews (${datareview?.results.length})`}
                     value="2"
                   />
-                  <Tab label="Discussions" value="3" />
+                  <Tab
+                    label={`Poster (${movieBackdropData?.backdrops.length})`}
+                    value="3"
+                  />
                 </TabList>
               </Box>
             </TabContext>
@@ -298,7 +304,19 @@ const MovieDetail = () => {
               )}
             </Stack>
           </TabPanel>
-          <TabPanel value="3">Item Three</TabPanel>
+          <TabPanel value="3">
+            <Stack direction={"row"} spacing={2} sx={{ overflowX: "auto" }}>
+              {movieBackdropData?.backdrops.map((backdrop) => (
+                <Box
+                  key={backdrop.file_path}
+                  component="img"
+                  src={`https://image.tmdb.org/t/p/w500${backdrop.file_path}`}
+                  alt={`${data.title} backdrop`}
+                  sx={{ width: "400px" }}
+                />
+              ))}
+            </Stack>
+          </TabPanel>
         </TabContext>
       </Box>
 

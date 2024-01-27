@@ -1,5 +1,6 @@
 import { CreditSection } from "./Credit";
 import { Images } from "./Images";
+import { PersonSection } from "./Person";
 import { VideoList } from "./Video";
 
 export interface MovieList {
@@ -8,8 +9,19 @@ export interface MovieList {
 export interface ProductionCountry {
   iso_3166_1: string;
   name: string;
+  id: number;
+  logo_path: string;
+  origin_country: string;
 }
 
+export interface Genres {
+  id: string;
+  name: string;
+}
+
+export interface GenreList {
+  genres: Genres[];
+}
 export interface Movie {
   id: string;
   title: string;
@@ -29,4 +41,5 @@ export interface Movie {
   videos: VideoList;
   credits: CreditSection;
   images: Images;
+  person: PersonSection;
 }

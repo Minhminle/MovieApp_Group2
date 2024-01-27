@@ -19,12 +19,12 @@ const MovieCategory: NextPageWithLayout = () => {
     data: data2,
     isLoading: isLoading2,
     error: error2,
-  } = useSWR<MovieList>("/movie/upcoming");
+  } = useSWR<MovieList>("/movie/top_rated");
   const {
     data: data3,
     isLoading: isLoading3,
     error: error3,
-  } = useSWR<MovieList>("/movie/top_rated");
+  } = useSWR<MovieList>("/movie/popular");
 
   const handleDetailClick = (movieId: string) => {
     router.push(`/detail/movie/${movieId}`);
@@ -35,6 +35,7 @@ const MovieCategory: NextPageWithLayout = () => {
     fontWeight: "700",
   };
   const genres = dataGenre?.genres || [];
+  const [expandedOverview, setExpandedOverview] = useState<string | null>(null);
   return (
     <>
       <Typography variant="h4" sx={{ ..._letterStyles, padding: "10px" }}>
@@ -62,7 +63,11 @@ const MovieCategory: NextPageWithLayout = () => {
               onClick={() => handleDetailClick(movie.id)}
               component="img"
               alt={movie.title}
-              image={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+              image={
+                movie.poster_path
+                  ? `https://image.tmdb.org/t/p/w500${movie.backdrop_path}`
+                  : "/images/DefaultPoster.png" // Đường dẫn đến hình ảnh mặc định
+              }
             />
             <CardContent>
               <Typography
@@ -70,7 +75,11 @@ const MovieCategory: NextPageWithLayout = () => {
                 component="div"
                 onClick={() => handleDetailClick(movie.id)}
               >
-                {movie.title}
+                {expandedOverview === movie.title
+                  ? movie.title
+                  : movie.title.length > 15
+                  ? `${movie.title.slice(0, 15)}...`
+                  : movie.title}
               </Typography>
               <Stack direction={"row"} spacing={2}>
                 <div
@@ -110,10 +119,7 @@ const MovieCategory: NextPageWithLayout = () => {
         ))}
       </Stack>
 
-      <Typography
-        variant="h4"
-        sx={{ ..._letterStyles, padding: "10px", marginTop: "-70px" }}
-      >
+      <Typography variant="h4" sx={{ ..._letterStyles, padding: "10px" }}>
         Series
       </Typography>
       <Stack
@@ -138,7 +144,7 @@ const MovieCategory: NextPageWithLayout = () => {
               onClick={() => handleDetailClick(movie.id)}
               component="img"
               alt={movie.title}
-              image={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+              image={`https://image.tmdb.org/t/p/w500${movie.backdrop_path}`}
             />
             <CardContent>
               <Typography
@@ -146,7 +152,11 @@ const MovieCategory: NextPageWithLayout = () => {
                 component="div"
                 onClick={() => handleDetailClick(movie.id)}
               >
-                {movie.title}
+                {expandedOverview === movie.title
+                  ? movie.title
+                  : movie.title.length > 15
+                  ? `${movie.title.slice(0, 15)}...`
+                  : movie.title}
               </Typography>
               <Stack direction={"row"} spacing={2}>
                 <div
@@ -186,10 +196,7 @@ const MovieCategory: NextPageWithLayout = () => {
         ))}
       </Stack>
 
-      <Typography
-        variant="h4"
-        sx={{ ..._letterStyles, padding: "10px", marginTop: "-30px" }}
-      >
+      <Typography variant="h4" sx={{ ..._letterStyles, padding: "10px" }}>
         Korean Series
       </Typography>
       <Stack
@@ -214,7 +221,7 @@ const MovieCategory: NextPageWithLayout = () => {
               onClick={() => handleDetailClick(movie.id)}
               component="img"
               alt={movie.title}
-              image={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+              image={`https://image.tmdb.org/t/p/w500${movie.backdrop_path}`}
             />
             <CardContent>
               <Typography
@@ -222,7 +229,11 @@ const MovieCategory: NextPageWithLayout = () => {
                 component="div"
                 onClick={() => handleDetailClick(movie.id)}
               >
-                {movie.title}
+                {expandedOverview === movie.title
+                  ? movie.title
+                  : movie.title.length > 15
+                  ? `${movie.title.slice(0, 15)}...`
+                  : movie.title}
               </Typography>
               <Stack direction={"row"} spacing={2}>
                 <div

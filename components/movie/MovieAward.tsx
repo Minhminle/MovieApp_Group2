@@ -10,10 +10,11 @@ import StarIcon from "@mui/icons-material/Star";
 import React, { useState } from "react";
 import PlayCircleFilledIcon from "@mui/icons-material/PlayCircleFilled";
 import TurnedInNotIcon from "@mui/icons-material/TurnedInNot";
+import { format } from "date-fns";
 
 const MovieAward: NextPageWithLayout = () => {
   const router = useRouter();
-  const { data, isLoading, error } = useSWR<MovieList>("/movie/upcoming");
+  const { data, isLoading, error } = useSWR<MovieList>("/movie/top_rated");
   const [expandedOverview, setExpandedOverview] = useState<string | null>(null);
   const toggleText = (overview: string) => {
     setExpandedOverview((prev) => (prev === overview ? null : overview));
@@ -56,7 +57,11 @@ const MovieAward: NextPageWithLayout = () => {
               onClick={() => handleDetailClick(movie.id)}
               component="img"
               alt={movie.title}
-              image={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+              image={
+                movie.poster_path
+                  ? `https://image.tmdb.org/t/p/w500${movie.backdrop_path}`
+                  : "/images/DefaultPoster.png" // Đường dẫn đến hình ảnh mặc định
+              }
             />
             <CardContent>
               <Button
@@ -94,7 +99,9 @@ const MovieAward: NextPageWithLayout = () => {
                 >
                   {(movie.vote_average * 0.5).toFixed(1)}
                 </Box>
-                <Box sx={{ color: "gray" }}>{movie.release_date}</Box>
+                <Box sx={{ paddingTop: "2px" }}>
+                  {format(new Date(movie.release_date), "dd/MM/yyyy")}
+                </Box>
                 <Typography
                   variant="body2"
                   sx={{

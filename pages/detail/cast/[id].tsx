@@ -64,7 +64,7 @@ const DetailCast = () => {
               src={
                 data.profile_path
                   ? `https://image.tmdb.org/t/p/w500${data.profile_path}`
-                  : "/images/DefaultPoster.png" // Đường dẫn đến hình ảnh mặc định
+                  : "/images/DefaultAvatar.jpg" // Đường dẫn đến hình ảnh mặc định
               }
               alt={data.name}
               sx={{ width: "50%", borderRadius: "18px" }}

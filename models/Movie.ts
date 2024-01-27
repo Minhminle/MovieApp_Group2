@@ -42,4 +42,5 @@ export interface Movie {
   credits: CreditSection;
   images: Images;
   person: PersonSection;
+  tagline: string;
 }

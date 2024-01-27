@@ -1,7 +1,6 @@
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 import useSWR from "swr";
-import axios from "axios";
 import ReactPlayer from "react-player";
 import {
   Avatar,
@@ -18,24 +17,14 @@ import {
 } from "@mui/material";
 import { ReactElement } from "react";
 import { Movie } from "@/models/Movie";
-import { Video, VideoList } from "@/models/Video";
-import { Rating, Chip } from "@mui/material";
 import Footter from "@/components/movie/Footer";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { Styles } from "@/stylescomponents/style";
-import ArrowBackIosNewTwoToneIcon from "@mui/icons-material/ArrowBackIosNewTwoTone";
-import ArrowForwardIosTwoToneIcon from "@mui/icons-material/ArrowForwardIosTwoTone";
-import TurnedInIcon from "@mui/icons-material/TurnedIn";
-import ThumbUpIcon from "@mui/icons-material/ThumbUp";
-import DownloadIcon from "@mui/icons-material/Download";
 import StarIcon from "@mui/icons-material/Star";
 import { format } from "date-fns";
-import PlayCircleFilledIcon from "@mui/icons-material/PlayCircleFilled";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
-import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNewTwoTone";
 import DetailHeader from "@/components/movie/DetailHeader";
 export interface Cast {
   id: number;
@@ -111,6 +100,9 @@ const MovieDetail = () => {
   const toggleText = (overview: string) => {
     setExpandedOverview((prev) => (prev === overview ? null : overview));
   };
+  const { data: movieBackdropData, error: movieBackdropError } = useSWR<{
+    backdrops: { file_path: string }[];
+  }>(`/movie/${id}/images`);
 
   const [visibleReviews, setVisibleReviews] = useState(2); // Số lượng đánh giá hiển thị ban đầu
 
@@ -209,7 +201,10 @@ const MovieDetail = () => {
                     label={`Reviews (${datareview?.results.length})`}
                     value="2"
                   />
-                  <Tab label="Discussions" value="3" />
+                  <Tab
+                    label={`Poster (${movieBackdropData?.backdrops.length})`}
+                    value="3"
+                  />
                 </TabList>
               </Box>
             </TabContext>
@@ -298,7 +293,19 @@ const MovieDetail = () => {
               )}
             </Stack>
           </TabPanel>
-          <TabPanel value="3">Item Three</TabPanel>
+          <TabPanel value="3">
+            <Stack direction={"row"} spacing={2} sx={{ overflowX: "auto" }}>
+              {movieBackdropData?.backdrops.map((backdrop) => (
+                <Box
+                  key={backdrop.file_path}
+                  component="img"
+                  src={`https://image.tmdb.org/t/p/w500${backdrop.file_path}`}
+                  alt={`${data.title} backdrop`}
+                  sx={{ width: "400px" }}
+                />
+              ))}
+            </Stack>
+          </TabPanel>
         </TabContext>
       </Box>
 

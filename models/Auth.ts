@@ -13,6 +13,9 @@ export interface User {
   username: string;
   id: number;
   avatar: UserAvatar;
+  user_name: string;
+  session_id: string;
+  user_id:string;
 }
 
 export type UserAvatar = {

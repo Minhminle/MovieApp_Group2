@@ -41,7 +41,15 @@ const DetailCast = () => {
   };
   return (
     <>
-      <ArrowBackIcon onClick={() => router.back()} sx={{ fontSize: "40px" }} />
+      <Stack direction={"row"} alignItems={"center"} spacing={2}>
+        <ArrowBackIcon
+          onClick={() => router.back()}
+          sx={{ fontSize: "40px" }}
+        />
+        <Typography sx={{ fontSize: "30px", fontWeight: "bolder" }}>
+          Actor profile
+        </Typography>
+      </Stack>
       {data && (
         <Stack spacing={2} padding={"10px"}>
           <Stack direction={"row"} spacing={2} alignItems="center">
@@ -49,15 +57,36 @@ const DetailCast = () => {
               component="img"
               src={`https://image.tmdb.org/t/p/w500${data.profile_path}`}
               alt={data.name}
-              sx={{ width: "40%", borderRadius: "18px" }}
+              sx={{ width: "50%", borderRadius: "18px" }}
             />
-            <Stack sx={{ color: "white", padding: "10px" }}>
-              <Typography>Name: {data.name}</Typography>
-              <Typography>Known For: {data.known_for_department}</Typography>
-              <Typography>Place of Birth: {data.place_of_birth}</Typography>
-              <Typography>Gender: {getGenderLabel(data.gender)}</Typography>
+            <Stack sx={{ ..._letterStyles, padding: "10px" }}>
+              <Typography sx={{ color: "#80deea", fontWeight: "bolder" }}>
+                Name:
+              </Typography>
+              <Typography>{data.name}</Typography>
+              <Typography sx={{ color: "#80deea", fontWeight: "bolder" }}>
+                Known For:
+              </Typography>
+              <Typography>{data.known_for_department}</Typography>
+              <Typography sx={{ color: "#80deea", fontWeight: "bolder" }}>
+                Place of Birth:
+              </Typography>
               <Typography>
-                Birthday: {format(new Date(data.birthday), "dd/MM/yyyy")}
+                {expandedOverview === data.place_of_birth
+                  ? data.place_of_birth
+                  : data.place_of_birth.length > 30
+                  ? `${data.place_of_birth.slice(0, 30)}...`
+                  : data.place_of_birth}
+              </Typography>
+              <Typography sx={{ color: "#80deea", fontWeight: "bolder" }}>
+                Gender:
+              </Typography>
+              <Typography>{getGenderLabel(data.gender)}</Typography>
+              <Typography sx={{ color: "#80deea", fontWeight: "bolder" }}>
+                Birthday:
+              </Typography>
+              <Typography>
+                {format(new Date(data.birthday), "dd/MM/yyyy")}
               </Typography>
             </Stack>
           </Stack>

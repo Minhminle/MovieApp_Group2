@@ -24,6 +24,7 @@
     "react-dom": "^18",
     "react-id-swiper": "^4.0.0",
     "react-player": "^2.14.1",
+    "react-router-dom": "^6.21.3",
     "react-slick": "^0.29.0",
     "slick-carousel": "^1.8.1",
     "styled-components": "^6.1.8",

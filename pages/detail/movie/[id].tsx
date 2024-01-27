@@ -1,7 +1,6 @@
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 import useSWR from "swr";
-import axios from "axios";
 import ReactPlayer from "react-player";
 import {
   Avatar,
@@ -18,24 +17,14 @@ import {
 } from "@mui/material";
 import { ReactElement } from "react";
 import { Movie } from "@/models/Movie";
-import { Video, VideoList } from "@/models/Video";
-import { Rating, Chip } from "@mui/material";
 import Footter from "@/components/movie/Footer";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { Styles } from "@/stylescomponents/style";
-import ArrowBackIosNewTwoToneIcon from "@mui/icons-material/ArrowBackIosNewTwoTone";
-import ArrowForwardIosTwoToneIcon from "@mui/icons-material/ArrowForwardIosTwoTone";
-import TurnedInIcon from "@mui/icons-material/TurnedIn";
-import ThumbUpIcon from "@mui/icons-material/ThumbUp";
-import DownloadIcon from "@mui/icons-material/Download";
 import StarIcon from "@mui/icons-material/Star";
 import { format } from "date-fns";
-import PlayCircleFilledIcon from "@mui/icons-material/PlayCircleFilled";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
-import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNewTwoTone";
 import DetailHeader from "@/components/movie/DetailHeader";
 export interface Cast {
   id: number;

@@ -24,7 +24,9 @@ import StarIcon from "@mui/icons-material/Star";
 import { format } from "date-fns";
 import ArrowCircleLeftIcon from "@mui/icons-material/ArrowCircleLeft";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
 export interface Cast {
   id: number;
   name: string;
@@ -56,7 +58,7 @@ const DetailHeader = () => {
     const remainingMinutes = minutes % 60;
 
     if (hours > 0 && remainingMinutes > 0) {
-      return `${hours}h${remainingMinutes}m`;
+      return `${hours}h ${remainingMinutes}m`;
     } else if (hours > 0) {
       return `${hours}h`;
     } else if (remainingMinutes > 0) {
@@ -124,8 +126,9 @@ const DetailHeader = () => {
             spacing={1}
             sx={{
               background: "linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1))",
-              width: "350px",
+              width: "380px",
               bottom: "0px",
+              marginX: "5px",
               zIndex: 1,
               padding: "20px",
             }}
@@ -133,31 +136,17 @@ const DetailHeader = () => {
             <Typography variant="h3" sx={{}}>
               {data.title}
             </Typography>
-            <Stack direction={"row"}>
-              <Typography sx={{ color: "yellow" }}>
-                <StarIcon></StarIcon>
-              </Typography>
-              <Typography sx={{ color: "yellow" }}>
-                {(data.vote_average * 0.5).toFixed(1)}
-              </Typography>
-              <Typography color={"gray"}>
-                -{formatRuntime(data.runtime)}-
-              </Typography>
-              <Typography color={"gray"}>
-                {format(new Date(data.release_date), "yyyy")}
-              </Typography>
-              <Typography>
-                {data.genres?.map((genre) => (
-                  <Typography
-                    key={genre.id}
-                    sx={{
-                      display: "inline-block",
-                      color: "gray",
-                    }}
-                  >
-                    -{genre.name}
-                  </Typography>
-                ))}
+            <Stack direction={"row"} spacing={1}>
+              <Stack direction={"row"}>
+                <Typography sx={{ color: "yellow", marginY: "3px" }}>
+                  <StarIcon></StarIcon>
+                </Typography>
+                <Typography variant="h6" sx={{ color: "yellow" }}>
+                  {(data.vote_average * 0.5).toFixed(1)}
+                </Typography>
+              </Stack>
+              <Typography variant="h6" sx={{ fontStyle: "italic" }}>
+                {data.tagline}
               </Typography>
             </Stack>
             <Stack direction={"row"} spacing={1} width={"100%"}>
@@ -168,7 +157,7 @@ const DetailHeader = () => {
                 }}
                 variant="contained"
                 startIcon={<PlayCircleFilledIcon />}
-              // onClick={() => handleDetailClick(movie.id)}
+                // onClick={() => handleDetailClick(movie.id)}
               >
                 Continue Watching
               </Button>
@@ -191,7 +180,33 @@ const DetailHeader = () => {
           </Stack>
         </Box>
       </Box>
+      <Stack spacing={1} sx={{ marginX: "15px" }}>
+        <Stack direction={"row"} spacing={1}>
+          <CalendarMonthIcon />
+          <Typography variant="h6">
+            {format(new Date(data.release_date), "dd/MM/yyyy")}
+          </Typography>
+        </Stack>
+        <Stack direction={"row"} spacing={1}>
+          <AccessTimeIcon />
+          <Typography variant="h6">{formatRuntime(data.runtime)}</Typography>
+        </Stack>
 
+        <Stack direction={"row"} spacing={2}>
+          {data.genres?.slice(0, 4).map((genre) => (
+            <Chip
+              key={genre.id}
+              label={genre.name}
+              sx={{
+                margin: "0 4px 4px 0",
+                color: "white", // Màu chữ
+                backgroundColor: "#2196F3",
+                width: "fit-content",
+              }}
+            />
+          ))}
+        </Stack>
+      </Stack>
       <Stack>
         <Box padding={"20px"}>
           <Stack>
@@ -200,8 +215,8 @@ const DetailHeader = () => {
               {expandedOverview === data.overview
                 ? data.overview
                 : data.overview.length > 90
-                  ? `${data.overview.slice(0, 90)}...`
-                  : data.overview}
+                ? `${data.overview.slice(0, 90)}...`
+                : data.overview}
               {data.overview.length > 90 && (
                 <Button
                   sx={{ fontSize: "12px", color: "green" }}

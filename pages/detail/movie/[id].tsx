@@ -106,6 +106,7 @@ const MovieDetail = () => {
   const handleDetailClick = (movieId: string) => {
     router.push(`/detail/movie/${movieId}`);
   };
+
   const [expandedOverview, setExpandedOverview] = useState<string | null>(null);
   const toggleText = (overview: string) => {
     setExpandedOverview((prev) => (prev === overview ? null : overview));
@@ -145,7 +146,6 @@ const MovieDetail = () => {
                   borderRadius: "8px",
                 }}
               >
-
                 <Stack direction="row" alignItems="center">
                   <Avatar
                     src={`https://image.tmdb.org/t/p/w500${actor.profile_path}`}
@@ -162,8 +162,8 @@ const MovieDetail = () => {
                       {expandedOverview === actor.name
                         ? actor.name
                         : actor.name.length > 15
-                          ? `${actor.name.slice(0, 15)}...`
-                          : actor.name}
+                        ? `${actor.name.slice(0, 15)}...`
+                        : actor.name}
                     </Typography>
                     <Typography
                       color="gray"
@@ -173,8 +173,8 @@ const MovieDetail = () => {
                       {expandedOverview === actor.character
                         ? actor.character
                         : actor.character.length > 15
-                          ? `${actor.character.slice(0, 15)}...`
-                          : actor.character}
+                        ? `${actor.character.slice(0, 15)}...`
+                        : actor.character}
                     </Typography>
                   </Box>
                 </Stack>
@@ -215,10 +215,14 @@ const MovieDetail = () => {
             </TabContext>
           </Box>
           <TabPanel value="1">
-
-            <Stack alignItems="center" direction="row" spacing={1} sx={{ overflowX: "auto" }}>
+            <Stack
+              alignItems="center"
+              direction="row"
+              spacing={1}
+              sx={{ overflowX: "auto" }}
+            >
               {dataVideo?.results.map((video) => (
-                <Stack key={video.id} >
+                <Stack key={video.id}>
                   <ReactPlayer
                     key={video.id}
                     url={`https://www.youtube.com/watch?v=${video.key}`}
@@ -229,7 +233,6 @@ const MovieDetail = () => {
                 </Stack>
               ))}
             </Stack>
-
           </TabPanel>
           <TabPanel value="2">
             {" "}
@@ -261,8 +264,8 @@ const MovieDetail = () => {
                     {expandedOverview === review.content
                       ? review.content
                       : review.content.length > 90
-                        ? `${review.content.slice(0, 90)}...`
-                        : review.content}
+                      ? `${review.content.slice(0, 90)}...`
+                      : review.content}
                     {review.content.length > 90 && (
                       <Button
                         sx={{ fontSize: "12px", color: "blue" }}
@@ -338,8 +341,8 @@ const MovieDetail = () => {
                 {expandedOverview === movie.title
                   ? movie.title
                   : movie.title.length > 15
-                    ? `${movie.title.slice(0, 15)}...`
-                    : movie.title}
+                  ? `${movie.title.slice(0, 15)}...`
+                  : movie.title}
               </Typography>
               <Stack direction={"row"} spacing={2}>
                 <Box
@@ -354,7 +357,7 @@ const MovieDetail = () => {
                   </Typography>
                 </Box>
 
-                {data.genres?.map((genre) => (
+                {data.genres?.slice(0, 2).map((genre) => (
                   <Typography
                     key={genre.id}
                     variant="h6"

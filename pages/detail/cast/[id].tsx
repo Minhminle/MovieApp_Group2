@@ -19,6 +19,7 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import SearchIcon from "@mui/icons-material/Search";
 import { Styles } from "@/stylescomponents/style";
 import AvatarView from "@/components/movie/AvatarView";
+import Footter from "@/components/movie/Footer";
 const DetailCast = () => {
   const getGenderLabel = (gender) => {
     return gender === 2 ? "Male" : gender === 1 ? "Female" : "Unknown";
@@ -250,6 +251,7 @@ const DetailCast = () => {
           <Button onClick={handleLoadMore}>Load More</Button>
         )}
       </Stack>
+      <Footter />
     </>
   );
 };

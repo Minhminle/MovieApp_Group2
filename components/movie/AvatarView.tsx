@@ -36,6 +36,7 @@ function LoggedInAvatar(props: { data: User }) {
     setAnchorEl(null);
   };
 
+  
   const [openDialog, setOpenDialog] = React.useState(false);
 
   const handleDialogClose = (value: string) => {
@@ -46,6 +47,7 @@ function LoggedInAvatar(props: { data: User }) {
       router.reload();
     }
   };
+  
 
   return (
     <>

@@ -50,8 +50,12 @@ function LoggedInAvatar(props: { data: User }) {
   return (
     <>
       <Button onClick={handleMenuClick} variant="text" sx={{ color: "white" }}>
-        <Stack direction="row" sx={{ marginRight: "40px" }}>
-          {avatar_path ? <Avatar  src={`https://image.tmdb.org/t/p/w500${avatar_path}`} /> : <Person />}
+        <Stack direction="row">
+          {avatar_path ? (
+            <Avatar src={`https://image.tmdb.org/t/p/w500${avatar_path}`} />
+          ) : (
+            <Person />
+          )}
         </Stack>
       </Button>
       <Menu

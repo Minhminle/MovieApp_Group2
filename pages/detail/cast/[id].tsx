@@ -16,6 +16,9 @@ import { color } from "@mui/system";
 import { format, compareDesc } from "date-fns";
 import StarIcon from "@mui/icons-material/Star";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import SearchIcon from "@mui/icons-material/Search";
+import { Styles } from "@/stylescomponents/style";
+import AvatarView from "@/components/movie/AvatarView";
 const DetailCast = () => {
   const getGenderLabel = (gender) => {
     return gender === 2 ? "Male" : gender === 1 ? "Female" : "Unknown";
@@ -45,16 +48,28 @@ const DetailCast = () => {
     // Tăng số lượng items đã hiển thị thêm 5
     setVisibleItems((prevVisibleItems) => prevVisibleItems + 5);
   };
+  const findLink = "/detail/Find";
   return (
     <>
-      <Stack direction={"row"} alignItems={"center"} spacing={2}>
-        <ArrowBackIcon
-          onClick={() => router.back()}
-          sx={{ fontSize: "40px" }}
-        />
-        <Typography sx={{ fontSize: "30px", fontWeight: "bolder" }}>
-          Actor profile
-        </Typography>
+      <Stack direction={"row"} alignItems={"center"} spacing={12}>
+        <Stack direction={"row"} spacing={1}>
+          <ArrowBackIcon
+            onClick={() => router.back()}
+            sx={{ fontSize: "40px" }}
+          />
+          <Typography sx={{ fontSize: "30px", fontWeight: "bolder" }}>
+            Actor profile
+          </Typography>
+        </Stack>
+        <Stack direction={"row"} spacing={1} alignItems="center">
+          <SearchIcon
+            onClick={() => {
+              router.push(findLink);
+            }}
+            sx={Styles._iconheaderhome}
+          />
+          <AvatarView></AvatarView>
+        </Stack>
       </Stack>
       {data && (
         <Stack spacing={2} padding={"10px"}>
@@ -148,9 +163,11 @@ const DetailCast = () => {
               component="img"
               alt={movie.title}
               image={
-                movie.poster_path
+                movie.backdrop_path
+                  ? `https://image.tmdb.org/t/p/w500${movie.backdrop_path}`
+                  : movie.poster_path
                   ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
-                  : "/images/DefaultPoster.png" // Đường dẫn đến hình ảnh mặc định
+                  : "/images/DefaultPoster.png"
               }
             />
             <CardContent>
@@ -176,17 +193,6 @@ const DetailCast = () => {
                     {(movie.vote_average * 0.5).toFixed(1)}
                   </Typography>
                 </Box>
-
-                {data.genres?.map((genre) => (
-                  <Typography
-                    key={genre.id}
-                    variant="h6"
-                    style={{ marginTop: "-1px" }}
-                    sx={{ color: "#9e9e9e" }}
-                  >
-                    {genre.name}
-                  </Typography>
-                ))}
               </Stack>
             </CardContent>
           </Box>

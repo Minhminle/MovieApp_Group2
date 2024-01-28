@@ -72,7 +72,7 @@ const DetailHeader = () => {
       console.log("Favorite request success:", response.data);
 
       // Cập nhật trạng thái isThumbUpPressed
-      setIsThumbUpPressed(!isThumbUpPressed);
+      setIsTurnedInPressed(!isTurnedInPressed);
     } catch (error) {
       // Xử lý lỗi khi yêu cầu không thành công
       console.error("Error making favorite request:", error);

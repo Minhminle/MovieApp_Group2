@@ -20,23 +20,29 @@ import axios from "axios";
 import useSWR from "swr";
 import { getCookie, setCookie, deleteCookie } from "cookies-next";
 import { useRouter } from "next/router";
+import Id from "@/pages/detail/userdetail/[id]";
 
 function LoggedInAvatar(props: { data: User }) {
   const avatar_path = props.data.avatar.tmdb.avatar_path;
   const username = props.data.username;
-  const session_id = props.data.session_id;
-  const user_id = props.data.user_id;
+  const id = props.data.id;
+ 
   const router = useRouter();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const openMenu = Boolean(anchorEl);
   const handleMenuClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
+   const handleUserDetail = (accoutId: number) => {
+     router.push(`/detail/userdetail/${accoutId}`);
+   };
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
 
-  
+  const handleWatchList = () => {
+    router.push(`/detail/UserAddList/`);
+  };
   const [openDialog, setOpenDialog] = React.useState(false);
 
   const handleDialogClose = (value: string) => {
@@ -69,10 +75,15 @@ function LoggedInAvatar(props: { data: User }) {
           "aria-labelledby": "basic-button",
         }}
       >
-        <MenuItem>
-          <Typography>{username}</Typography>
-        </MenuItem>
+        <MenuItem onClick={() => handleUserDetail(id)}>
+          <Stack direction="column">
+            <Box style={{ fontWeight: "bold" }}>{username}</Box>
 
+            <Box color="gray">Profile View</Box>
+          </Stack>
+        </MenuItem>
+        <hr></hr>
+       
         <MenuItem
           onClick={() => {
             handleMenuClose();

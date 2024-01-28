@@ -39,6 +39,12 @@ const DetailCast = () => {
   const handleDetailClick = (movieId: string) => {
     router.push(`/detail/movie/${movieId}`);
   };
+  const [visibleItems, setVisibleItems] = useState(5); // Số lượng mục hiển thị ban đầu
+
+  const handleLoadMore = () => {
+    // Tăng số lượng items đã hiển thị thêm 5
+    setVisibleItems((prevVisibleItems) => prevVisibleItems + 5);
+  };
   return (
     <>
       <Stack direction={"row"} alignItems={"center"} spacing={2}>
@@ -55,7 +61,11 @@ const DetailCast = () => {
           <Stack direction={"row"} spacing={2} alignItems="center">
             <Box
               component="img"
-              src={`https://image.tmdb.org/t/p/w500${data.profile_path}`}
+              src={
+                data.profile_path
+                  ? `https://image.tmdb.org/t/p/w500${data.profile_path}`
+                  : "/images/DefaultAvatar.jpg" // Đường dẫn đến hình ảnh mặc định
+              }
               alt={data.name}
               sx={{ width: "50%", borderRadius: "18px" }}
             />
@@ -187,10 +197,10 @@ const DetailCast = () => {
       </Typography>
       <Stack>
         {data?.movie_credits.cast
-          .slice() // Tạo một bản sao của mảng để không làm thay đổi mảng gốc
           .sort((a: Movie, b: Movie) =>
             compareDesc(new Date(a.release_date), new Date(b.release_date))
           )
+          .slice(0, visibleItems) // Chỉ hiển thị số lượng đã được xác định
           .map((movie: Movie) => (
             <Box
               key={movie.id}
@@ -230,6 +240,9 @@ const DetailCast = () => {
               </Stack>
             </Box>
           ))}
+        {visibleItems < data?.movie_credits.cast.length && (
+          <Button onClick={handleLoadMore}>Load More</Button>
+        )}
       </Stack>
     </>
   );

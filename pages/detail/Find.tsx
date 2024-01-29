@@ -15,11 +15,11 @@ import { GenreList } from "@/models/Movie";
 import { ReactElement } from "react";
 import config from "@/config";
 import { Styles } from "@/stylescomponents/style";
-import ArrowBackIosNewTwoToneIcon from "@mui/icons-material/ArrowBackIosNewTwoTone";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import MovieIcon from "@mui/icons-material/Movie";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import SearchIcon from "@mui/icons-material/Search";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import CancelIcon from "@mui/icons-material/Cancel";
 import axios from "axios";
 const Find = () => {
   const router = useRouter();
@@ -33,8 +33,9 @@ const Find = () => {
   const [allMovies, setAllMovies] = useState([]);
   const [selectedGenre, setSelectedGenre] = useState(null);
   const [moviesByGenre, setMoviesByGenre] = useState([]);
-  const [showGenres, setShowGenres] = useState(false);
-
+  const [showGenres, setShowGenres] = useState(true);
+  const [showTopRated, setShowTopRated] = useState(true);
+  const [showCancelIcon, setShowCancelIcon] = useState(false);
   const handleSearchChange = (event) => {
     const newSearchQuery = event.target.value;
     setSearchQuery(newSearchQuery);
@@ -49,11 +50,12 @@ const Find = () => {
   const handleDetailClick = (movieId: string) => {
     router.push(`/detail/movie/${movieId}`);
   };
-
-  const handleGenresClick = () => {
-    setShowGenres(!showGenres);
+  const handleCancelClick = () => {
+    setShowTopRated(true);
+    setMoviesByGenre([]);
+    setSelectedGenre(null);
+    setShowCancelIcon(false);
   };
-
   const handleGenreClick = (genreId) => {
     axios
       .get(`/discover/movie?api_key=${config.api_key}&with_genres=${genreId}`)
@@ -62,6 +64,8 @@ const Find = () => {
         const movies = response.data.results;
         setMoviesByGenre(movies);
         setSelectedGenre(genreId);
+        setShowTopRated(false);
+        setShowCancelIcon(true);
       });
   };
 
@@ -86,18 +90,19 @@ const Find = () => {
     fetchAllMovies
   );
   const handleLoadMore = () => {
-    fetchAllMovies();
+    if (showTopRated) {
+      fetchAllMovies();
+    }
   };
+
   return (
     <>
       <Stack sx={{ pt: "10px" }}>
         <Stack direction="column" spacing={2}>
           <Stack direction="row" spacing={2} alignItems="center">
-            <ArrowBackIosNewTwoToneIcon
-              onClick={() => {
-                router.push("/");
-              }}
-              sx={{ color: "#454545" }}
+            <ArrowBackIcon
+              onClick={() => router.back()}
+              sx={{ fontSize: "40px" }}
             />
             <Box component="textPath">
               <TextField
@@ -123,41 +128,56 @@ const Find = () => {
               />
             </Box>
           </Stack>
+
           {/* fitlerresultgenresfilm */}
-          <Stack spacing={1}>
-            <Stack
-              direction="row"
-              alignItems="center"
-              onClick={handleGenresClick}
-              style={{ cursor: "pointer" }}
-            >
-              <Typography variant="h5">Genres</Typography>
-              <ExpandMoreIcon sx={Styles._button} />
-            </Stack>
-            {showGenres && (
-              <>
-                <Grid container>
-                  {dataGenre?.genres.map((genre) => (
-                    <Grid item xs={4} key={genre.id}>
-                      <Stack
-                        direction="row"
-                        alignItems="center"
-                        justifyContent="space-evenly"
-                        onClick={() => handleGenreClick(genre.id)}
-                      >
-                        <Typography
-                          sx={{
-                            color:
-                              selectedGenre === genre.id ? "yellow" : "white",
-                            cursor: "pointer",
-                          }}
+          {showGenres && (
+            <Box sx={{ pl: "45px" }}>
+              <Stack spacing={1} sx={{ width: "90%" }}>
+                <Stack direction="row" alignItems="center" gap={1}>
+                  <Stack
+                    direction="row"
+                    alignItems="center"
+                    style={{ cursor: "pointer" }}
+                  >
+                    <Typography
+                      sx={{ ...Styles._title, color: "grey" }}
+                      variant="h5"
+                    >
+                      Genres
+                    </Typography>
+                  </Stack>
+                  {showCancelIcon && (
+                    <CancelIcon
+                      onClick={handleCancelClick}
+                      sx={{ color: "white" }}
+                    />
+                  )}
+                </Stack>
+
+                <Box sx={{ ml: "10px" }}>
+                  <Grid container>
+                    {dataGenre?.genres.map((genre) => (
+                      <Grid item xs={4} key={genre.id}>
+                        <Stack
+                          direction="row"
+                          justifyContent="flex-start"
+                          onClick={() => handleGenreClick(genre.id)}
                         >
-                          {genre.name}
-                        </Typography>
-                      </Stack>
-                    </Grid>
-                  ))}
-                </Grid>
+                          <Typography
+                            sx={{
+                              color:
+                                selectedGenre === genre.id ? "yellow" : "white",
+                              cursor: "pointer",
+                            }}
+                          >
+                            {genre.name}
+                          </Typography>
+                        </Stack>
+                      </Grid>
+                    ))}
+                  </Grid>
+                </Box>
+
                 <Box>
                   <Stack direction="column" spacing={2}>
                     {moviesByGenre.map((movie) => (
@@ -208,121 +228,126 @@ const Find = () => {
                     ))}
                   </Stack>
                 </Box>
-              </>
-            )}
-          </Stack>
+              </Stack>
+            </Box>
+          )}
+
           {/* showmovieToprated */}
 
-          <Stack>
-            {!searchQuery && allMovies && (
-              <Stack direction="column" spacing={2}>
-                {allMovies?.map((movie) => (
-                  <Stack
-                    direction="row"
-                    alignItems="center"
-                    spacing={4}
-                    key={movie.id}
-                    onClick={() => handleDetailClick(movie.id)}
-                  >
-                    <Box
-                      component="img"
-                      src={
-                        movie.poster_path
-                          ? config.image_path + movie.poster_path
-                          : "/images/replace_img.jpg"
-                      }
-                      width={100}
-                      height={150}
-                    />
-                    <Stack>
-                      <Stack direction="row" spacing={1}>
-                        <MovieIcon sx={Styles._iconresultfind} />
-                        <Typography sx={Styles._title}>
-                          {movie.title}
-                        </Typography>
-                      </Stack>
+          <Box sx={{ pl: "45px" }}>
+            <Box sx={{ width: "90%" }}>
+              {!searchQuery && (showTopRated ? allMovies : null) && (
+                <Stack direction="column" spacing={2}>
+                  {allMovies?.map((movie) => (
+                    <Stack
+                      direction="row"
+                      alignItems="center"
+                      spacing={4}
+                      key={movie.id}
+                      onClick={() => handleDetailClick(movie.id)}
+                    >
+                      <Box
+                        component="img"
+                        src={
+                          movie.poster_path
+                            ? config.image_path + movie.poster_path
+                            : "/images/replace_img.jpg"
+                        }
+                        width={100}
+                        height={150}
+                      />
+                      <Stack>
+                        <Stack direction="row" spacing={1}>
+                          <MovieIcon sx={Styles._iconresultfind} />
+                          <Typography sx={Styles._title}>
+                            {movie.title}
+                          </Typography>
+                        </Stack>
 
-                      <Stack direction="row" spacing={1}>
-                        <CalendarTodayIcon sx={Styles._iconresultfind} />
-                        <Typography sx={Styles._title}>
-                          {movie.release_date}
-                        </Typography>
-                      </Stack>
+                        <Stack direction="row" spacing={1}>
+                          <CalendarTodayIcon sx={Styles._iconresultfind} />
+                          <Typography sx={Styles._title}>
+                            {movie.release_date}
+                          </Typography>
+                        </Stack>
 
-                      <Stack direction="row" spacing={1}>
-                        <Box
-                          component="img"
-                          src="https://img.icons8.com/arcade/24/star.png"
-                          alt="star"
-                        />
-                        <Typography sx={Styles._title}>
-                          {movie.vote_average}
-                        </Typography>
+                        <Stack direction="row" spacing={1}>
+                          <Box
+                            component="img"
+                            src="https://img.icons8.com/arcade/24/star.png"
+                            alt="star"
+                          />
+                          <Typography sx={Styles._title}>
+                            {movie.vote_average}
+                          </Typography>
+                        </Stack>
                       </Stack>
                     </Stack>
-                  </Stack>
-                ))}
-                <Box sx={{ textAlign: "center" }}>
-                  <Button onClick={handleLoadMore} variant="contained">
-                    LOAD MORE
-                  </Button>
-                </Box>
-              </Stack>
-            )}
-          </Stack>
+                  ))}
+                  <Box sx={{ textAlign: "center" }}>
+                    <Button onClick={handleLoadMore} variant="contained">
+                      LOAD MORE
+                    </Button>
+                  </Box>
+                </Stack>
+              )}
+            </Box>
+          </Box>
 
           {/* result films */}
-          <Box>
-            {data && (
-              <Stack direction="column" spacing={2}>
-                {data.results.map((movie) => (
-                  <Stack
-                    direction="row"
-                    alignItems="center"
-                    spacing={4}
-                    key={movie.id}
-                    onClick={() => handleDetailClick(movie.id)}
-                  >
-                    <Box
-                      component="img"
-                      src={
-                        movie.poster_path
-                          ? config.image_path + movie.poster_path
-                          : "/images/replace_img.jpg"
-                      }
-                      width={100}
-                      height={150}
-                    />
-                    <Stack>
-                      <Stack direction="row" spacing={1}>
-                        <MovieIcon sx={Styles._iconresultfind} />
-                        <Typography sx={Styles._title}>
-                          {movie.title}
-                        </Typography>
-                      </Stack>
+          <Box sx={{ pl: "45px" }}>
+            <Box sx={{ width: "90%" }}>
+              {data && (
+                <Stack direction="column" spacing={2}>
+                  {data.results.map((movie) => (
+                    <Stack
+                      direction="row"
+                      alignItems="center"
+                      spacing={4}
+                      key={movie.id}
+                      onClick={() => handleDetailClick(movie.id)}
+                    >
+                      <Box
+                        component="img"
+                        src={
+                          movie.poster_path
+                            ? config.image_path + movie.poster_path
+                            : "/images/replace_img.jpg"
+                        }
+                        width={100}
+                        height={150}
+                      />
+                      <Stack>
+                        <Stack direction="row" spacing={1}>
+                          <MovieIcon sx={Styles._iconresultfind} />
+                          <Typography sx={Styles._title}>
+                            {movie.title}
+                          </Typography>
+                        </Stack>
 
-                      <Stack direction="row" spacing={1}>
-                        <CalendarTodayIcon sx={Styles._iconresultfind} />
-                        <Typography sx={Styles._title}>
-                          {movie.release_date}
-                        </Typography>
-                      </Stack>
+                        <Stack direction="row" spacing={1}>
+                          <CalendarTodayIcon sx={Styles._iconresultfind} />
+                          <Typography sx={Styles._title}>
+                            {movie.release_date}
+                          </Typography>
+                        </Stack>
 
-                      <Stack direction="row" spacing={1}>
-                        <Box
-                          component="img"
-                          src="https://img.icons8.com/arcade/24/star.png"
-                          alt="star"
-                        />
-                        <Typography sx={Styles._title}>
-                          {movie.vote_average}
-                        </Typography>
+                        <Stack direction="row" spacing={1}>
+                          <Box
+                            component="img"
+                            src="https://img.icons8.com/arcade/24/star.png"
+                            alt="star"
+                          />
+                          <Typography sx={Styles._title}>
+                            {movie.vote_average}
+                          </Typography>
+                        </Stack>
                       </Stack>
                     </Stack>
-                  </Stack>
-                ))}
-              </Stack>
-            )}
+                  ))}
+                </Stack>
+              )}
+            </Box>
           </Box>
         </Stack>
       </Stack>

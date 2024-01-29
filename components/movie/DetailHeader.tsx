@@ -14,7 +14,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { ReactElement, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import { Movie } from "@/models/Movie";
 import { Rating, Chip } from "@mui/material";
 import PlayCircleFilledIcon from "@mui/icons-material/PlayCircleFilled";
@@ -34,6 +34,7 @@ import { getCookie, setCookie, deleteCookie } from "cookies-next";
 import SearchIcon from "@mui/icons-material/Search";
 import { Styles } from "@/stylescomponents/style";
 import AvatarView from "@/components/movie/AvatarView";
+import { User } from "@/models/Auth";
 export interface Cast {
   id: number;
   name: string;
@@ -46,41 +47,63 @@ const DetailHeader = () => {
   const router = useRouter();
   const { id } = router.query;
   const [expandedOverview, setExpandedOverview] = useState<string | null>(null);
+
+  const session_id = getCookie("session_id");
   const toggleText = (overview: string) => {
     setExpandedOverview((prev) => (prev === overview ? null : overview));
   };
+   const { data: userDetails } = useSWR<User>(
+     `/account?session_id=${session_id}`
+   );
+   const { data: watchList } = useSWR<Movie>(
+     id
+       ? `/account/{account_id}/watchlist/movies?session_id=${session_id}`
+       : null
+   );
+   const { data: faVourite } = useSWR<Movie>(
+     id
+       ? `/account/{account_id}/favorite/movies?session_id=${session_id}`
+       : null
+   );
   const [isThumbUpPressed, setIsThumbUpPressed] = useState(false);
-  const session_id = getCookie("session_id");
   const handleThumbUp = () => {
     setIsThumbUpPressed((prev) => !prev);
   };
   const [isTurnedInPressed, setIsTurnedInPressed] = useState(false);
 
+   const [serverTurnedInPressed, setServerTurnedInPressed] = useState(false);
+
+   // Khi component được mount, cập nhật trạng thái từ server
+   useEffect(() => {
+     // Kiểm tra nếu có dữ liệu từ server thì cập nhật trạng thái
+     if (watchList) {
+       setServerTurnedInPressed(watchList.is_watchlisted);
+     }
+   }, [watchList]);
   const handleWatchList = async () => {
     try {
       // Thực hiện yêu cầu POST đến API của TMDB
       const response = await axios.post(
         `/account/{account_id}/watchlist`,
         {
-          media_type: "movie", // Nếu bạn đang thao tác với phim
-          media_id: id, // Id của phim
-          watchlist: !isTurnedInPressed, // Trạng thái thích (đảo ngược trạng thái hiện tại)
+          media_type: "movie",
+          media_id: id,
+          watchlist: !serverTurnedInPressed,
         },
         {
           params: {
-            session_id: session_id, // Thêm session_id vào các tham số truy vấn
+            session_id: session_id,
           },
         }
       );
 
-      // Xử lý phản hồi từ server (response.data)
-      console.log("Favorite request success:", response.data);
+      console.log("WatchList request success:", response.data);
 
-      // Cập nhật trạng thái isThumbUpPressed
-      setIsTurnedInPressed(!isTurnedInPressed);
+      // Cập nhật trạng thái từ server và trạng thái local
+      setServerTurnedInPressed(!serverTurnedInPressed);
+      setIsTurnedInPressed(!serverTurnedInPressed);
     } catch (error) {
-      // Xử lý lỗi khi yêu cầu không thành công
-      console.error("Error making favorite request:", error);
+      console.error("Error making WatchList request:", error);
     }
   };
   const handleFavorite = async () => {
@@ -226,11 +249,11 @@ const DetailHeader = () => {
                 <IconButton color="inherit">
                   <TurnedInIcon
                     sx={{
-                      color: session_id
-                        ? isTurnedInPressed
+                      color:
+                        isTurnedInPressed ||
+                        (watchList && watchList.is_watchlisted)
                           ? "yellow"
-                          : "inherit"
-                        : "inherit",
+                          : "inherit",
                     }}
                     onClick={session_id ? handleWatchList : undefined}
                   />

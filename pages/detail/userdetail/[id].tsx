@@ -33,18 +33,13 @@ const UserDetail = () => {
     setValue(newValue);
   };
   const { data: userDetails } = useSWR<User>(
-    `/account?session_id=${session_id}`,
-    fetcher
+    `/account?session_id=${session_id}`
   );
   const { data: watchList } = useSWR<Movie>(
-    id ? `/account/${id}/watchlist/movies?session_id=${session_id}` : null,
-    fetcher
+    id ? `/account/{account_id}/watchlist/movies?session_id=${session_id}` : null
   );
   const { data: faVourite } = useSWR<Movie>(
-    id
-      ? `/account/{account_id}/favorite/movies?session_id=${session_id}`
-      : null,
-    fetcher
+    id ? `/account/{account_id}/favorite/movies?session_id=${session_id}` : null
   );
 
   const { data: dataGenre } = useSWR("/genre/movie/list");

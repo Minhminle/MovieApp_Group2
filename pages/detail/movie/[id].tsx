@@ -112,7 +112,12 @@ const MovieDetail = () => {
   const handleDetailCastClick = (actorid: number) => {
     router.push(`/detail/cast/${actorid}`);
   };
+  const [visibleItems, setVisibleItems] = useState(5); // Số lượng mục hiển thị ban đầu
 
+  const handleLoadMore = () => {
+    // Tăng số lượng items đã hiển thị thêm 5
+    setVisibleItems((prevVisibleItems) => prevVisibleItems + 5);
+  };
   if (error) return <div>Error loading movie details</div>;
   if (!data) return <div>Loading...</div>;
 

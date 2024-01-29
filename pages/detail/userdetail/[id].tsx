@@ -3,15 +3,7 @@ import React, { useState } from "react";
 import useSWR from "swr";
 import { User } from "@/models/Auth";
 import { useRouter } from "next/router";
-import {
-  Avatar,
-  Box,
-  Stack,
-  Typography,
-  Tab,
-  Button,
-  IconButton,
-} from "@mui/material";
+import { Avatar, Box, Stack, Typography, Tab, Button } from "@mui/material";
 import axios from "axios";
 import { getCookie, setCookie, deleteCookie } from "cookies-next";
 import { Movie } from "@/models/Movie";
@@ -21,8 +13,6 @@ import TabPanel from "@mui/lab/TabPanel";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { ST } from "next/dist/shared/lib/utils";
 import StarRateIcon from "@mui/icons-material/StarRate";
-import TurnedInIcon from "@mui/icons-material/TurnedIn";
-import FavoriteIcon from "@mui/icons-material/Favorite";
 const UserDetail = () => {
   const router = useRouter();
   const { id } = router.query;
@@ -118,71 +108,70 @@ const UserDetail = () => {
             </TabContext>
           </Box>
           <TabPanel value="1">
-            <Stack alignContent="center" spacing={2}>
-              {watchList?.results.slice(0, visibleItems).map((movie) => (
-                <Stack key={movie.id}>
-                  <Stack direction="row" spacing={2} alignItems="center">
-                    <Box
-                      component="img"
-                      src={
-                        movie.poster_path
-                          ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
-                          : "/images/DefaultPoster.png" // Đường dẫn đến hình ảnh mặc định
-                      }
-                      width={80}
-                      height={120}
-                      sx={{ borderRadius: "16px" }}
-                      onClick={() => handleDetailClick(movie.id)}
-                    />
-                    <Stack direction="column">
-                      <Stack direction={"row"} alignItems={"center"}>
-                        {movie.title}{" "}
-                        <IconButton color="inherit">
-                          <TurnedInIcon
-                            sx={{
-                              color: "yellow",
-                            }}
-                          />
-                        </IconButton>
-                      </Stack>
-                      <Stack>
-                        <Stack direction="row">
-                          <StarRateIcon sx={{ color: "yellow" }}></StarRateIcon>
-                          <Box sx={{ color: "white" }}>
-                            {(movie.vote_average * 0.5).toFixed(1)}/5
-                          </Box>
-                          <Typography
-                            variant="body2"
-                            sx={{
-                              color: "#9e9e9e",
-                              fontSize: "15px",
-                            }}
-                          >
-                            |{" "}
-                            {movie.genre_ids && movie.genre_ids.length > 0
-                              ? movie.genre_ids
-                                  .slice(0, 2)
-                                  .map((genreId) => {
-                                    const foundGenre = genres.find(
-                                      (genre) => genre.id === genreId
-                                    );
-                                    return foundGenre
-                                      ? foundGenre.name
-                                      : "Unknown Genre";
-                                  })
-                                  .join(" - ")
-                              : "Unknown Genre"}
-                          </Typography>
+            <Stack direction="column" alignItems="center" spacing={2}>
+              <Stack alignContent="center" spacing={2}>
+                {watchList?.results.slice(0, visibleItems).map((movie) => (
+                  <Stack direction="column-reverse">
+                    <Stack direction="row" spacing={2} alignItems="center">
+                      <Box
+                        component="img"
+                        src={
+                          movie.poster_path
+                            ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
+                            : "/images/DefaultPoster.png" // Đường dẫn đến hình ảnh mặc định
+                        }
+                        width={80}
+                        height={120}
+                        sx={{ borderRadius: "16px" }}
+                        onClick={() => handleDetailClick(movie.id)}
+                      />
+                      <Stack direction="column">
+                        <Stack>{movie.title}</Stack>
+                        <Stack>
+                          <Stack direction="row">
+                            <StarRateIcon
+                              sx={{ color: "yellow" }}
+                            ></StarRateIcon>
+                            <Box sx={{ color: "white" }}>
+                              {(movie.vote_average * 0.5).toFixed(1)}/5
+                            </Box>
+                            <Typography
+                              variant="body2"
+                              sx={{
+                                color: "#9e9e9e",
+                                fontSize: "15px",
+                              }}
+                            >
+                              |{" "}
+                              {movie.genre_ids && movie.genre_ids.length > 0
+                                ? movie.genre_ids
+                                    .slice(0, 2)
+                                    .map((genreId) => {
+                                      const foundGenre = genres.find(
+                                        (genre) => genre.id === genreId
+                                      );
+                                      return foundGenre
+                                        ? foundGenre.name
+                                        : "Unknown Genre";
+                                    })
+                                    .join(" - ")
+                                : "Unknown Genre"}
+                            </Typography>
+                          </Stack>
                         </Stack>
                       </Stack>
                     </Stack>
                   </Stack>
-                </Stack>
-              ))}
+                ))}
+              </Stack>
+              <Box>
+                {visibleItems < watchList?.results.length && (
+                  <Button variant="contained" onClick={handleLoadMore}>
+                    Load More
+                  </Button>
+                )}
+              </Box>
             </Stack>
-            {visibleItems < watchList?.results.length && (
-              <Button onClick={handleLoadMore}>Load More</Button>
-            )}
           </TabPanel>
           <TabPanel value="2">
             <Stack alignContent="center" spacing={2} direction="column-reverse">
@@ -202,12 +191,7 @@ const UserDetail = () => {
                       onClick={() => handleDetailClick(movie.id)}
                     />
                     <Stack direction="column">
-                      <Stack direction={"row"} alignItems={"center"}>
-                        {movie.title}
-                        <IconButton>
-                          <FavoriteIcon sx={{ color: "red" }} />
-                        </IconButton>
-                      </Stack>
+                      <Stack>{movie.title}</Stack>
                       <Stack>
                         <Stack direction="row">
                           <StarRateIcon sx={{ color: "yellow" }}></StarRateIcon>

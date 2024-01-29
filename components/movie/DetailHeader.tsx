@@ -219,6 +219,8 @@ const DetailHeader = () => {
                 title={session_id ? "" : "Login to add this movie to your list"}
                 arrow
                 placement="top"
+                enterTouchDelay={0} // Thêm option này để xử lý delay cho cả touch events
+                style={{ fontSize: "14px", maxWidth: "200px" }} // Điều chỉnh kích thước và kiểu dáng cho di động
               >
                 <IconButton color="inherit">
                   <TurnedInIcon
@@ -228,6 +230,9 @@ const DetailHeader = () => {
                           ? "yellow"
                           : "inherit"
                         : "inherit",
+                      "&:hover": {
+                        backgroundColor: "transparent", // Loại bỏ hiệu ứng hover trên di động
+                      },
                     }}
                     onClick={session_id ? handleWatchList : undefined}
                   />
@@ -238,6 +243,8 @@ const DetailHeader = () => {
                 title={session_id ? "" : "Login to add this movie to your list"}
                 arrow
                 placement="top"
+                enterTouchDelay={0} // Thêm option này để xử lý delay cho cả touch events
+                style={{ fontSize: "14px", maxWidth: "200px" }} // Điều chỉnh kích thước và kiểu dáng cho di động
               >
                 <IconButton color="inherit">
                   <FavoriteIcon
@@ -247,6 +254,9 @@ const DetailHeader = () => {
                           ? "red"
                           : "inherit"
                         : "inherit",
+                      "&:hover": {
+                        backgroundColor: "transparent", // Loại bỏ hiệu ứng hover trên di động
+                      },
                     }}
                     onClick={session_id ? handleFavorite : undefined}
                   />

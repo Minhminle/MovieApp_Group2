@@ -120,7 +120,7 @@ const UserDetail = () => {
           </Box>
           <TabPanel value="1">
             <Stack alignContent="center" spacing={2} direction="column-reverse">
-              {watchList?.results.slice(0, visibleItems).map((movie) => (
+              {watchList?.results.map((movie) => (
                 <Stack key={movie.id}>
                   <Stack direction="row" spacing={2} alignItems="center">
                     <Box
@@ -181,13 +181,10 @@ const UserDetail = () => {
                 </Stack>
               ))}
             </Stack>
-            {visibleItems < watchList?.results.length && (
-              <Button onClick={handleLoadMore}>Load More</Button>
-            )}
           </TabPanel>
           <TabPanel value="2">
             <Stack alignContent="center" spacing={2} direction="column-reverse">
-              {faVourite?.results.slice(0, visibleItems).map((movie) => (
+              {faVourite?.results.map((movie) => (
                 <Stack key={movie.id}>
                   <Stack direction="row" spacing={2} alignItems="center">
                     <Box
@@ -244,9 +241,6 @@ const UserDetail = () => {
                 </Stack>
               ))}
             </Stack>
-            {visibleItems < faVourite?.results.length && (
-              <Button onClick={handleLoadMore}>Load More</Button>
-            )}
           </TabPanel>
         </TabContext>
       </Box>

@@ -15,7 +15,7 @@ import { GenreList } from "@/models/Movie";
 import { ReactElement } from "react";
 import config from "@/config";
 import { Styles } from "@/stylescomponents/style";
-import ArrowBackIosNewTwoToneIcon from "@mui/icons-material/ArrowBackIosNewTwoTone";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import MovieIcon from "@mui/icons-material/Movie";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import SearchIcon from "@mui/icons-material/Search";
@@ -100,9 +100,9 @@ const Find = () => {
       <Stack sx={{ pt: "10px" }}>
         <Stack direction="column" spacing={2}>
           <Stack direction="row" spacing={2} alignItems="center">
-            <ArrowBackIosNewTwoToneIcon
+            <ArrowBackIcon
               onClick={() => router.back()}
-              sx={{ color: "#454545" }}
+              sx={{ fontSize: "40px" }}
             />
             <Box component="textPath">
               <TextField

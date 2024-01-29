@@ -36,7 +36,6 @@ const UserDetail = () => {
       : null,
     fetcher
   );
-  
 
   const { data: dataGenre } = useSWR("/genre/movie/list");
   const genres = dataGenre?.genres || [];

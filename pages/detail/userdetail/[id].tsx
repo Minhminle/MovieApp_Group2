@@ -36,7 +36,6 @@ const UserDetail = () => {
       : null,
     fetcher
   );
-  
 
   const { data: dataGenre } = useSWR("/genre/movie/list");
   const genres = dataGenre?.genres || [];
@@ -77,7 +76,6 @@ const UserDetail = () => {
         )}
       </Stack>
       <Stack fontSize="40px" textAlign="center">
-        {" "}
         {userDetails?.username}
       </Stack>
       <Box sx={{ width: "100%", typography: "body1" }}>
@@ -88,10 +86,10 @@ const UserDetail = () => {
                 <TabList
                   sx={{
                     "& .MuiTab-root": {
-                      color: "#9e9e9e", // Màu chữ khi không được chọn
+                      color: "#9e9e9e",
                     },
                     "& .Mui-selected": {
-                      color: "white", // Màu chữ khi được chọn
+                      color: "white",
                     },
                   }}
                   onChange={handleChange}
@@ -110,7 +108,7 @@ const UserDetail = () => {
             </TabContext>
           </Box>
           <TabPanel value="1">
-            <Stack alignContent="center" spacing={2} direction="column-reverse">
+            <Stack alignContent="center" spacing={2}>
               {watchList?.results.slice(0, visibleItems).map((movie) => (
                 <Stack key={movie.id}>
                   <Stack direction="row" spacing={2} alignItems="center">

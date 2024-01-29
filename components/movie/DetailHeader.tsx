@@ -27,6 +27,9 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
+
+import { getCookie, setCookie, deleteCookie } from "cookies-next";
+
 import SearchIcon from "@mui/icons-material/Search";
 import { Styles } from "@/stylescomponents/style";
 import AvatarView from "@/components/movie/AvatarView";
@@ -46,16 +49,66 @@ const DetailHeader = () => {
     setExpandedOverview((prev) => (prev === overview ? null : overview));
   };
   const [isThumbUpPressed, setIsThumbUpPressed] = useState(false);
-
+  const session_id = getCookie("session_id");
   const handleThumbUp = () => {
     setIsThumbUpPressed((prev) => !prev);
   };
   const [isTurnedInPressed, setIsTurnedInPressed] = useState(false);
 
-  const handleTurnedIn = () => {
-    setIsTurnedInPressed((prev) => !prev);
-  };
+  const handleWatchList = async () => {
+    try {
+      // Thực hiện yêu cầu POST đến API của TMDB
+      const response = await axios.post(
+        `/account/{account_id}/watchlist`,
+        {
+          media_type: "movie", // Nếu bạn đang thao tác với phim
+          media_id: id, // Id của phim
+          watchlist: !isTurnedInPressed, // Trạng thái thích (đảo ngược trạng thái hiện tại)
+        },
+        {
+          params: {
+            session_id: session_id, // Thêm session_id vào các tham số truy vấn
+          },
+        }
+      );
 
+      // Xử lý phản hồi từ server (response.data)
+      console.log("Favorite request success:", response.data);
+
+      // Cập nhật trạng thái isThumbUpPressed
+      setIsTurnedInPressed(!isTurnedInPressed);
+    } catch (error) {
+      // Xử lý lỗi khi yêu cầu không thành công
+      console.error("Error making favorite request:", error);
+    }
+  };
+  const handleFavorite = async () => {
+    try {
+      // Thực hiện yêu cầu POST đến API của TMDB
+      const response = await axios.post(
+        `/account/{account_id}/favorite`,
+        {
+          media_type: "movie", // Nếu bạn đang thao tác với phim
+          media_id: id, // Id của phim
+          favorite: !isThumbUpPressed, // Trạng thái thích (đảo ngược trạng thái hiện tại)
+        },
+        {
+          params: {
+            session_id: session_id, // Thêm session_id vào các tham số truy vấn
+          },
+        }
+      );
+
+      // Xử lý phản hồi từ server (response.data)
+      console.log("Favorite request success:", response.data);
+
+      // Cập nhật trạng thái isThumbUpPressed
+      setIsThumbUpPressed(!isThumbUpPressed);
+    } catch (error) {
+      // Xử lý lỗi khi yêu cầu không thành công
+      console.error("Error making favorite request:", error);
+    }
+  };
   const formatRuntime = (minutes: number): string => {
     const hours = Math.floor(minutes / 60);
     const remainingMinutes = minutes % 60;
@@ -167,13 +220,13 @@ const DetailHeader = () => {
               <IconButton color="inherit">
                 <TurnedInIcon
                   sx={{ color: isTurnedInPressed ? "yellow" : "inherit" }}
-                  onClick={handleTurnedIn}
+                  onClick={handleWatchList}
                 />
               </IconButton>
               <IconButton color="inherit">
                 <FavoriteIcon
                   sx={{ color: isThumbUpPressed ? "red" : "inherit" }}
-                  onClick={handleThumbUp}
+                  onClick={handleFavorite}
                 />
               </IconButton>
               <IconButton color="inherit">

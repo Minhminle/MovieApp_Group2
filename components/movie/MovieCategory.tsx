@@ -45,7 +45,7 @@ const MovieCategory: NextPageWithLayout = () => {
         direction="row"
         sx={{ overflowX: "auto" }} // Thêm kiểm soát tràn ngang
       >
-        {data?.results.map((movie) => (
+        {data?.results?.map((movie) => (
           <Box
             key={movie.id}
             sx={{
@@ -126,7 +126,7 @@ const MovieCategory: NextPageWithLayout = () => {
         direction="row"
         sx={{ overflowX: "auto" }} // Thêm kiểm soát tràn ngang
       >
-        {data2?.results.map((movie) => (
+        {data2?.results?.map((movie) => (
           <Box
             key={movie.id}
             sx={{

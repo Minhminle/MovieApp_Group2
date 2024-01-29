@@ -27,8 +27,12 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
+
 import { getCookie, setCookie, deleteCookie } from "cookies-next";
 
+import SearchIcon from "@mui/icons-material/Search";
+import { Styles } from "@/stylescomponents/style";
+import AvatarView from "@/components/movie/AvatarView";
 export interface Cast {
   id: number;
   name: string;
@@ -127,6 +131,8 @@ const DetailHeader = () => {
     fetcher
   );
 
+  const findLink = "/detail/Find";
+
   if (error) return <div>Error loading movie details</div>;
   if (!data) return <div>Loading...</div>;
   return (
@@ -140,17 +146,16 @@ const DetailHeader = () => {
           onClick={() => router.back()}
           sx={{ fontSize: "40px" }}
         />
-        <Chip
-          icon={<FavoriteIcon />}
-          label={`${data.vote_count}`}
-          sx={{
-            top: "15px",
-            right: "15px",
 
-            backgroundColor: "yellow",
-            color: "black",
-          }}
-        />
+        <Stack direction={"row"} spacing={1} alignItems="center">
+          <SearchIcon
+            onClick={() => {
+              router.push(findLink);
+            }}
+            sx={Styles._iconheaderhome}
+          />
+          <AvatarView></AvatarView>
+        </Stack>
       </Stack>
       <Box sx={{ position: "relative" }}>
         <Box
@@ -171,15 +176,14 @@ const DetailHeader = () => {
             position: "absolute",
             zIndex: "1",
             bottom: "0px",
-            right: "-11px",
+            right: "7px",
           }}
         >
           <Stack
             spacing={1}
             sx={{
               background: "linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1))",
-              width: "380px",
-              bottom: "0px",
+              width: "365px",
               marginX: "5px",
               zIndex: 1,
               padding: "20px",
@@ -238,6 +242,17 @@ const DetailHeader = () => {
           <Typography variant="h6">
             {format(new Date(data.release_date), "dd/MM/yyyy")}
           </Typography>
+          <Chip
+            icon={<FavoriteIcon style={{ color: "red" }} />}
+            label={`${data.vote_count}`}
+            sx={{
+              top: "15px",
+              right: "15px",
+
+              backgroundColor: "pink",
+              color: "black",
+            }}
+          />
         </Stack>
         <Stack direction={"row"} spacing={1}>
           <AccessTimeIcon />

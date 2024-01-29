@@ -34,6 +34,7 @@ const Find = () => {
   const [selectedGenre, setSelectedGenre] = useState(null);
   const [moviesByGenre, setMoviesByGenre] = useState([]);
   const [showGenres, setShowGenres] = useState(false);
+  const [showTopRated, setShowTopRated] = useState(true);
 
   const handleSearchChange = (event) => {
     const newSearchQuery = event.target.value;
@@ -53,7 +54,11 @@ const Find = () => {
   const handleGenresClick = () => {
     setShowGenres(!showGenres);
   };
-
+  const handleCancelClick = () => {
+    setShowTopRated(true);
+    setMoviesByGenre([]);
+    setSelectedGenre(null);
+  };
   const handleGenreClick = (genreId) => {
     axios
       .get(`/discover/movie?api_key=${config.api_key}&with_genres=${genreId}`)
@@ -62,6 +67,7 @@ const Find = () => {
         const movies = response.data.results;
         setMoviesByGenre(movies);
         setSelectedGenre(genreId);
+        setShowTopRated(false);
       });
   };
 
@@ -86,8 +92,11 @@ const Find = () => {
     fetchAllMovies
   );
   const handleLoadMore = () => {
-    fetchAllMovies();
+    if (showTopRated) {
+      fetchAllMovies();
+    }
   };
+
   return (
     <>
       <Stack sx={{ pt: "10px" }}>
@@ -125,15 +134,21 @@ const Find = () => {
           </Stack>
           {/* fitlerresultgenresfilm */}
           <Stack spacing={1}>
-            <Stack
-              direction="row"
-              alignItems="center"
-              onClick={handleGenresClick}
-              style={{ cursor: "pointer" }}
-            >
-              <Typography variant="h5">Genres</Typography>
-              <ExpandMoreIcon sx={Styles._button} />
+            <Stack direction="row" alignItems="center" gap={1}>
+              <Stack
+                direction="row"
+                alignItems="center"
+                onClick={handleGenresClick}
+                style={{ cursor: "pointer" }}
+              >
+                <Typography variant="h5">Genres</Typography>
+                <ExpandMoreIcon sx={Styles._button} />
+              </Stack>
+              <Box onClick={handleCancelClick} sx={{ color: "white" }}>
+                Cancel
+              </Box>
             </Stack>
+
             {showGenres && (
               <>
                 <Grid container>
@@ -214,7 +229,7 @@ const Find = () => {
           {/* showmovieToprated */}
 
           <Stack>
-            {!searchQuery && allMovies && (
+            {!searchQuery && (showTopRated ? allMovies : null) && (
               <Stack direction="column" spacing={2}>
                 {allMovies?.map((movie) => (
                   <Stack

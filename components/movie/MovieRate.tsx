@@ -57,7 +57,7 @@ const MovieRate = () => {
         alignItems="center"
         sx={{ overflowX: "auto" }}
       >
-        {data?.results.map((movie, index) => (
+        {data?.results?.map((movie, index) => (
           <Stack key={movie.id} direction="row" alignItems="center">
             <Typography variant="h3" color="white" padding={"3px"}>
               {index + 1}

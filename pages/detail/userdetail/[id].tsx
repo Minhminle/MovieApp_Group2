@@ -3,7 +3,15 @@ import React, { useState } from "react";
 import useSWR from "swr";
 import { User } from "@/models/Auth";
 import { useRouter } from "next/router";
-import { Avatar, Box, Stack, Typography, Tab, Button } from "@mui/material";
+import {
+  Avatar,
+  Box,
+  Stack,
+  Typography,
+  Tab,
+  Button,
+  IconButton,
+} from "@mui/material";
 import axios from "axios";
 import { getCookie, setCookie, deleteCookie } from "cookies-next";
 import { Movie } from "@/models/Movie";
@@ -13,6 +21,8 @@ import TabPanel from "@mui/lab/TabPanel";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { ST } from "next/dist/shared/lib/utils";
 import StarRateIcon from "@mui/icons-material/StarRate";
+import TurnedInIcon from "@mui/icons-material/TurnedIn";
+import FavoriteIcon from "@mui/icons-material/Favorite";
 const UserDetail = () => {
   const router = useRouter();
   const { id } = router.query;
@@ -125,7 +135,16 @@ const UserDetail = () => {
                       onClick={() => handleDetailClick(movie.id)}
                     />
                     <Stack direction="column">
-                      <Stack>{movie.title}</Stack>
+                      <Stack direction={"row"} alignItems={"center"}>
+                        {movie.title}{" "}
+                        <IconButton color="inherit">
+                          <TurnedInIcon
+                            sx={{
+                              color: "yellow",
+                            }}
+                          />
+                        </IconButton>
+                      </Stack>
                       <Stack>
                         <Stack direction="row">
                           <StarRateIcon sx={{ color: "yellow" }}></StarRateIcon>
@@ -183,7 +202,12 @@ const UserDetail = () => {
                       onClick={() => handleDetailClick(movie.id)}
                     />
                     <Stack direction="column">
-                      <Stack>{movie.title}</Stack>
+                      <Stack direction={"row"} alignItems={"center"}>
+                        {movie.title}
+                        <IconButton>
+                          <FavoriteIcon sx={{ color: "red" }} />
+                        </IconButton>
+                      </Stack>
                       <Stack>
                         <Stack direction="row">
                           <StarRateIcon sx={{ color: "yellow" }}></StarRateIcon>

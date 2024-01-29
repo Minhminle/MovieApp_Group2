@@ -48,7 +48,7 @@ const MovieFeature = () => {
             alignItems="center"
             // Thêm kiểm soát tràn ngang
           >
-            {data?.results.map((movie) => (
+            {data?.results?.map((movie) => (
               <Stack
                 key={movie.id}
                 direction="column"
@@ -132,7 +132,7 @@ const MovieFeature = () => {
         </Box>
         <Box>
           <Stack gap={4} direction="row" sx={{ padding: "19px" }}>
-            {data?.results.map((movie) => (
+            {data?.results?.map((movie) => (
               <Stack key={movie.id}>
                 <Box>
                   <Box

@@ -11,6 +11,7 @@ import {
   Grid,
   IconButton,
   Stack,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import { ReactElement, useState } from "react";
@@ -217,18 +218,43 @@ const DetailHeader = () => {
               >
                 Continue Watching
               </Button>
-              <IconButton color="inherit">
-                <TurnedInIcon
-                  sx={{ color: isTurnedInPressed ? "yellow" : "inherit" }}
-                  onClick={handleWatchList}
-                />
-              </IconButton>
-              <IconButton color="inherit">
-                <FavoriteIcon
-                  sx={{ color: isThumbUpPressed ? "red" : "inherit" }}
-                  onClick={handleFavorite}
-                />
-              </IconButton>
+              <Tooltip
+                title={session_id ? "" : "Login to add this movie to your list"}
+                arrow
+                placement="top"
+              >
+                <IconButton color="inherit">
+                  <TurnedInIcon
+                    sx={{
+                      color: session_id
+                        ? isTurnedInPressed
+                          ? "yellow"
+                          : "inherit"
+                        : "inherit",
+                    }}
+                    onClick={session_id ? handleWatchList : undefined}
+                  />
+                </IconButton>
+              </Tooltip>
+
+              <Tooltip
+                title={session_id ? "" : "Login to add this movie to your list"}
+                arrow
+                placement="top"
+              >
+                <IconButton color="inherit">
+                  <FavoriteIcon
+                    sx={{
+                      color: session_id
+                        ? isThumbUpPressed
+                          ? "red"
+                          : "inherit"
+                        : "inherit",
+                    }}
+                    onClick={session_id ? handleFavorite : undefined}
+                  />
+                </IconButton>
+              </Tooltip>
               <IconButton color="inherit">
                 <DownloadIcon />
               </IconButton>

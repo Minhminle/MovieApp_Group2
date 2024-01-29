@@ -40,7 +40,7 @@ const MovieAward: NextPageWithLayout = () => {
         direction="row"
         sx={{ overflowX: "auto" }} // Thêm kiểm soát tràn ngang
       >
-        {data?.results.map((movie) => (
+        {data?.results?.map((movie) => (
           <Box
             key={movie.id}
             sx={{

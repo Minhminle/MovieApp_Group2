@@ -218,12 +218,6 @@ const DetailHeader = () => {
               >
                 Continue Watching
               </Button>
-              {/* <IconButton color="inherit">
-                <TurnedInIcon
-                  sx={{ color: isTurnedInPressed ? "yellow" : "inherit" }}
-                  onClick={handleWatchList}
-                />
-              </IconButton> */}
               <Tooltip
                 title={session_id ? "" : "Login to add this movie to your list"}
                 arrow

@@ -14,7 +14,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { ReactElement, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import { Movie } from "@/models/Movie";
 import { Rating, Chip } from "@mui/material";
 import PlayCircleFilledIcon from "@mui/icons-material/PlayCircleFilled";
@@ -49,64 +49,61 @@ const DetailHeader = () => {
   const toggleText = (overview: string) => {
     setExpandedOverview((prev) => (prev === overview ? null : overview));
   };
-  const [isThumbUpPressed, setIsThumbUpPressed] = useState(false);
+
   const session_id = getCookie("session_id");
   const handleThumbUp = () => {
     setIsThumbUpPressed((prev) => !prev);
   };
-  const [isTurnedInPressed, setIsTurnedInPressed] = useState(false);
 
+  const [isTurnedInPressed, setIsTurnedInPressed] = useState(
+    localStorage.getItem(`watchlist${id}`) === "true"
+  );
+  const [isThumbUpPressed, setIsThumbUpPressed] = useState(
+    localStorage.getItem(`thumbUp_${id}`) === "true"
+  );
   const handleWatchList = async () => {
     try {
-      // Thực hiện yêu cầu POST đến API của TMDB
       const response = await axios.post(
         `/account/{account_id}/watchlist`,
         {
-          media_type: "movie", // Nếu bạn đang thao tác với phim
-          media_id: id, // Id của phim
-          watchlist: !isTurnedInPressed, // Trạng thái thích (đảo ngược trạng thái hiện tại)
+          media_type: "movie",
+          media_id: id,
+          watchlist: !isTurnedInPressed,
         },
         {
           params: {
-            session_id: session_id, // Thêm session_id vào các tham số truy vấn
+            session_id: session_id,
           },
         }
       );
 
-      // Xử lý phản hồi từ server (response.data)
       console.log("Favorite request success:", response.data);
-
-      // Cập nhật trạng thái isThumbUpPressed
       setIsTurnedInPressed(!isTurnedInPressed);
+      localStorage.setItem(`watchlist${id}`, !isTurnedInPressed);
     } catch (error) {
-      // Xử lý lỗi khi yêu cầu không thành công
       console.error("Error making favorite request:", error);
     }
   };
   const handleFavorite = async () => {
     try {
-      // Thực hiện yêu cầu POST đến API của TMDB
       const response = await axios.post(
         `/account/{account_id}/favorite`,
         {
-          media_type: "movie", // Nếu bạn đang thao tác với phim
-          media_id: id, // Id của phim
-          favorite: !isThumbUpPressed, // Trạng thái thích (đảo ngược trạng thái hiện tại)
+          media_type: "movie",
+          media_id: id,
+          favorite: !isThumbUpPressed,
         },
         {
           params: {
-            session_id: session_id, // Thêm session_id vào các tham số truy vấn
+            session_id: session_id,
           },
         }
       );
 
-      // Xử lý phản hồi từ server (response.data)
       console.log("Favorite request success:", response.data);
-
-      // Cập nhật trạng thái isThumbUpPressed
       setIsThumbUpPressed(!isThumbUpPressed);
+      localStorage.setItem(`thumbUp_${id}`, !isThumbUpPressed);
     } catch (error) {
-      // Xử lý lỗi khi yêu cầu không thành công
       console.error("Error making favorite request:", error);
     }
   };

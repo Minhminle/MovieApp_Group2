@@ -93,7 +93,7 @@ function LoggedInAvatar(props: { data: User }) {
         </MenuItem>
       </Menu>
       <Dialog open={openDialog} onClose={handleDialogClose}>
-        <DialogTitle>Are you sure you want to log out?</DialogTitle>
+        <DialogTitle>Are you want to log out?</DialogTitle>
         <List>
           <ListItem disableGutters>
             <ListItemButton autoFocus onClick={() => handleDialogClose("YES")}>

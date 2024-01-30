@@ -96,7 +96,6 @@ function LoggedInAvatar(props: { data: User }) {
         <DialogTitle>Are you want to log out?</DialogTitle>
         <List
           sx={{
-            display: "flex",
             justifyContent: "center",
             alignItems: "center",
           }}

@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import { useEffect, type ReactElement, useState } from "react";
 import { NextPageWithLayout } from "@/pages/_app";
 import { Box, Button, Chip, Stack, Typography } from "@mui/material";
-import axios from "axios";
+// import axios from "axios";
 import useSWR from "swr";
 import { Movie, MovieList } from "@/models/Movie";
 import { Card, CardContent, CardMedia } from "@mui/material";

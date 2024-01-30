@@ -295,6 +295,9 @@ const DetailHeader = () => {
         <Stack direction={"row"} spacing={2}>
           {data.genres?.slice(0, 4).map((genre) => (
             <Chip
+              onClick={() => {
+                router.push(findLink);
+              }}
               key={genre.id}
               label={genre.name}
               sx={{

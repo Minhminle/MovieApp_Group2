@@ -13,6 +13,7 @@ import {
   List,
   ListItemButton,
   ListItemText,
+  Avatar,
 } from "@mui/material";
 import { RequestTokenResponse, User } from "@/models/Auth";
 import axios from "axios";
@@ -23,6 +24,8 @@ import { useRouter } from "next/router";
 function LoggedInAvatar(props: { data: User }) {
   const avatar_path = props.data.avatar.tmdb.avatar_path;
   const username = props.data.username;
+  const session_id = props.data.session_id;
+  const user_id = props.data.user_id;
   const router = useRouter();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const openMenu = Boolean(anchorEl);
@@ -48,7 +51,11 @@ function LoggedInAvatar(props: { data: User }) {
     <>
       <Button onClick={handleMenuClick} variant="text" sx={{ color: "white" }}>
         <Stack direction="row" sx={{ marginRight: "40px" }}>
-          {avatar_path ? <Box component="img" src={avatar_path} /> : <Person />}
+          {avatar_path ? (
+            <Avatar src={`https://image.tmdb.org/t/p/w500${avatar_path}`} />
+          ) : (
+            <Person />
+          )}
         </Stack>
       </Button>
       <Menu
@@ -100,7 +107,7 @@ function NotLoggedInAvatar() {
           .get<RequestTokenResponse>("authentication/token/new")
           .then((res) =>
             window.open(
-              `https://www.themoviedb.org/authenticate/${res.data.request_token}?redirect_to=https://wealthy-cardinal-thankfully.ngrok-free.app/detail/authorize`,
+              `https://www.themoviedb.org/authenticate/${res.data.request_token}?redirect_to=http://localhost:3000/detail/authorize`,
               "_blank",
               "noopener,noreferrer"
             )
@@ -113,14 +120,10 @@ function NotLoggedInAvatar() {
 const AvatarView = () => {
   const session_id = getCookie("session_id");
 
-  const fetcher = (url: string) =>
-    axios.get(url).then((res) => {
-      setCookie("user_id", res.data.id);
-      return res.data;
-    });
+  const fetcher = (url: string) => axios.get(url).then((res) => res.data);
 
   const { data } = useSWR<User>(
-    session_id ? `/account?${session_id}` : null,
+    session_id ? `/account?session_id=${session_id}` : null,
     fetcher
   );
 

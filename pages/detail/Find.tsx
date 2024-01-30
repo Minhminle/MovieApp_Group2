@@ -28,7 +28,10 @@ const Find = () => {
     searchQuery ? `/search/movie?query=${searchQuery}` : null
   );
   const { data: dataGenre } = useSWR<GenreList>("/genre/movie/list");
-  const { data: datatoprated } = useSWR<MovieList>("/movie/top_rated");
+  // Set State cho trang hiện tại và tất cả phim
+  const [currentPage, setCurrentPage] = useState(1);
+  const [allMovies, setAllMovies] = useState([]);
+  const [selectedGenre, setSelectedGenre] = useState(null);
   const [moviesByGenre, setMoviesByGenre] = useState([]);
   const [showGenres, setShowGenres] = useState(false);
 
@@ -58,9 +61,33 @@ const Find = () => {
         console.log(response);
         const movies = response.data.results;
         setMoviesByGenre(movies);
+        setSelectedGenre(genreId);
       });
   };
 
+  // Lấy tất cả các trang của toprated
+  const fetchTotalPages = async () => {
+    const response = await axios.get("/movie/top_rated");
+    return response.data.total_pages;
+  };
+  const { data: totalPages } = useSWR("/movie/top_rated", fetchTotalPages);
+
+  //
+  const fetchAllMovies = async () => {
+    if (!currentPage) return;
+    const response = await axios.get(`/movie/top_rated?page=${currentPage}`);
+    const movies = response.data.results.slice(0, 20);
+    setAllMovies((prevMovies) => [...prevMovies, ...movies]);
+    setCurrentPage(currentPage + 1);
+  };
+
+  const { data: allMoviesData } = useSWR(
+    totalPages ? `/movie/top_rated?page=1` : null,
+    fetchAllMovies
+  );
+  const handleLoadMore = () => {
+    fetchAllMovies();
+  };
   return (
     <>
       <Stack sx={{ pt: "10px" }}>
@@ -104,9 +131,7 @@ const Find = () => {
               onClick={handleGenresClick}
               style={{ cursor: "pointer" }}
             >
-              <Typography sx={Styles._title} variant="h5">
-                Genres
-              </Typography>
+              <Typography variant="h5">Genres</Typography>
               <ExpandMoreIcon sx={Styles._button} />
             </Stack>
             {showGenres && (
@@ -120,7 +145,15 @@ const Find = () => {
                         justifyContent="space-evenly"
                         onClick={() => handleGenreClick(genre.id)}
                       >
-                        <Typography sx={Styles._title}>{genre.name}</Typography>
+                        <Typography
+                          sx={{
+                            color:
+                              selectedGenre === genre.id ? "yellow" : "white",
+                            cursor: "pointer",
+                          }}
+                        >
+                          {genre.name}
+                        </Typography>
                       </Stack>
                     </Grid>
                   ))}
@@ -179,10 +212,11 @@ const Find = () => {
             )}
           </Stack>
           {/* showmovieToprated */}
-          <Box>
-            {!searchQuery && datatoprated?.results && (
+
+          <Stack>
+            {!searchQuery && allMovies && (
               <Stack direction="column" spacing={2}>
-                {datatoprated.results.map((movie) => (
+                {allMovies?.map((movie) => (
                   <Stack
                     direction="row"
                     alignItems="center"
@@ -228,9 +262,14 @@ const Find = () => {
                     </Stack>
                   </Stack>
                 ))}
+                <Box sx={{ textAlign: "center" }}>
+                  <Button onClick={handleLoadMore} variant="contained">
+                    LOAD MORE
+                  </Button>
+                </Box>
               </Stack>
             )}
-          </Box>
+          </Stack>
 
           {/* result films */}
           <Box>

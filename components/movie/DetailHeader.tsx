@@ -28,7 +28,7 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
-
+import CancelIcon from "@mui/icons-material/Cancel";
 import { getCookie, setCookie, deleteCookie } from "cookies-next";
 import SearchIcon from "@mui/icons-material/Search";
 import { Styles } from "@/stylescomponents/style";
@@ -131,26 +131,42 @@ const DetailHeader = () => {
     `/movie/${id}?append_to_response=credits`,
     fetcher
   );
-const { data: votelist } = useSWR<Movie>(
-  `/account/{account_id}/rated/movies?session_id=${session_id}`
-);
+  const { data: votelist } = useSWR<Movie>(
+    `/account/{account_id}/rated/movies?session_id=${session_id}`
+  );
   const findLink = "/detail/Find";
   const [showRating, setShowRating] = useState(false);
-  const [userRating, setUserRating] = useState(0);
-  const [hasVoted, setHasVoted] = useState(false);
+  
   const [anchorEl, setAnchorEl] = useState(null);
+   const [userRating, setUserRating] = useState<number>(0);
+   const [hasVoted, setHasVoted] = useState<boolean>(false);
+   const [movieRating, setMovieRating] = useState<number>(0);
+    const toggleText = (overview: string) => {
+      setExpandedOverview((prev) => (prev === overview ? null : overview));
+    };
+    
+
+     // Tạo state mới để giữ trạng thái xác nhận từ API rằng người dùng đã đánh giá phim hay chưa
+     const [isMovieRated, setIsMovieRated] = useState<boolean>(false);
   const handleStarClick = (event) => {
     setAnchorEl(event.currentTarget);
-    setShowRating(true); // Hiển thị box đánh giá
+    setShowRating(true);
+
+    // Retrieve user rating from local storage if it exists
+    const storedUserRating = localStorage.getItem(`userRating_${id}`);
+    if (storedUserRating) {
+      setUserRating(parseInt(storedUserRating, 10));
+      setHasVoted(true);
+    }
   };
+
   const handleClosePopover = () => {
+    setShowRating(false);
     setAnchorEl(null);
-    setShowRating(false); // Thêm dòng này để ẩn box đánh giá khi đóng Popover
   };
 
   const handleRatingChange = async (event, newValue) => {
     try {
-      // Gọi API để gửi đánh giá
       const response = await axios.post(
         `/movie/${id}/rating`,
         {
@@ -165,41 +181,52 @@ const { data: votelist } = useSWR<Movie>(
 
       console.log("Rating request success:", response.data);
 
-      // Đóng box đánh giá và cập nhật các state cần thiết
-      setShowRating(false);
-      setAnchorEl(null);
-
-      // Lưu trạng thái vote vào local storage trước khi cập nhật state
+      // Save the user rating and voting status in localStorage and update state
       localStorage.setItem(`userRating_${id}`, newValue);
-
-      // Cập nhật giá trị userRating khi vote thành công
+      localStorage.setItem(`hasVoted_${id}`, "true");
       setUserRating(newValue);
       setHasVoted(true);
     } catch (error) {
       console.error("Error making rating request:", error);
+    } finally {
+      handleClosePopover();
     }
   };
 
+ const handleDeleteRating = async () => {
+   try {
+     const response = await axios.delete(`/movie/${id}/rating`, {
+       params: {
+         session_id: session_id,
+       },
+     });
 
+     console.log("Delete rating success", response);
+
+     // Reset the user rating state and remove it from localStorage
+     setHasVoted(false);
+     setUserRating(0);
+     localStorage.removeItem(`userRating_${id}`);
+     localStorage.removeItem(`hasVoted_${id}`);
+   } catch (error) {
+     console.error("Error deleting rating:", error);
+   }
+ };
   if (error) return <div>Error loading movie details</div>;
   if (!data) return <div>Loading...</div>;
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
-   useEffect(() => {
-     if (votelist && Array.isArray(votelist.results)) {
-       // Kiểm tra xem bộ phim có trong danh sách đã đánh giá không
-       const hasVoted = votelist.results.some((movie) => movie.id === id);
+  useEffect(() => {
+    // Check if the user has voted and set the user's rating from local storage
+    const storedUserRating = localStorage.getItem(`userRating_${id}`);
+    const storedHasVoted = localStorage.getItem(`hasVoted_${id}`);
 
-       if (hasVoted) {
-         // Nếu có, giữ trạng thái đánh giá từ local storage
-         const storedUserRating = localStorage.getItem(`userRating_${id}`);
-         if (storedUserRating) {
-           setUserRating(parseInt(storedUserRating, 10));
-           setHasVoted(true);
-         }
-       }
-     }
-   }, [votelist, id]);
+    if (storedHasVoted && storedUserRating) {
+      setUserRating(parseInt(storedUserRating, 10));
+      setHasVoted(true);
+    }
+  }, [id]);
+
   return (
     <>
       <Stack
@@ -355,7 +382,7 @@ const { data: votelist } = useSWR<Movie>(
                       horizontal: "left",
                     }}
                   >
-                    {/* Hiển thị rating và cho phép đánh giá */}
+                    {/* Display rating and allow rating */}
                     {showRating && (
                       <Box
                         sx={{
@@ -370,6 +397,7 @@ const { data: votelist } = useSWR<Movie>(
                           onChange={session_id ? handleRatingChange : undefined}
                           sx={{ color: hasVoted ? "yellow" : "yellow" }}
                         />
+                        <CancelIcon onClick={handleDeleteRating} />
                       </Box>
                     )}
                   </Popover>

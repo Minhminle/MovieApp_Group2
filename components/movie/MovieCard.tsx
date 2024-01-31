@@ -39,7 +39,7 @@ const MovieCard = () => {
         alignItems="center"
         sx={{ overflowX: "auto" }} // Thêm kiểm soát tràn ngang
       >
-        {data?.results.map((movie) => (
+        {data?.results?.map((movie) => (
           <Stack
             key={movie.id}
             direction="column"
@@ -55,7 +55,7 @@ const MovieCard = () => {
               }
               width={300}
               height={500}
-              sx={{ borderRadius: "50px" }}
+              sx={{ borderRadius: "60px" }}
               onClick={() => handleDetailClick(movie.id)}
             />
             <Box

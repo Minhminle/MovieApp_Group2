@@ -48,7 +48,7 @@ const MovieFeature = () => {
             alignItems="center"
             // Thêm kiểm soát tràn ngang
           >
-            {data?.results.map((movie) => (
+            {data?.results?.map((movie) => (
               <Stack
                 key={movie.id}
                 direction="column"
@@ -132,7 +132,7 @@ const MovieFeature = () => {
         </Box>
         <Box>
           <Stack gap={4} direction="row" sx={{ padding: "19px" }}>
-            {data?.results.map((movie) => (
+            {data?.results?.map((movie) => (
               <Stack key={movie.id}>
                 <Box>
                   <Box
@@ -192,39 +192,19 @@ const MovieFeature = () => {
                         ? `${movie.overview.slice(0, 80)}...`
                         : movie.overview}
                     </Typography>
-                    {movie.overview.length > 80 && (
-                      <Button
-                        sx={{ fontSize: "12px", color: "green" }}
-                        onClick={() => toggleText(movie.overview)}
-                      >
-                        {expandedOverview === movie.overview
-                          ? "Read less"
-                          : "Read more"}
-                      </Button>
-                    )}
                   </Box>
-                  <Stack direction={"row"} spacing={3}>
-                    <Button
-                      onClick={() => handleDetailClick(movie.id)}
-                      sx={{
-                        backgroundColor: "green",
-                        width: "45%",
-                        fontSize: "12px",
-                      }}
-                      variant="contained"
-                      startIcon={<PlayCircleFilledIcon />}
-                    >
-                      Play Now
-                    </Button>
-                    <Button
-                      color="inherit"
-                      sx={{ width: "45%", fontSize: "12px" }}
-                      variant="outlined"
-                      startIcon={<TurnedInNotIcon />}
-                    >
-                      Add watchlist
-                    </Button>
-                  </Stack>
+                  <Button
+                    onClick={() => handleDetailClick(movie.id)}
+                    sx={{
+                      backgroundColor: "green",
+                      width: "90%",
+                      fontSize: "12px",
+                      marginTop: "3px",
+                    }}
+                    variant="contained"
+                  >
+                    Read more
+                  </Button>
                 </Box>
               </Stack>
             ))}

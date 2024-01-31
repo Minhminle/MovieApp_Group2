@@ -57,7 +57,7 @@ const MovieRate = () => {
         alignItems="center"
         sx={{ overflowX: "auto" }}
       >
-        {data?.results.map((movie, index) => (
+        {data?.results?.map((movie, index) => (
           <Stack key={movie.id} direction="row" alignItems="center">
             <Typography variant="h3" color="white" padding={"3px"}>
               {index + 1}
@@ -71,7 +71,7 @@ const MovieRate = () => {
               }
               width={200}
               height={300}
-              sx={{ borderRadius: "20%" }}
+              sx={{ borderRadius: "50px" }}
               onClick={() => handleDetailClick(movie.id)}
             />
             <Stack direction="column">

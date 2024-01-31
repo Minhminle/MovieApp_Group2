@@ -1,6 +1,13 @@
 import { MovieList } from "@/models/Movie";
 import { GenreList } from "@/models/Movie";
-import { Box, Button, Container, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Container,
+  LinearProgress,
+  Stack,
+  Typography,
+} from "@mui/material";
 import axios from "axios";
 import Link from "next/link";
 import useSWR from "swr";
@@ -19,7 +26,12 @@ const MovieRate = () => {
   };
   const genres = dataGenre?.genres || [];
   const [expandedOverview, setExpandedOverview] = useState<string | null>(null);
-
+  if (!data)
+    return (
+      <div>
+        <LinearProgress color="inherit" />
+      </div>
+    );
   const Counter = ({ count }) => {
     const numbers = [];
     for (let i = 1; i <= count; i++) {

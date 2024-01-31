@@ -117,7 +117,13 @@ const MovieDetail = () => {
 
   if (error) return <div>Error loading movie details</div>;
 
-  if (!data)
+  if (
+    !data &&
+    !similarMoviesData &&
+    !dataVideo &&
+    !datareview &&
+    !movieBackdropData
+  )
     return (
       <div>
         <LinearProgress color="inherit" />
@@ -137,7 +143,7 @@ const MovieDetail = () => {
           alignItems="center"
           sx={{ overflowX: "auto" }}
         >
-          {data.credits?.cast?.map((actor) => (
+          {data?.credits?.cast?.map((actor) => (
             <Stack key={actor.id}>
               <Box
                 sx={{
@@ -327,7 +333,7 @@ const MovieDetail = () => {
                     key={backdrop.file_path}
                     component="img"
                     src={`https://image.tmdb.org/t/p/w500${backdrop.file_path}`}
-                    alt={`${data.title} backdrop`}
+                    alt={`${data?.title} backdrop`}
                     sx={{ width: "400px" }}
                   />
                 ))}
@@ -392,7 +398,7 @@ const MovieDetail = () => {
                   </Typography>
                 </Box>
 
-                {data.genres?.slice(0, 2).map((genre) => (
+                {data?.genres?.slice(0, 2).map((genre) => (
                   <Typography
                     key={genre.id}
                     variant="h6"

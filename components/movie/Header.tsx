@@ -1,4 +1,4 @@
-import { Box, Button, Stack, Typography } from "@mui/material";
+import { Box, Button, LinearProgress, Stack, Typography } from "@mui/material";
 import React, { useState } from "react"; // Import useState
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import TurnedInNotIcon from "@mui/icons-material/TurnedInNot";
@@ -31,6 +31,12 @@ const Header = (props: Props) => {
 
   console.log(data);
   const genres = dataGenre?.genres || [];
+  if (!data)
+    return (
+      <div>
+        <LinearProgress color="inherit" />
+      </div>
+    );
   return (
     <>
       <Box>

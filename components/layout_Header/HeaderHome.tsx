@@ -11,8 +11,8 @@ const HeaderHome = () => {
   return (
     <>
       <Box>
-        <Stack direction="row" spacing={17}>
-          <Stack direction="row">
+        <Stack direction="row" spacing={13}>
+          <Stack direction="row" sx={{ padding: "5px" }} spacing={1}>
             <Box component="img" src="/icons/Logo.svg" />
             <Box component="img" src="/icons/SaintStream.svg" />
           </Stack>
@@ -23,7 +23,7 @@ const HeaderHome = () => {
               }}
               sx={Styles._iconheaderhome}
             />
-           <AvatarView  ></AvatarView>
+            <AvatarView></AvatarView>
           </Stack>
         </Stack>
       </Box>

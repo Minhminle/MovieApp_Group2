@@ -10,12 +10,13 @@ import {
   CardMedia,
   Grid,
   IconButton,
+  Snackbar,
+  SnackbarContent,
   Stack,
   Tooltip,
   Typography,
-  Alert,
 } from "@mui/material";
-import { ReactElement, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import { Movie } from "@/models/Movie";
 import { Rating, Chip } from "@mui/material";
 import PlayCircleFilledIcon from "@mui/icons-material/PlayCircleFilled";
@@ -23,7 +24,7 @@ import TurnedInIcon from "@mui/icons-material/TurnedIn";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import DownloadIcon from "@mui/icons-material/Download";
 import StarIcon from "@mui/icons-material/Star";
-import { format } from "date-fns";
+import { format, isValid } from "date-fns";
 import ArrowCircleLeftIcon from "@mui/icons-material/ArrowCircleLeft";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
@@ -35,8 +36,6 @@ import { getCookie, setCookie, deleteCookie } from "cookies-next";
 import SearchIcon from "@mui/icons-material/Search";
 import { Styles } from "@/stylescomponents/style";
 import AvatarView from "@/components/movie/AvatarView";
-import Snackbar from "@mui/material/Snackbar";
-import SnackbarContent from "@mui/material/SnackbarContent";
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 export interface Cast {
   id: number;
@@ -46,71 +45,68 @@ export interface Cast {
   // Thêm các thuộc tính khác của cast nếu cần
 }
 
-const DetailHeader = () => {
+const HeaderDetail = () => {
   const router = useRouter();
   const { id } = router.query;
   const [expandedOverview, setExpandedOverview] = useState<string | null>(null);
   const toggleText = (overview: string) => {
     setExpandedOverview((prev) => (prev === overview ? null : overview));
   };
-  const [isThumbUpPressed, setIsThumbUpPressed] = useState(false);
+
   const session_id = getCookie("session_id");
   const handleThumbUp = () => {
     setIsThumbUpPressed((prev) => !prev);
   };
-  const [isTurnedInPressed, setIsTurnedInPressed] = useState(false);
 
+  const [isTurnedInPressed, setIsTurnedInPressed] = useState(
+    localStorage.getItem(`watchlist${id}`) === "true"
+  );
+  const [isThumbUpPressed, setIsThumbUpPressed] = useState(
+    localStorage.getItem(`thumbUp_${id}`) === "true"
+  );
   const handleWatchList = async () => {
     try {
-      // Thực hiện yêu cầu POST đến API của TMDB
       const response = await axios.post(
         `/account/{account_id}/watchlist`,
         {
-          media_type: "movie", // Nếu bạn đang thao tác với phim
-          media_id: id, // Id của phim
-          watchlist: !isTurnedInPressed, // Trạng thái thích (đảo ngược trạng thái hiện tại)
+          media_type: "movie",
+          media_id: id,
+          watchlist: !isTurnedInPressed,
         },
         {
           params: {
-            session_id: session_id, // Thêm session_id vào các tham số truy vấn
+            session_id: session_id,
           },
         }
       );
 
-      // Xử lý phản hồi từ server (response.data)
       console.log("Favorite request success:", response.data);
-
-      // Cập nhật trạng thái isThumbUpPressed
       setIsTurnedInPressed(!isTurnedInPressed);
+      localStorage.setItem(`watchlist${id}`, !isTurnedInPressed);
     } catch (error) {
-      // Xử lý lỗi khi yêu cầu không thành công
       console.error("Error making favorite request:", error);
     }
   };
   const handleFavorite = async () => {
     try {
-      // Thực hiện yêu cầu POST đến API của TMDB
       const response = await axios.post(
         `/account/{account_id}/favorite`,
         {
-          media_type: "movie", // Nếu bạn đang thao tác với phim
-          media_id: id, // Id của phim
-          favorite: !isThumbUpPressed, // Trạng thái thích (đảo ngược trạng thái hiện tại)
+          media_type: "movie",
+          media_id: id,
+          favorite: !isThumbUpPressed,
         },
         {
           params: {
-            session_id: session_id, // Thêm session_id vào các tham số truy vấn
+            session_id: session_id,
           },
         }
       );
 
-      // Xử lý phản hồi từ server (response.data)
       console.log("Favorite request success:", response.data);
-
-      // Cập nhật trạng thái isThumbUpPressed
       setIsThumbUpPressed(!isThumbUpPressed);
+      localStorage.setItem(`thumbUp_${id}`, !isThumbUpPressed);
     } catch (error) {
-      // Xử lý lỗi khi yêu cầu không thành công
       console.error("Error making favorite request:", error);
     }
   };
@@ -136,8 +132,10 @@ const DetailHeader = () => {
     fetcher
   );
 
-  const findLink = "/detail/Find";
-  const [open, setOpen] = useState(false);
+  const _letterStyles = {
+    color: "white",
+    fontWeight: "700",
+  };
 
   const handleClickOpen = () => {
     if (!session_id) {
@@ -161,23 +159,16 @@ const DetailHeader = () => {
     <>
       <Stack
         direction="row"
-        spacing={32}
+        spacing={33}
         sx={{ position: "absolute", zIndex: "1", left: "20px", top: "20px" }}
+        alignItems={"center"}
       >
         <ArrowBackIcon
           onClick={() => router.back()}
           sx={{ fontSize: "40px" }}
         />
 
-        <Stack direction={"row"} spacing={1} alignItems="center">
-          <SearchIcon
-            onClick={() => {
-              router.push(findLink);
-            }}
-            sx={Styles._iconheaderhome}
-          />
-          <AvatarView></AvatarView>
-        </Stack>
+        <AvatarView></AvatarView>
       </Stack>
       <Box sx={{ position: "relative" }}>
         <Box
@@ -190,7 +181,7 @@ const DetailHeader = () => {
           alt={data.title}
           sx={{
             boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.3)",
-            width: "400px",
+            width: "380px",
           }}
         />
         <Box
@@ -205,8 +196,8 @@ const DetailHeader = () => {
             spacing={1}
             sx={{
               background: "linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1))",
-              width: "365px",
-              marginX: "5px",
+              width: "345px",
+              marginX: "-15px",
               zIndex: 1,
               padding: "20px",
             }}
@@ -223,125 +214,108 @@ const DetailHeader = () => {
                   {(data.vote_average * 0.5).toFixed(1)}
                 </Typography>
               </Stack>
-              <Typography variant="h6" sx={{ fontStyle: "italic" }}>
+              <Typography
+                variant="h5"
+                sx={{ fontStyle: "italic", textAlign: "justify" }}
+              >
                 {data.tagline}
               </Typography>
             </Stack>
-            <Stack direction={"row"} spacing={1} width={"100%"}>
-              <Button
-                sx={{
-                  backgroundColor: "green",
-                  fontSize: "13px",
-                }}
-                variant="contained"
-                startIcon={<PlayCircleFilledIcon />}
-                // onClick={() => handleDetailClick(movie.id)}
-              >
-                Continue Watching
-              </Button>
+            <Stack direction={"row"} spacing={12} width={"100%"}>
+              <Stack spacing={1} alignItems={"center"} direction={"row"}>
+                <CalendarMonthIcon />
+                <Typography variant="h6">
+                  {isValid(new Date(data.release_date))
+                    ? format(new Date(data.release_date), "dd/MM/yyyy")
+                    : "dd/MM/yy"}
+                </Typography>
+              </Stack>
+              <Stack direction={"row"} alignItems={"center"} spacing={1}>
+                <IconButton
+                  color="inherit"
+                  onClick={() => {
+                    if (!session_id) {
+                      handleClickOpen();
+                    } else {
+                      handleWatchList();
+                    }
+                  }}
+                >
+                  <TurnedInIcon
+                    sx={{
+                      color: session_id
+                        ? isTurnedInPressed
+                          ? "yellow"
+                          : "inherit"
+                        : "inherit",
+                    }}
+                  />
+                </IconButton>
+                <Snackbar
+                  open={snackbarOpen}
+                  autoHideDuration={1500}
+                  onClose={handleSnackbarClose}
+                  anchorOrigin={{ vertical: "top", horizontal: "center" }} // Đặt vị trí ở Top-Center
+                  style={{ background: "yellow" }}
+                >
+                  <SnackbarContent
+                    message={
+                      <Stack direction="row" alignItems="center">
+                        {/* Add the icon here */}
+                        <WarningAmberIcon sx={{ marginRight: 1 }} />
+                        Login to add this movie to your list
+                      </Stack>
+                    }
+                    sx={{
+                      backgroundColor: "yellow",
+                      color: "black",
+                    }}
+                  />
+                </Snackbar>
 
-              <IconButton
-                color="inherit"
-                onClick={() => {
-                  if (!session_id) {
-                    handleClickOpen();
-                  } else {
-                    handleWatchList();
-                  }
-                }}
-              >
-                <TurnedInIcon
-                  sx={{
-                    color: session_id
-                      ? isTurnedInPressed
-                        ? "yellow"
-                        : "inherit"
-                      : "inherit",
+                <IconButton
+                  color="inherit"
+                  onClick={() => {
+                    if (!session_id) {
+                      handleClickOpen();
+                    } else {
+                      handleFavorite();
+                    }
                   }}
-                />
-              </IconButton>
-              <Snackbar
-                open={snackbarOpen}
-                autoHideDuration={1500}
-                onClose={handleSnackbarClose}
-                anchorOrigin={{ vertical: "top", horizontal: "center" }} // Đặt vị trí ở Top-Center
-                style={{ background: "yellow" }}
-              >
-                <SnackbarContent
-                  message={
-                    <Stack direction="row" alignItems="center">
-                      {/* Add the icon here */}
-                      <WarningAmberIcon sx={{ marginRight: 1 }} />
-                      Login to add this movie to your list
-                    </Stack>
-                  }
-                  sx={{
-                    backgroundColor: "yellow",
-                    color: "black",
-                  }}
-                />
-              </Snackbar>
-
-              <IconButton
-                color="inherit"
-                onClick={() => {
-                  if (!session_id) {
-                    handleClickOpen();
-                  } else {
-                    handleFavorite();
-                  }
-                }}
-              >
-                <FavoriteIcon
-                  sx={{
-                    color: session_id
-                      ? isThumbUpPressed
-                        ? "red"
-                        : "inherit"
-                      : "inherit",
-                  }}
-                />
-              </IconButton>
-              <IconButton color="inherit">
-                <DownloadIcon />
-              </IconButton>
+                >
+                  <FavoriteIcon
+                    sx={{
+                      color: session_id
+                        ? isThumbUpPressed
+                          ? "red"
+                          : "inherit"
+                        : "inherit",
+                    }}
+                  />
+                </IconButton>
+                <IconButton color="inherit">
+                  <DownloadIcon />
+                </IconButton>
+              </Stack>
             </Stack>
           </Stack>
         </Box>
       </Box>
       <Stack spacing={1} sx={{ marginX: "15px" }}>
-        <Stack direction={"row"} spacing={1}>
-          <CalendarMonthIcon />
-          <Typography variant="h6">
-            {format(new Date(data.release_date), "dd/MM/yyyy")}
-          </Typography>
-          <Chip
-            icon={<FavoriteIcon style={{ color: "red" }} />}
-            label={`${data.vote_count}`}
-            sx={{
-              top: "15px",
-              right: "15px",
-
-              backgroundColor: "pink",
-              color: "black",
-            }}
-          />
-        </Stack>
-        <Stack direction={"row"} spacing={1}>
+        <Stack direction={"row"} alignItems={"center"} spacing={1}>
           <AccessTimeIcon />
-          <Typography variant="h6">{formatRuntime(data.runtime)}</Typography>
+          <Typography variant="h6">
+            {data.runtime ? formatRuntime(data.runtime) : "Don't know"}
+          </Typography>
         </Stack>
-
         <Stack direction={"row"} spacing={2}>
           {data.genres?.slice(0, 4).map((genre) => (
             <Chip
               key={genre.id}
               label={genre.name}
+              variant="outlined"
               sx={{
-                margin: "0 4px 4px 0",
-                color: "white", // Màu chữ
-                backgroundColor: "#2196F3",
-                width: "fit-content",
+                color: "white",
               }}
             />
           ))}
@@ -350,8 +324,17 @@ const DetailHeader = () => {
       <Stack>
         <Box padding={"20px"}>
           <Stack>
-            <Typography sx={{ fontSize: "30px" }}>Story Line</Typography>
-            <Typography sx={{ fontSize: "18px", color: "#555" }}>
+            <Typography variant="h4" sx={{ ..._letterStyles }}>
+              Story Line
+            </Typography>
+            <Typography
+              sx={{
+                marginTop: "6px",
+                fontSize: "18px",
+                color: "white",
+                textAlign: "justify",
+              }}
+            >
               {expandedOverview === data.overview
                 ? data.overview
                 : data.overview.length > 90
@@ -359,7 +342,7 @@ const DetailHeader = () => {
                 : data.overview}
               {data.overview.length > 90 && (
                 <Button
-                  sx={{ fontSize: "12px", color: "green" }}
+                  sx={{ fontSize: "12px", color: "lightgreen" }}
                   onClick={() => toggleText(data.overview)}
                 >
                   {expandedOverview === data.overview ? "Less" : "More"}
@@ -373,8 +356,8 @@ const DetailHeader = () => {
   );
 };
 
-DetailHeader.getLayout = function getLayout(page: ReactElement) {
+HeaderDetail.getLayout = function getLayout(page: ReactElement) {
   return <>{page}</>;
 };
 
-export default DetailHeader;
+export default HeaderDetail;

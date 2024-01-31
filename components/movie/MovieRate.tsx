@@ -71,7 +71,7 @@ const MovieRate = () => {
               }
               width={200}
               height={300}
-              sx={{ borderRadius: "20%" }}
+              sx={{ borderRadius: "50px" }}
               onClick={() => handleDetailClick(movie.id)}
             />
             <Stack direction="column">

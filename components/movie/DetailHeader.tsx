@@ -34,7 +34,6 @@ import { getCookie, setCookie, deleteCookie } from "cookies-next";
 import SearchIcon from "@mui/icons-material/Search";
 import { Styles } from "@/stylescomponents/style";
 import AvatarView from "@/components/movie/AvatarView";
-import { User } from "@/models/Auth";
 export interface Cast {
   id: number;
   name: string;
@@ -47,52 +46,21 @@ const DetailHeader = () => {
   const router = useRouter();
   const { id } = router.query;
   const [expandedOverview, setExpandedOverview] = useState<string | null>(null);
-
-  const session_id = getCookie("session_id");
   const toggleText = (overview: string) => {
     setExpandedOverview((prev) => (prev === overview ? null : overview));
   };
-<<<<<<< HEAD
-   const { data: userDetails } = useSWR<User>(
-     `/account?session_id=${session_id}`
-   );
-   const { data: watchList } = useSWR<Movie>(
-     id
-       ? `/account/{account_id}/watchlist/movies?session_id=${session_id}`
-       : null
-   );
-   const { data: faVourite } = useSWR<Movie>(
-     id
-       ? `/account/{account_id}/favorite/movies?session_id=${session_id}`
-       : null
-   );
-  const [isThumbUpPressed, setIsThumbUpPressed] = useState(false);
-=======
 
   const session_id = getCookie("session_id");
->>>>>>> develop
   const handleThumbUp = () => {
     setIsThumbUpPressed((prev) => !prev);
   };
 
-<<<<<<< HEAD
-   const [serverTurnedInPressed, setServerTurnedInPressed] = useState(false);
-
-   // Khi component được mount, cập nhật trạng thái từ server
-   useEffect(() => {
-     // Kiểm tra nếu có dữ liệu từ server thì cập nhật trạng thái
-     if (watchList) {
-       setServerTurnedInPressed(watchList.is_watchlisted);
-     }
-   }, [watchList]);
-=======
   const [isTurnedInPressed, setIsTurnedInPressed] = useState(
     localStorage.getItem(`watchlist${id}`) === "true"
   );
   const [isThumbUpPressed, setIsThumbUpPressed] = useState(
     localStorage.getItem(`thumbUp_${id}`) === "true"
   );
->>>>>>> develop
   const handleWatchList = async () => {
     try {
       const response = await axios.post(
@@ -100,11 +68,7 @@ const DetailHeader = () => {
         {
           media_type: "movie",
           media_id: id,
-<<<<<<< HEAD
-          watchlist: !serverTurnedInPressed,
-=======
           watchlist: !isTurnedInPressed,
->>>>>>> develop
         },
         {
           params: {
@@ -113,21 +77,11 @@ const DetailHeader = () => {
         }
       );
 
-<<<<<<< HEAD
-      console.log("WatchList request success:", response.data);
-
-      // Cập nhật trạng thái từ server và trạng thái local
-      setServerTurnedInPressed(!serverTurnedInPressed);
-      setIsTurnedInPressed(!serverTurnedInPressed);
-    } catch (error) {
-      console.error("Error making WatchList request:", error);
-=======
       console.log("Favorite request success:", response.data);
       setIsTurnedInPressed(!isTurnedInPressed);
       localStorage.setItem(`watchlist${id}`, !isTurnedInPressed);
     } catch (error) {
       console.error("Error making favorite request:", error);
->>>>>>> develop
     }
   };
   const handleFavorite = async () => {
@@ -271,19 +225,14 @@ const DetailHeader = () => {
                 <IconButton color="inherit">
                   <TurnedInIcon
                     sx={{
-                      color:
-                        isTurnedInPressed ||
-                        (watchList && watchList.is_watchlisted)
+                      color: session_id
+                        ? isTurnedInPressed
                           ? "yellow"
-<<<<<<< HEAD
-                          : "inherit",
-=======
                           : "inherit"
                         : "inherit",
                       "&:hover": {
                         backgroundColor: "transparent", // Loại bỏ hiệu ứng hover trên di động
                       },
->>>>>>> develop
                     }}
                     onClick={session_id ? handleWatchList : undefined}
                   />
@@ -350,7 +299,7 @@ const DetailHeader = () => {
                 router.push(findLink);
               }}
               key={genre.id}
-              label={genre.name}
+              label={genre.name}  
               sx={{
                 margin: "0 4px 4px 0",
                 color: "white", // Màu chữ

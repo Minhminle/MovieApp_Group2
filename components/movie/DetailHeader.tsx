@@ -131,7 +131,9 @@ const DetailHeader = () => {
     `/movie/${id}?append_to_response=credits`,
     fetcher
   );
-
+const { data: votelist } = useSWR<Movie>(
+  `/account/{account_id}/rated/movies?session_id=${session_id}`
+);
   const findLink = "/detail/Find";
   const [showRating, setShowRating] = useState(false);
   const [userRating, setUserRating] = useState(0);
@@ -152,7 +154,7 @@ const DetailHeader = () => {
       const response = await axios.post(
         `/movie/${id}/rating`,
         {
-          value: newValue*2,
+          value: newValue * 2,
         },
         {
           params: {
@@ -183,14 +185,21 @@ const DetailHeader = () => {
   if (!data) return <div>Loading...</div>;
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
-  useEffect(() => {
-    // Khôi phục trạng thái vote từ local storage khi component được render
-    const storedUserRating = localStorage.getItem(`userRating_${id}`);
-    if (storedUserRating) {
-      setUserRating(parseInt(storedUserRating, 10));
-      setHasVoted(true);
-    }
-  }, [id]);
+   useEffect(() => {
+     if (votelist && Array.isArray(votelist.results)) {
+       // Kiểm tra xem bộ phim có trong danh sách đã đánh giá không
+       const hasVoted = votelist.results.some((movie) => movie.id === id);
+
+       if (hasVoted) {
+         // Nếu có, giữ trạng thái đánh giá từ local storage
+         const storedUserRating = localStorage.getItem(`userRating_${id}`);
+         if (storedUserRating) {
+           setUserRating(parseInt(storedUserRating, 10));
+           setHasVoted(true);
+         }
+       }
+     }
+   }, [votelist, id]);
   return (
     <>
       <Stack

@@ -23,6 +23,7 @@ import { ST } from "next/dist/shared/lib/utils";
 import StarRateIcon from "@mui/icons-material/StarRate";
 import TurnedInIcon from "@mui/icons-material/TurnedIn";
 import FavoriteIcon from "@mui/icons-material/Favorite";
+import CancelIcon from "@mui/icons-material/Cancel";
 const UserDetail = () => {
   const router = useRouter();
   const { id } = router.query;
@@ -59,6 +60,26 @@ const UserDetail = () => {
   const handleLoadMore = () => {
     // Tăng số lượng phim hiển thị, có thể điều chỉnh theo ý muốn
     setVisibleItems((prevVisibleItems) => prevVisibleItems + 10);
+  };
+   const [hasVoted, setHasVoted] = useState(false);
+  const handleDeleteRating = async (movieId) => {
+    try {
+      const response = await axios.delete(`/movie/${movieId}/rating`, {
+        params: {
+          session_id: session_id,
+        },
+      });
+
+      // Xử lý sau khi xóa thành công, có thể làm mới danh sách hoặc hiển thị thông báo thành công.
+      console.log("Xóa đánh giá thành công", response);
+      setHasVoted(false);
+      localStorage.removeItem(`userRating_${id}`);
+      // Sau khi xóa, bạn có thể làm mới danh sách votelist để cập nhật UI.
+      // Chẳng hạn: mutate(`/account/{account_id}/rated/movies?session_id=${session_id}`);
+    } catch (error) {
+      console.error("Lỗi khi xóa đánh giá", error);
+      // Xử lý lỗi nếu cần
+    }
   };
   return (
     <>
@@ -303,9 +324,11 @@ const UserDetail = () => {
                         <Stack direction="row">
                           <StarRateIcon sx={{ color: "yellow" }}></StarRateIcon>
                           <Box sx={{ color: "white" }}>{movie.rating}</Box>
-                          
                         </Stack>
                       </Stack>
+                      <CancelIcon
+                        onClick={() => handleDeleteRating(movie.id)}
+                      ></CancelIcon>
                     </Stack>
                   </Stack>
                 </Stack>

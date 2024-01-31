@@ -4,6 +4,7 @@ import {
   Button,
   CardContent,
   CardMedia,
+  LinearProgress,
   Stack,
   Typography,
 } from "@mui/material";
@@ -20,6 +21,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import { Styles } from "@/stylescomponents/style";
 import AvatarView from "@/components/movie/AvatarView";
 import Footter from "@/components/movie/Footer";
+import InstagramIcon from "@mui/icons-material/Instagram";
 const DetailCast = () => {
   const getGenderLabel = (gender) => {
     return gender === 2 ? "Male" : gender === 1 ? "Female" : "Unknown";
@@ -49,7 +51,12 @@ const DetailCast = () => {
     // Tăng số lượng items đã hiển thị thêm 5
     setVisibleItems((prevVisibleItems) => prevVisibleItems + 5);
   };
-  const findLink = "/detail/Find";
+  if (!data)
+    return (
+      <div>
+        <LinearProgress color="inherit" />
+      </div>
+    );
   return (
     <>
       <Stack direction={"row"} alignItems={"center"} spacing={12}>
@@ -63,12 +70,6 @@ const DetailCast = () => {
           </Typography>
         </Stack>
         <Stack direction={"row"} spacing={1} alignItems="center">
-          <SearchIcon
-            onClick={() => {
-              router.push(findLink);
-            }}
-            sx={Styles._iconheaderhome}
-          />
           <AvatarView></AvatarView>
         </Stack>
       </Stack>

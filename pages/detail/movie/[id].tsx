@@ -11,6 +11,7 @@ import {
   CardMedia,
   Grid,
   IconButton,
+  LinearProgress,
   Stack,
   Tab,
   Typography,
@@ -113,8 +114,25 @@ const MovieDetail = () => {
     router.push(`/detail/cast/${actorid}`);
   };
 
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false);
+  const [currentImagePath, setCurrentImagePath] = useState("");
+
+  const handleImageClick = (file_path) => {
+    setCurrentImagePath(`https://image.tmdb.org/t/p/original${file_path}`);
+    setIsImageModalOpen(true);
+  };
+
+  const handleCloseImageModal = () => {
+    setIsImageModalOpen(false);
+  };
+
   if (error) return <div>Error loading movie details</div>;
-  if (!data) return <div>Loading...</div>;
+  if (!data)
+    return (
+      <div>
+        <LinearProgress color="inherit" />
+      </div>
+    );
 
   return (
     <>
@@ -301,7 +319,8 @@ const MovieDetail = () => {
                   component="img"
                   src={`https://image.tmdb.org/t/p/w500${backdrop.file_path}`}
                   alt={`${data.title} backdrop`}
-                  sx={{ width: "400px" }}
+                  sx={{ width: "400px", cursor: "pointer" }}
+                  onClick={() => handleImageClick(backdrop.file_path)}
                 />
               ))}
             </Stack>

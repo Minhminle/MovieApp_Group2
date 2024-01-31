@@ -34,6 +34,13 @@ import { getCookie, setCookie, deleteCookie } from "cookies-next";
 import SearchIcon from "@mui/icons-material/Search";
 import { Styles } from "@/stylescomponents/style";
 import AvatarView from "@/components/movie/AvatarView";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import Snackbar from "@mui/material/Snackbar";
+import SnackbarContent from "@mui/material/SnackbarContent";
 export interface Cast {
   id: number;
   name: string;
@@ -133,6 +140,23 @@ const DetailHeader = () => {
   );
 
   const findLink = "/detail/Find";
+  const [open, setOpen] = useState(false);
+
+  const handleClickOpen = () => {
+    if (!session_id) {
+      setSnackbarMessage("Login Required");
+      setSnackbarOpen(true);
+    } else {
+      handleWatchList();
+    }
+  };
+
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+  };
 
   if (error) return <div>Error loading movie details</div>;
   if (!data) return <div>Loading...</div>;
@@ -218,43 +242,60 @@ const DetailHeader = () => {
               >
                 Continue Watching
               </Button>
-              <Tooltip
-                title={session_id ? "" : "Login to add this movie to your list"}
-                arrow
-                placement="top"
-              >
-                <IconButton color="inherit">
-                  <TurnedInIcon
-                    sx={{
-                      color: session_id
-                        ? isTurnedInPressed
-                          ? "yellow"
-                          : "inherit"
-                        : "inherit",
-                    }}
-                    onClick={session_id ? handleWatchList : undefined}
-                  />
-                </IconButton>
-              </Tooltip>
 
-              <Tooltip
-                title={session_id ? "" : "Login to add this movie to your list"}
-                arrow
-                placement="top"
+              <IconButton
+                color="inherit"
+                onClick={() => {
+                  if (!session_id) {
+                    handleClickOpen();
+                  } else {
+                    handleWatchList();
+                  }
+                }}
               >
-                <IconButton color="inherit">
-                  <FavoriteIcon
-                    sx={{
-                      color: session_id
-                        ? isThumbUpPressed
-                          ? "red"
-                          : "inherit"
-                        : "inherit",
-                    }}
-                    onClick={session_id ? handleFavorite : undefined}
-                  />
-                </IconButton>
-              </Tooltip>
+                <TurnedInIcon
+                  sx={{
+                    color: session_id
+                      ? isTurnedInPressed
+                        ? "yellow"
+                        : "inherit"
+                      : "inherit",
+                  }}
+                />
+              </IconButton>
+              <Snackbar
+                open={snackbarOpen}
+                autoHideDuration={2000}
+                onClose={handleSnackbarClose}
+                message="Login to add this movie to your list"
+              />
+
+              <IconButton
+                color="inherit"
+                onClick={() => {
+                  if (!session_id) {
+                    handleClickOpen();
+                  } else {
+                    handleFavorite();
+                  }
+                }}
+              >
+                <FavoriteIcon
+                  sx={{
+                    color: session_id
+                      ? isThumbUpPressed
+                        ? "red"
+                        : "inherit"
+                      : "inherit",
+                  }}
+                />
+              </IconButton>
+              <Snackbar
+                open={snackbarOpen}
+                autoHideDuration={2000}
+                onClose={handleSnackbarClose}
+                message="Login to add this movie to your list"
+              />
               <IconButton color="inherit">
                 <DownloadIcon />
               </IconButton>

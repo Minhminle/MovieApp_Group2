@@ -63,6 +63,7 @@ const DetailHeader = () => {
   const [isThumbUpPressed, setIsThumbUpPressed] = useState(
     localStorage.getItem(`thumbUp_${id}`) === "true"
   );
+
   const handleWatchList = async () => {
     try {
       const response = await axios.post(
@@ -134,25 +135,62 @@ const DetailHeader = () => {
   const findLink = "/detail/Find";
   const [showRating, setShowRating] = useState(false);
   const [userRating, setUserRating] = useState(0);
-const [hasVoted, setHasVoted] = useState(false);
- const [anchorEl, setAnchorEl] = useState(null);
-   const handleStarClick = (event) => {
-     setAnchorEl(event.currentTarget);
-   };
-   const handleClosePopover = () => {
-     setAnchorEl(null);
-   };
-
-  const handleRatingChange = (event, newValue) => {
-    // Lưu giá trị đánh giá người dùng
-    setUserRating(newValue);
-    setHasVoted(true); // Đánh dấu là người dùng đã đánh giá
+  const [hasVoted, setHasVoted] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const handleStarClick = (event) => {
+    setAnchorEl(event.currentTarget);
+    setShowRating(true); // Hiển thị box đánh giá
   };
-  
-  
+  const handleClosePopover = () => {
+    setAnchorEl(null);
+    setShowRating(false); // Thêm dòng này để ẩn box đánh giá khi đóng Popover
+  };
+
+  const handleRatingChange = async (event, newValue) => {
+    try {
+      // Gọi API để gửi đánh giá
+      const response = await axios.post(
+        `/movie/${id}/rating`,
+        {
+          value: newValue*2,
+        },
+        {
+          params: {
+            session_id: session_id,
+          },
+        }
+      );
+
+      console.log("Rating request success:", response.data);
+
+      // Đóng box đánh giá và cập nhật các state cần thiết
+      setShowRating(false);
+      setAnchorEl(null);
+
+      // Lưu trạng thái vote vào local storage trước khi cập nhật state
+      localStorage.setItem(`userRating_${id}`, newValue);
+
+      // Cập nhật giá trị userRating khi vote thành công
+      setUserRating(newValue);
+      setHasVoted(true);
+    } catch (error) {
+      console.error("Error making rating request:", error);
+    }
+  };
+
 
   if (error) return <div>Error loading movie details</div>;
   if (!data) return <div>Loading...</div>;
+
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  useEffect(() => {
+    // Khôi phục trạng thái vote từ local storage khi component được render
+    const storedUserRating = localStorage.getItem(`userRating_${id}`);
+    if (storedUserRating) {
+      setUserRating(parseInt(storedUserRating, 10));
+      setHasVoted(true);
+    }
+  }, [id]);
   return (
     <>
       <Stack
@@ -291,7 +329,9 @@ const [hasVoted, setHasVoted] = useState(false);
               >
                 <Box>
                   <IconButton color="inherit" onClick={handleStarClick}>
-                    <StarRateIcon />
+                    <StarRateIcon
+                      sx={{ color: hasVoted ? "yellow" : "inherit" }}
+                    />
                   </IconButton>
                   <Popover
                     open={Boolean(anchorEl)}
@@ -307,20 +347,22 @@ const [hasVoted, setHasVoted] = useState(false);
                     }}
                   >
                     {/* Hiển thị rating và cho phép đánh giá */}
-                    <Box
-                      sx={{
-                        backgroundColor: "white",
-                        padding: "16px",
-                        borderRadius: "8px",
-                        boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.1)",
-                      }}
-                    >
-                      <Rating
-                        value={userRating}
-                        onChange={handleRatingChange}
-                        sx={{ color: hasVoted ? "yellow" : "yellow" }}
-                      />
-                    </Box>
+                    {showRating && (
+                      <Box
+                        sx={{
+                          backgroundColor: "white",
+                          padding: "16px",
+                          borderRadius: "8px",
+                          boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.1)",
+                        }}
+                      >
+                        <Rating
+                          value={userRating}
+                          onChange={session_id ? handleRatingChange : undefined}
+                          sx={{ color: hasVoted ? "yellow" : "yellow" }}
+                        />
+                      </Box>
+                    )}
                   </Popover>
                 </Box>
               </Tooltip>

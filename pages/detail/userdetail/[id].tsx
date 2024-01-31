@@ -44,7 +44,7 @@ const UserDetail = () => {
     id ? `/account/{account_id}/favorite/movies?session_id=${session_id}` : null
   );
   const { data: votelist } = useSWR<Movie>(
-    `/account/{account_id}/rated/movies?session_id=${session_id}` 
+    `/account/{account_id}/rated/movies?session_id=${session_id}`
   );
   // const { data: votelist } = useSWR<Movie>(
   //   `/account/${session_id}/rated/movies`
@@ -117,7 +117,10 @@ const UserDetail = () => {
                     label={`Favourite (${faVourite?.results.length}) `}
                     value="2"
                   />
-                  <Tab label={`Vote List `} value="3" />
+                  <Tab
+                    label={`Vote List (${votelist?.results.length}) `}
+                    value="3"
+                  />
                 </TabList>
               </Box>
             </TabContext>
@@ -247,8 +250,66 @@ const UserDetail = () => {
             </Stack>
           </TabPanel>
           <TabPanel value="3">
-            <Stack>
-              
+            <Stack alignContent="center" spacing={2} direction="column-reverse">
+              {votelist?.results.map((movie) => (
+                <Stack key={movie.id}>
+                  <Stack direction="row" spacing={2} alignItems="center">
+                    <Box
+                      component="img"
+                      src={
+                        movie.poster_path
+                          ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
+                          : "/images/DefaultPoster.png" // Đường dẫn đến hình ảnh mặc định
+                      }
+                      width={80}
+                      height={120}
+                      sx={{ borderRadius: "16px" }}
+                      onClick={() => handleDetailClick(movie.id)}
+                    />
+                    <Stack direction="column">
+                      <Stack direction={"row"} alignItems={"center"}>
+                        {movie.title}
+                      </Stack>
+                      <Stack>
+                        <Stack direction="row">
+                          <Box sx={{ color: "white" }}>
+                            {(movie.vote_average * 0.5).toFixed(1)}/5
+                          </Box>
+                          <Typography
+                            variant="body2"
+                            sx={{
+                              color: "#9e9e9e",
+                              fontSize: "15px",
+                            }}
+                          >
+                            |{" "}
+                            {movie.genre_ids && movie.genre_ids.length > 0
+                              ? movie.genre_ids
+                                  .slice(0, 2)
+                                  .map((genreId) => {
+                                    const foundGenre = genres.find(
+                                      (genre) => genre.id === genreId
+                                    );
+                                    return foundGenre
+                                      ? foundGenre.name
+                                      : "Unknown Genre";
+                                  })
+                                  .join(" - ")
+                              : "Unknown Genre"}
+                          </Typography>
+                        </Stack>
+                      </Stack>
+                      <Stack>
+                        <Stack direction="row">
+                          <StarRateIcon sx={{ color: "yellow" }}></StarRateIcon>
+                          <Box sx={{ color: "white" }}>{movie.rating}</Box>
+                          
+                        </Stack>
+                      </Stack>
+                    </Stack>
+                  </Stack>
+                </Stack>
+              ))}
             </Stack>
           </TabPanel>
         </TabContext>

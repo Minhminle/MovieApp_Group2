@@ -1,7 +1,8 @@
-// pages/detail/[id].tsx
 import { useRouter } from "next/router";
 import useSWR from "swr";
 import axios from "axios";
+import Link from "next/link";
+
 import {
   Box,
   Button,
@@ -23,44 +24,45 @@ import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import DownloadIcon from "@mui/icons-material/Download";
 import StarIcon from "@mui/icons-material/Star";
 import { format } from "date-fns";
-import ArrowCircleLeftIcon from "@mui/icons-material/ArrowCircleLeft";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
-
 import { getCookie, setCookie, deleteCookie } from "cookies-next";
-
 import SearchIcon from "@mui/icons-material/Search";
 import { Styles } from "@/stylescomponents/style";
 import AvatarView from "@/components/movie/AvatarView";
+import config from "@/config";
 export interface Cast {
   id: number;
   name: string;
   character: string;
   profile_path: string;
-  // Thêm các thuộc tính khác của cast nếu cần
 }
 
 const DetailHeader = () => {
   const router = useRouter();
+
   const { id } = router.query;
   const [expandedOverview, setExpandedOverview] = useState<string | null>(null);
+  const [selectedGenre, setSelectedGenre] = useState(null);
   const toggleText = (overview: string) => {
     setExpandedOverview((prev) => (prev === overview ? null : overview));
   };
 
   const session_id = getCookie("session_id");
-  const handleThumbUp = () => {
-    setIsThumbUpPressed((prev) => !prev);
-  };
 
   const [isTurnedInPressed, setIsTurnedInPressed] = useState(
     localStorage.getItem(`watchlist${id}`) === "true"
   );
+
   const [isThumbUpPressed, setIsThumbUpPressed] = useState(
     localStorage.getItem(`thumbUp_${id}`) === "true"
   );
+  const handleGenreClick = (genreId) => {
+    router.push(`/detail/Find?genre=${genreId}`);
+    setSelectedGenre(genreId);
+  };
   const handleWatchList = async () => {
     try {
       const response = await axios.post(
@@ -285,6 +287,7 @@ const DetailHeader = () => {
         <Stack direction={"row"} spacing={2}>
           {data.genres?.slice(0, 4).map((genre) => (
             <Chip
+              onClick={() => handleGenreClick(genre.id)}
               key={genre.id}
               label={genre.name}
               sx={{

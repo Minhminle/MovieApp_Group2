@@ -7,7 +7,7 @@ import {
   TextField,
   Grid,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import useSWR from "swr";
 import { MovieList } from "@/models/Movie";
@@ -34,6 +34,8 @@ const Find = () => {
   const [selectedGenre, setSelectedGenre] = useState(null);
   const [moviesByGenre, setMoviesByGenre] = useState([]);
   const [showGenres, setShowGenres] = useState(true);
+  const [currentGenrePage, setCurrentGenrePage] = useState(1);
+  const [btloadMoreGenres, setbtloadMoreGenres] = useState(null);
   const [showTopRated, setShowTopRated] = useState(true);
   const [showCancelIcon, setShowCancelIcon] = useState(false);
   const handleSearchChange = (event) => {
@@ -55,17 +57,19 @@ const Find = () => {
     setMoviesByGenre([]);
     setSelectedGenre(null);
     setShowCancelIcon(false);
+    setbtloadMoreGenres(null);
   };
-  const handleGenreClick = (genreId) => {
+  const handleGenreClick = (genreId: number) => {
     axios
-      .get(`/discover/movie?api_key=${config.api_key}&with_genres=${genreId}`)
+      .get(`/discover/movie?with_genres=${genreId}&page=1`)
       .then((response) => {
-        console.log(response);
         const movies = response.data.results;
         setMoviesByGenre(movies);
         setSelectedGenre(genreId);
         setShowTopRated(false);
         setShowCancelIcon(true);
+        setbtloadMoreGenres(genreId);
+        setCurrentGenrePage(2);
       });
   };
 
@@ -94,17 +98,42 @@ const Find = () => {
       fetchAllMovies();
     }
   };
+  const handleLoadMoreGenres = () => {
+    if (showTopRated) {
+      fetchAllMovies();
+    } else {
+      axios
+        .get(
+          `/discover/movie?with_genres=${selectedGenre}&page=${currentGenrePage}`
+        )
+        .then((response) => {
+          const newMovies = response.data.results;
+          setMoviesByGenre((prevMovies) => [...prevMovies, ...newMovies]);
+          setCurrentGenrePage((prevPage) => prevPage + 1);
+        });
+    }
+  };
+
+  useEffect(() => {
+    const { genre } = router.query;
+    if (genre) {
+      // Cập nhật
+      setSelectedGenre(parseInt(genre));
+      handleGenreClick(genre);
+    }
+  }, [router.query]);
 
   return (
     <>
       <Stack sx={{ pt: "10px" }}>
         <Stack direction="column" spacing={2}>
+          {/* Đổ data của thẻe loại film được chọn  */}
           <Stack direction="row" spacing={2} alignItems="center">
             <ArrowBackIcon
               onClick={() => router.back()}
               sx={{ fontSize: "40px" }}
             />
-            <Box component="textPath">
+            <Box>
               <TextField
                 value={searchQuery}
                 onChange={handleSearchChange}
@@ -116,6 +145,12 @@ const Find = () => {
                     "& fieldset": {
                       border: "none",
                     },
+                  },
+                  "& .MuiInputBase-input": {
+                    color: searchQuery ? "white" : "grey",
+                  },
+                  "& .MuiSvgIcon-root": {
+                    color: searchQuery ? "transparent" : "grey",
                   },
                 }}
                 InputProps={{
@@ -166,7 +201,7 @@ const Find = () => {
                           <Typography
                             sx={{
                               color:
-                                selectedGenre === genre.id ? "yellow" : "white",
+                                selectedGenre == genre.id ? "yellow" : "white",
                               cursor: "pointer",
                             }}
                           >
@@ -226,6 +261,16 @@ const Find = () => {
                         </Stack>
                       </Stack>
                     ))}
+                    {btloadMoreGenres && (
+                      <Box sx={{ textAlign: "center" }}>
+                        <Button
+                          onClick={handleLoadMoreGenres}
+                          variant="contained"
+                        >
+                          LOAD MORE
+                        </Button>
+                      </Box>
+                    )}
                   </Stack>
                 </Box>
               </Stack>

@@ -13,7 +13,7 @@
     "@emotion/styled": "^11.11.0",
     "@mui/icons-material": "^5.15.3",
     "@mui/lab": "^5.0.0-alpha.161",
-    "@mui/material": "^5.15.3",
+    "@mui/material": "^5.15.6",
     "@mui/styled-engine-sc": "^6.0.0-alpha.12",
     "@mui/system": "^5.15.5",
     "axios": "^1.6.7",

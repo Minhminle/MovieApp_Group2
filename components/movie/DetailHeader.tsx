@@ -30,10 +30,12 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 
 import { getCookie, setCookie, deleteCookie } from "cookies-next";
-
 import SearchIcon from "@mui/icons-material/Search";
 import { Styles } from "@/stylescomponents/style";
 import AvatarView from "@/components/movie/AvatarView";
+import StarRateIcon from "@mui/icons-material/StarRate";
+import Popover from "@mui/material/Popover";
+
 export interface Cast {
   id: number;
   name: string;
@@ -130,6 +132,24 @@ const DetailHeader = () => {
   );
 
   const findLink = "/detail/Find";
+  const [showRating, setShowRating] = useState(false);
+  const [userRating, setUserRating] = useState(0);
+const [hasVoted, setHasVoted] = useState(false);
+ const [anchorEl, setAnchorEl] = useState(null);
+   const handleStarClick = (event) => {
+     setAnchorEl(event.currentTarget);
+   };
+   const handleClosePopover = () => {
+     setAnchorEl(null);
+   };
+
+  const handleRatingChange = (event, newValue) => {
+    // Lưu giá trị đánh giá người dùng
+    setUserRating(newValue);
+    setHasVoted(true); // Đánh dấu là người dùng đã đánh giá
+  };
+  
+  
 
   if (error) return <div>Error loading movie details</div>;
   if (!data) return <div>Loading...</div>;
@@ -262,9 +282,48 @@ const DetailHeader = () => {
                   />
                 </IconButton>
               </Tooltip>
-              <IconButton color="inherit">
-                <DownloadIcon />
-              </IconButton>
+              <Tooltip
+                title={session_id ? "" : "Login to add this movie to your list"}
+                arrow
+                placement="top"
+                enterTouchDelay={0}
+                style={{ fontSize: "14px", maxWidth: "200px" }}
+              >
+                <Box>
+                  <IconButton color="inherit" onClick={handleStarClick}>
+                    <StarRateIcon />
+                  </IconButton>
+                  <Popover
+                    open={Boolean(anchorEl)}
+                    anchorEl={anchorEl}
+                    onClose={handleClosePopover}
+                    anchorOrigin={{
+                      vertical: "bottom",
+                      horizontal: "left",
+                    }}
+                    transformOrigin={{
+                      vertical: "top",
+                      horizontal: "left",
+                    }}
+                  >
+                    {/* Hiển thị rating và cho phép đánh giá */}
+                    <Box
+                      sx={{
+                        backgroundColor: "white",
+                        padding: "16px",
+                        borderRadius: "8px",
+                        boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.1)",
+                      }}
+                    >
+                      <Rating
+                        value={userRating}
+                        onChange={handleRatingChange}
+                        sx={{ color: hasVoted ? "yellow" : "yellow" }}
+                      />
+                    </Box>
+                  </Popover>
+                </Box>
+              </Tooltip>
             </Stack>
           </Stack>
         </Box>
@@ -299,7 +358,7 @@ const DetailHeader = () => {
                 router.push(findLink);
               }}
               key={genre.id}
-              label={genre.name}  
+              label={genre.name}
               sx={{
                 margin: "0 4px 4px 0",
                 color: "white", // Màu chữ

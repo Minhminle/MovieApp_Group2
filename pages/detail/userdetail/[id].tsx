@@ -36,11 +36,19 @@ const UserDetail = () => {
     `/account?session_id=${session_id}`
   );
   const { data: watchList } = useSWR<Movie>(
-    id ? `/account/{account_id}/watchlist/movies?session_id=${session_id}` : null
+    id
+      ? `/account/{account_id}/watchlist/movies?session_id=${session_id}`
+      : null
   );
   const { data: faVourite } = useSWR<Movie>(
     id ? `/account/{account_id}/favorite/movies?session_id=${session_id}` : null
   );
+  const { data: votelist } = useSWR<Movie>(
+    `/account/{account_id}/rated/movies?session_id=${session_id}` 
+  );
+  // const { data: votelist } = useSWR<Movie>(
+  //   `/account/${session_id}/rated/movies`
+  // );
 
   const { data: dataGenre } = useSWR("/genre/movie/list");
   const genres = dataGenre?.genres || [];
@@ -109,6 +117,7 @@ const UserDetail = () => {
                     label={`Favourite (${faVourite?.results.length}) `}
                     value="2"
                   />
+                  <Tab label={`Vote List `} value="3" />
                 </TabList>
               </Box>
             </TabContext>
@@ -235,6 +244,11 @@ const UserDetail = () => {
                   </Stack>
                 </Stack>
               ))}
+            </Stack>
+          </TabPanel>
+          <TabPanel value="3">
+            <Stack>
+              
             </Stack>
           </TabPanel>
         </TabContext>

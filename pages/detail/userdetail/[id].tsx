@@ -59,7 +59,7 @@ const UserDetail = () => {
   };
   return (
     <>
-      <Stack direction="row" alignItems="center">
+      <Stack direction="row" spacing={2} alignItems="center">
         <ArrowBackIcon
           onClick={() => router.back()}
           sx={{ fontSize: "40px" }}
@@ -78,17 +78,17 @@ const UserDetail = () => {
                   marginRight: "10px",
                   width: "150px",
                   height: "150px",
-                  marginLeft: "130px",
+                  marginLeft: "115px",
+                  marginTop: "10px",
                 }}
               />
             </Stack>
           </Stack>
         )}
       </Stack>
-      <Stack fontSize="40px" textAlign="center">
-        {" "}
+      <Typography variant="h4" textAlign={"center"} marginTop={"10px"}>
         {userDetails?.username}
-      </Stack>
+      </Typography>
       <Box sx={{ width: "100%", typography: "body1" }}>
         <TabContext value={value}>
           <Box sx={{ width: "100%", typography: "body1" }}>
@@ -147,7 +147,7 @@ const UserDetail = () => {
                         </IconButton>
                       </Stack>
                       <Stack>
-                        <Stack direction="row">
+                        <Stack direction="row" textAlign={"center"}>
                           <StarRateIcon sx={{ color: "yellow" }}></StarRateIcon>
                           <Box sx={{ color: "white" }}>
                             {(movie.vote_average * 0.5).toFixed(1)}/5

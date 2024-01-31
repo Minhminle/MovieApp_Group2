@@ -55,7 +55,7 @@ const MovieCard = () => {
               }
               width={300}
               height={500}
-              sx={{ borderRadius: "50px" }}
+              sx={{ borderRadius: "60px" }}
               onClick={() => handleDetailClick(movie.id)}
             />
             <Box

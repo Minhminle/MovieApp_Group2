@@ -9,6 +9,9 @@ import {
   Stack,
   Typography,
   DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
   ListItem,
   List,
   ListItemButton,
@@ -21,6 +24,7 @@ import useSWR from "swr";
 import { getCookie, setCookie, deleteCookie } from "cookies-next";
 import { useRouter } from "next/router";
 import Id from "@/pages/detail/userdetail/[id]";
+import LogoutIcon from "@mui/icons-material/Logout";
 
 function LoggedInAvatar(props: { data: User }) {
   const avatar_path = props.data.avatar.tmdb.avatar_path;
@@ -89,28 +93,57 @@ function LoggedInAvatar(props: { data: User }) {
             setOpenDialog(true);
           }}
         >
+          <LogoutIcon></LogoutIcon>
           Log out
         </MenuItem>
       </Menu>
-      <Dialog open={openDialog} onClose={handleDialogClose}>
-        <DialogTitle>Are you want to log out?</DialogTitle>
-        <List
+      <Dialog
+        open={openDialog}
+        onClose={handleDialogClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle
+          id="alert-dialog-title"
           sx={{
-            justifyContent: "center",
-            alignItems: "center",
+            backgroundColor: "#424242",
+            color: "white",
+            fontWeight: "bold",
           }}
         >
-          <ListItem disableGutters>
-            <ListItemButton autoFocus onClick={() => handleDialogClose("YES")}>
-              <ListItemText primary="YES" />
-            </ListItemButton>
-          </ListItem>
-          <ListItem disableGutters>
-            <ListItemButton autoFocus onClick={() => handleDialogClose("NO")}>
-              <ListItemText primary="NO" />
-            </ListItemButton>
-          </ListItem>
-        </List>
+          {"Are you want to logout?"}
+        </DialogTitle>
+        <DialogContent
+          sx={{
+            backgroundColor: "#424242",
+          }}
+        >
+          <DialogContentText
+            id="alert-dialog-description"
+            sx={{ color: "#e0e0e0" }}
+          >
+            Your account will not be save
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions
+          sx={{
+            backgroundColor: "#424242",
+          }}
+        >
+          <Button
+            sx={{ color: "lightskyblue" }}
+            onClick={() => handleDialogClose("NO")}
+          >
+            Disagree
+          </Button>
+          <Button
+            sx={{ color: "lightskyblue" }}
+            onClick={() => handleDialogClose("YES")}
+            autoFocus
+          >
+            Agree
+          </Button>
+        </DialogActions>
       </Dialog>
     </>
   );
@@ -124,7 +157,7 @@ function NotLoggedInAvatar() {
           .get<RequestTokenResponse>("authentication/token/new")
           .then((res) =>
             window.open(
-              `https://www.themoviedb.org/authenticate/${res.data.request_token}?redirect_to=https://wealthy-cardinal-thankfully.ngrok-free.app/detail/authorize`,
+              `https://www.themoviedb.org/authenticate/${res.data.request_token}?redirect_to=http://localhost:3000/detail/authorize`,
               "_blank",
               "noopener,noreferrer"
             )

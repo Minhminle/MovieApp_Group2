@@ -17,7 +17,7 @@ import {
 } from "@mui/material";
 import { ReactElement } from "react";
 import { Movie } from "@/models/Movie";
-import Footter from "@/components/movie/Footer";
+import Footter from "@/components/Footer";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import StarIcon from "@mui/icons-material/Star";

@@ -52,6 +52,7 @@ const DetailHeader = () => {
   const toggleText = (overview: string) => {
     setExpandedOverview((prev) => (prev === overview ? null : overview));
   };
+<<<<<<< HEAD
    const { data: userDetails } = useSWR<User>(
      `/account?session_id=${session_id}`
    );
@@ -66,11 +67,15 @@ const DetailHeader = () => {
        : null
    );
   const [isThumbUpPressed, setIsThumbUpPressed] = useState(false);
+=======
+
+  const session_id = getCookie("session_id");
+>>>>>>> develop
   const handleThumbUp = () => {
     setIsThumbUpPressed((prev) => !prev);
   };
-  const [isTurnedInPressed, setIsTurnedInPressed] = useState(false);
 
+<<<<<<< HEAD
    const [serverTurnedInPressed, setServerTurnedInPressed] = useState(false);
 
    // Khi component được mount, cập nhật trạng thái từ server
@@ -80,15 +85,26 @@ const DetailHeader = () => {
        setServerTurnedInPressed(watchList.is_watchlisted);
      }
    }, [watchList]);
+=======
+  const [isTurnedInPressed, setIsTurnedInPressed] = useState(
+    localStorage.getItem(`watchlist${id}`) === "true"
+  );
+  const [isThumbUpPressed, setIsThumbUpPressed] = useState(
+    localStorage.getItem(`thumbUp_${id}`) === "true"
+  );
+>>>>>>> develop
   const handleWatchList = async () => {
     try {
-      // Thực hiện yêu cầu POST đến API của TMDB
       const response = await axios.post(
         `/account/{account_id}/watchlist`,
         {
           media_type: "movie",
           media_id: id,
+<<<<<<< HEAD
           watchlist: !serverTurnedInPressed,
+=======
+          watchlist: !isTurnedInPressed,
+>>>>>>> develop
         },
         {
           params: {
@@ -97,6 +113,7 @@ const DetailHeader = () => {
         }
       );
 
+<<<<<<< HEAD
       console.log("WatchList request success:", response.data);
 
       // Cập nhật trạng thái từ server và trạng thái local
@@ -104,32 +121,35 @@ const DetailHeader = () => {
       setIsTurnedInPressed(!serverTurnedInPressed);
     } catch (error) {
       console.error("Error making WatchList request:", error);
+=======
+      console.log("Favorite request success:", response.data);
+      setIsTurnedInPressed(!isTurnedInPressed);
+      localStorage.setItem(`watchlist${id}`, !isTurnedInPressed);
+    } catch (error) {
+      console.error("Error making favorite request:", error);
+>>>>>>> develop
     }
   };
   const handleFavorite = async () => {
     try {
-      // Thực hiện yêu cầu POST đến API của TMDB
       const response = await axios.post(
         `/account/{account_id}/favorite`,
         {
-          media_type: "movie", // Nếu bạn đang thao tác với phim
-          media_id: id, // Id của phim
-          favorite: !isThumbUpPressed, // Trạng thái thích (đảo ngược trạng thái hiện tại)
+          media_type: "movie",
+          media_id: id,
+          favorite: !isThumbUpPressed,
         },
         {
           params: {
-            session_id: session_id, // Thêm session_id vào các tham số truy vấn
+            session_id: session_id,
           },
         }
       );
 
-      // Xử lý phản hồi từ server (response.data)
       console.log("Favorite request success:", response.data);
-
-      // Cập nhật trạng thái isThumbUpPressed
       setIsThumbUpPressed(!isThumbUpPressed);
+      localStorage.setItem(`thumbUp_${id}`, !isThumbUpPressed);
     } catch (error) {
-      // Xử lý lỗi khi yêu cầu không thành công
       console.error("Error making favorite request:", error);
     }
   };
@@ -245,6 +265,8 @@ const DetailHeader = () => {
                 title={session_id ? "" : "Login to add this movie to your list"}
                 arrow
                 placement="top"
+                enterTouchDelay={0} // Thêm option này để xử lý delay cho cả touch events
+                style={{ fontSize: "14px", maxWidth: "200px" }} // Điều chỉnh kích thước và kiểu dáng cho di động
               >
                 <IconButton color="inherit">
                   <TurnedInIcon
@@ -253,7 +275,15 @@ const DetailHeader = () => {
                         isTurnedInPressed ||
                         (watchList && watchList.is_watchlisted)
                           ? "yellow"
+<<<<<<< HEAD
                           : "inherit",
+=======
+                          : "inherit"
+                        : "inherit",
+                      "&:hover": {
+                        backgroundColor: "transparent", // Loại bỏ hiệu ứng hover trên di động
+                      },
+>>>>>>> develop
                     }}
                     onClick={session_id ? handleWatchList : undefined}
                   />
@@ -264,6 +294,8 @@ const DetailHeader = () => {
                 title={session_id ? "" : "Login to add this movie to your list"}
                 arrow
                 placement="top"
+                enterTouchDelay={0} // Thêm option này để xử lý delay cho cả touch events
+                style={{ fontSize: "14px", maxWidth: "200px" }} // Điều chỉnh kích thước và kiểu dáng cho di động
               >
                 <IconButton color="inherit">
                   <FavoriteIcon
@@ -273,6 +305,9 @@ const DetailHeader = () => {
                           ? "red"
                           : "inherit"
                         : "inherit",
+                      "&:hover": {
+                        backgroundColor: "transparent", // Loại bỏ hiệu ứng hover trên di động
+                      },
                     }}
                     onClick={session_id ? handleFavorite : undefined}
                   />
@@ -311,6 +346,9 @@ const DetailHeader = () => {
         <Stack direction={"row"} spacing={2}>
           {data.genres?.slice(0, 4).map((genre) => (
             <Chip
+              onClick={() => {
+                router.push(findLink);
+              }}
               key={genre.id}
               label={genre.name}
               sx={{

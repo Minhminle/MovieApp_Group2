@@ -26,16 +26,16 @@ function LoggedInAvatar(props: { data: User }) {
   const avatar_path = props.data.avatar.tmdb.avatar_path;
   const username = props.data.username;
   const id = props.data.id;
- 
+
   const router = useRouter();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const openMenu = Boolean(anchorEl);
   const handleMenuClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
-   const handleUserDetail = (accoutId: number) => {
-     router.push(`/detail/userdetail/${accoutId}`);
-   };
+  const handleUserDetail = (accoutId: number) => {
+    router.push(`/detail/userdetail/${accoutId}`);
+  };
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
@@ -53,7 +53,6 @@ function LoggedInAvatar(props: { data: User }) {
       router.reload();
     }
   };
-  
 
   return (
     <>
@@ -83,7 +82,7 @@ function LoggedInAvatar(props: { data: User }) {
           </Stack>
         </MenuItem>
         <hr></hr>
-       
+
         <MenuItem
           onClick={() => {
             handleMenuClose();
@@ -94,8 +93,13 @@ function LoggedInAvatar(props: { data: User }) {
         </MenuItem>
       </Menu>
       <Dialog open={openDialog} onClose={handleDialogClose}>
-        <DialogTitle>Set backup account</DialogTitle>
-        <List>
+        <DialogTitle>Are you want to log out?</DialogTitle>
+        <List
+          sx={{
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
           <ListItem disableGutters>
             <ListItemButton autoFocus onClick={() => handleDialogClose("YES")}>
               <ListItemText primary="YES" />
@@ -120,7 +124,7 @@ function NotLoggedInAvatar() {
           .get<RequestTokenResponse>("authentication/token/new")
           .then((res) =>
             window.open(
-              `https://www.themoviedb.org/authenticate/${res.data.request_token}?redirect_to=http://localhost:3000/detail/authorize`,
+              `https://www.themoviedb.org/authenticate/${res.data.request_token}?redirect_to=https://wealthy-cardinal-thankfully.ngrok-free.app/detail/authorize`,
               "_blank",
               "noopener,noreferrer"
             )

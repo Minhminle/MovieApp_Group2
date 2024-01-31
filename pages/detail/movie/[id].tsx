@@ -35,6 +35,7 @@ export interface Cast {
 
 const MovieDetail = () => {
   const router = useRouter();
+  
   const { id } = router.query;
   const { data, error } = useSWR<Movie>(
     `/movie/${id}?append_to_response=credits`

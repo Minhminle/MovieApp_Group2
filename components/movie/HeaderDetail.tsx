@@ -152,7 +152,6 @@ const HeaderDetail = () => {
   const handleSnackbarClose = () => {
     setSnackbarOpen(false);
   };
-
   if (error) return <div>Error loading movie details</div>;
   if (!data) return <div>Loading...</div>;
   return (

@@ -1,8 +1,7 @@
+// pages/detail/[id].tsx
 import { useRouter } from "next/router";
 import useSWR from "swr";
 import axios from "axios";
-import Link from "next/link";
-
 import {
   Box,
   Button,
@@ -14,6 +13,7 @@ import {
   Stack,
   Tooltip,
   Typography,
+  Alert,
 } from "@mui/material";
 import { ReactElement, useEffect, useState } from "react";
 import { Movie } from "@/models/Movie";
@@ -24,45 +24,47 @@ import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import DownloadIcon from "@mui/icons-material/Download";
 import StarIcon from "@mui/icons-material/Star";
 import { format } from "date-fns";
+import ArrowCircleLeftIcon from "@mui/icons-material/ArrowCircleLeft";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
+
 import { getCookie, setCookie, deleteCookie } from "cookies-next";
+
 import SearchIcon from "@mui/icons-material/Search";
 import { Styles } from "@/stylescomponents/style";
 import AvatarView from "@/components/movie/AvatarView";
-import config from "@/config";
+import Snackbar from "@mui/material/Snackbar";
+import SnackbarContent from "@mui/material/SnackbarContent";
+import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 export interface Cast {
   id: number;
   name: string;
   character: string;
   profile_path: string;
+  // Thêm các thuộc tính khác của cast nếu cần
 }
 
 const DetailHeader = () => {
   const router = useRouter();
-
   const { id } = router.query;
   const [expandedOverview, setExpandedOverview] = useState<string | null>(null);
-  const [selectedGenre, setSelectedGenre] = useState(null);
   const toggleText = (overview: string) => {
     setExpandedOverview((prev) => (prev === overview ? null : overview));
   };
 
   const session_id = getCookie("session_id");
+  const handleThumbUp = () => {
+    setIsThumbUpPressed((prev) => !prev);
+  };
 
   const [isTurnedInPressed, setIsTurnedInPressed] = useState(
     localStorage.getItem(`watchlist${id}`) === "true"
   );
-
   const [isThumbUpPressed, setIsThumbUpPressed] = useState(
     localStorage.getItem(`thumbUp_${id}`) === "true"
   );
-  const handleGenreClick = (genreId) => {
-    router.push(`/detail/Find?genre=${genreId}`);
-    setSelectedGenre(genreId);
-  };
   const handleWatchList = async () => {
     try {
       const response = await axios.post(
@@ -132,6 +134,23 @@ const DetailHeader = () => {
   );
 
   const findLink = "/detail/Find";
+  const [open, setOpen] = useState(false);
+
+  const handleClickOpen = () => {
+    if (!session_id) {
+      setSnackbarMessage("Login Required");
+      setSnackbarOpen(true);
+    } else {
+      handleWatchList();
+    }
+  };
+
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+  };
 
   if (error) return <div>Error loading movie details</div>;
   if (!data) return <div>Loading...</div>;
@@ -217,43 +236,68 @@ const DetailHeader = () => {
               >
                 Continue Watching
               </Button>
-              <Tooltip
-                title={session_id ? "" : "Login to add this movie to your list"}
-                arrow
-                placement="top"
+              <IconButton
+                color="inherit"
+                onClick={() => {
+                  if (!session_id) {
+                    handleClickOpen();
+                  } else {
+                    handleWatchList();
+                  }
+                }}
               >
-                <IconButton color="inherit">
-                  <TurnedInIcon
-                    sx={{
-                      color: session_id
-                        ? isTurnedInPressed
-                          ? "yellow"
-                          : "inherit"
-                        : "inherit",
-                    }}
-                    onClick={session_id ? handleWatchList : undefined}
-                  />
-                </IconButton>
-              </Tooltip>
+                <TurnedInIcon
+                  sx={{
+                    color: session_id
+                      ? isTurnedInPressed
+                        ? "yellow"
+                        : "inherit"
+                      : "inherit",
+                  }}
+                />
+              </IconButton>
+              <Snackbar
+                open={snackbarOpen}
+                autoHideDuration={1500}
+                onClose={handleSnackbarClose}
+                anchorOrigin={{ vertical: "top", horizontal: "center" }} // Đặt vị trí ở Top-Center
+                style={{ background: "yellow" }}
+              >
+                <SnackbarContent
+                  message={
+                    <Stack direction="row" alignItems="center">
+                      {/* Add the icon here */}
+                      <WarningAmberIcon sx={{ marginRight: 1 }} />
+                      Login to add this movie to your list
+                    </Stack>
+                  }
+                  sx={{
+                    backgroundColor: "yellow",
+                    color: "black",
+                  }}
+                />
+              </Snackbar>
 
-              <Tooltip
-                title={session_id ? "" : "Login to add this movie to your list"}
-                arrow
-                placement="top"
+              <IconButton
+                color="inherit"
+                onClick={() => {
+                  if (!session_id) {
+                    handleClickOpen();
+                  } else {
+                    handleFavorite();
+                  }
+                }}
               >
-                <IconButton color="inherit">
-                  <FavoriteIcon
-                    sx={{
-                      color: session_id
-                        ? isThumbUpPressed
-                          ? "red"
-                          : "inherit"
-                        : "inherit",
-                    }}
-                    onClick={session_id ? handleFavorite : undefined}
-                  />
-                </IconButton>
-              </Tooltip>
+                <FavoriteIcon
+                  sx={{
+                    color: session_id
+                      ? isThumbUpPressed
+                        ? "red"
+                        : "inherit"
+                      : "inherit",
+                  }}
+                />
+              </IconButton>
               <IconButton color="inherit">
                 <DownloadIcon />
               </IconButton>
@@ -287,7 +331,6 @@ const DetailHeader = () => {
         <Stack direction={"row"} spacing={2}>
           {data.genres?.slice(0, 4).map((genre) => (
             <Chip
-              onClick={() => handleGenreClick(genre.id)}
               key={genre.id}
               label={genre.name}
               sx={{

@@ -11,26 +11,26 @@ import MovieRate from "@/components/movie/MovieRate";
 import MovieFeature from "@/components/movie/MovieFeature";
 import HeaderHome from "@/components/layout_Header/HeaderHome";
 const HomePage = () => {
-  return(
-  <>
-    <Box sx={{ position: "absolute", zIndex: "1", top: "20px" }}>
-      <HeaderHome />
-    </Box>
-    <Box
-      sx={{ backgroundColor: "black", color: "white", position: "relative" }}
-    >
-      <Header />
-      <ListApp />
-      <MovieCard />
-      <MovieRate />
-      <MovieFeature />
-      <MovieCategory />
-      <MovieAward />
-      <MovieItem />
-      <Footter />
-      {/* <MovieContent></MovieContent> */}
-    </Box>
-  </>
+  return (
+    <>
+      <Box sx={{ position: "absolute", zIndex: "1", top: "20px" }}>
+        <HeaderHome />
+      </Box>
+      <Box
+        sx={{ backgroundColor: "black", color: "white", position: "relative" }}
+      >
+        <Header />
+        <ListApp />
+        <MovieCard />
+        <MovieRate />
+        <MovieFeature />
+        <MovieCategory />
+        <MovieAward />
+        <MovieItem />
+        <Footter />
+        {/* <MovieContent></MovieContent> */}
+      </Box>
+    </>
   );
 };
 export default HomePage;

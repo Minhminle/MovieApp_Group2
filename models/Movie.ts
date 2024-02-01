@@ -43,4 +43,5 @@ export interface Movie {
   images: Images;
   person: PersonSection;
   tagline: string;
+  rating:number;
 }

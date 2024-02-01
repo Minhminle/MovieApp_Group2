@@ -50,7 +50,7 @@ const MovieItem = () => {
                 fontSize: "15px",
               }}
             >
-              {/* {movie.genre_ids && movie.genre_ids.length > 0
+              {movie.genre_ids && movie.genre_ids.length > 0
                 ? movie.genre_ids
                     .slice(0, 2)
                     .map((genreId) => {
@@ -60,7 +60,7 @@ const MovieItem = () => {
                       return foundGenre ? foundGenre.name : "Unknown Genre";
                     })
                     .join(" - ")
-                : "Unknown Genre"} */}
+                : "Unknown Genre"}
             </Typography>
             <Stack direction="row" alignItems="center" spacing={1}>
               <Box
@@ -147,7 +147,7 @@ const MovieItem = () => {
           justifyContent="space-between"
           alignItems="center"
         >
-          <Typography sx={Styles._title} variant="h4">
+          <Typography sx={Styles._title} variant="h4" marginTop={"10px"}>
             Top Rated
           </Typography>
           <Stack direction="row" spacing={1}>
@@ -166,20 +166,6 @@ const MovieItem = () => {
           startIndex={topRatedIdx}
         />
       </Box>
-
-      {/* <Box>
->>>>>>> develop
-        {gennerData?.results ? (
-          gennerData.results.map((genres) => (
-            <Typography sx={{ color: "white" }} key={genres.id}>
-              {genres.name}
-            </Typography>
-          ))
-        ) : (
-          <Typography sx={{ color: "white" }}>No data available</Typography>
-        )}
-      </Box>
-      <Box>Genre: {gennerData.map((genre: Genres) => genre.name).join(", ")}</Box> */}
     </Container>
   );
 };

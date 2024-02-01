@@ -9,6 +9,9 @@ import {
   Stack,
   Typography,
   DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
   ListItem,
   List,
   ListItemButton,
@@ -21,21 +24,22 @@ import useSWR from "swr";
 import { getCookie, setCookie, deleteCookie } from "cookies-next";
 import { useRouter } from "next/router";
 import Id from "@/pages/detail/userdetail/[id]";
+import LogoutIcon from "@mui/icons-material/Logout";
 
 function LoggedInAvatar(props: { data: User }) {
   const avatar_path = props.data.avatar.tmdb.avatar_path;
   const username = props.data.username;
   const id = props.data.id;
- 
+
   const router = useRouter();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const openMenu = Boolean(anchorEl);
   const handleMenuClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
-   const handleUserDetail = (accoutId: number) => {
-     router.push(`/detail/userdetail/${accoutId}`);
-   };
+  const handleUserDetail = (accoutId: number) => {
+    router.push(`/detail/userdetail/${accoutId}`);
+  };
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
@@ -53,7 +57,6 @@ function LoggedInAvatar(props: { data: User }) {
       router.reload();
     }
   };
-  
 
   return (
     <>
@@ -83,30 +86,64 @@ function LoggedInAvatar(props: { data: User }) {
           </Stack>
         </MenuItem>
         <hr></hr>
-       
+
         <MenuItem
           onClick={() => {
             handleMenuClose();
             setOpenDialog(true);
           }}
         >
+          <LogoutIcon></LogoutIcon>
           Log out
         </MenuItem>
       </Menu>
-      <Dialog open={openDialog} onClose={handleDialogClose}>
-        <DialogTitle>Set backup account</DialogTitle>
-        <List>
-          <ListItem disableGutters>
-            <ListItemButton autoFocus onClick={() => handleDialogClose("YES")}>
-              <ListItemText primary="YES" />
-            </ListItemButton>
-          </ListItem>
-          <ListItem disableGutters>
-            <ListItemButton autoFocus onClick={() => handleDialogClose("NO")}>
-              <ListItemText primary="NO" />
-            </ListItemButton>
-          </ListItem>
-        </List>
+      <Dialog
+        open={openDialog}
+        onClose={handleDialogClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle
+          id="alert-dialog-title"
+          sx={{
+            backgroundColor: "#424242",
+            color: "white",
+            fontWeight: "bold",
+          }}
+        >
+          {"Are you want to logout?"}
+        </DialogTitle>
+        <DialogContent
+          sx={{
+            backgroundColor: "#424242",
+          }}
+        >
+          <DialogContentText
+            id="alert-dialog-description"
+            sx={{ color: "#e0e0e0" }}
+          >
+            Your account will not be save
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions
+          sx={{
+            backgroundColor: "#424242",
+          }}
+        >
+          <Button
+            sx={{ color: "lightskyblue" }}
+            onClick={() => handleDialogClose("NO")}
+          >
+            Disagree
+          </Button>
+          <Button
+            sx={{ color: "lightskyblue" }}
+            onClick={() => handleDialogClose("YES")}
+            autoFocus
+          >
+            Agree
+          </Button>
+        </DialogActions>
       </Dialog>
     </>
   );

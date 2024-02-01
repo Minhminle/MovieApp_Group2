@@ -11,13 +11,19 @@ import {
   CardMedia,
   Grid,
   IconButton,
+  LinearProgress,
+  Dialog,
+  DialogContent,
+  Modal,
+  Backdrop,
+  Fade,
   Stack,
   Tab,
   Typography,
 } from "@mui/material";
 import { ReactElement } from "react";
 import { Movie } from "@/models/Movie";
-import Footter from "@/components/movie/Footer";
+import Footter from "@/components/Footer";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import StarIcon from "@mui/icons-material/Star";
@@ -25,7 +31,8 @@ import { format } from "date-fns";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
-import DetailHeader from "@/components/movie/DetailHeader";
+import HeaderDetail from "@/components/movie/HeaderDetail";
+import CloseIcon from "@mui/icons-material/Close";
 export interface Cast {
   id: number;
   name: string;
@@ -52,6 +59,16 @@ const MovieDetail = () => {
     setCurrentVideoIndex((prevIndex) =>
       prevIndex === dataVideo?.results.length - 1 ? 0 : prevIndex + 1
     );
+  };
+
+  const [fullScreenImage, setFullScreenImage] = useState(null);
+
+  const handleImageClick = (file_path) => {
+    setFullScreenImage(file_path);
+  };
+
+  const handleCloseFullScreenImage = () => {
+    setFullScreenImage(null);
   };
 
   const formatRuntime = (minutes: number): string => {
@@ -112,15 +129,32 @@ const MovieDetail = () => {
   const handleDetailCastClick = (actorid: number) => {
     router.push(`/detail/cast/${actorid}`);
   };
+  const [visibleItems, setVisibleItems] = useState(5); // Số lượng mục hiển thị ban đầu
 
+  const handleLoadMore = () => {
+    // Tăng số lượng items đã hiển thị thêm 5
+    setVisibleItems((prevVisibleItems) => prevVisibleItems + 5);
+  };
   if (error) return <div>Error loading movie details</div>;
-  if (!data) return <div>Loading...</div>;
+
+  if (
+    !data &&
+    !similarMoviesData &&
+    !dataVideo &&
+    !datareview &&
+    !movieBackdropData
+  )
+    return (
+      <div>
+        <LinearProgress color="inherit" />
+      </div>
+    );
 
   return (
     <>
-      <DetailHeader></DetailHeader>
+      <HeaderDetail></HeaderDetail>
       <Typography variant="h5" sx={{ color: "#1de9b6", marginTop: "10px" }}>
-        <Typography variant="h4" sx={{ ..._letterStyles, padding: "10px" }}>
+        <Typography variant="h4" sx={{ ..._letterStyles, marginLeft: "18px" }}>
           Top Cast
         </Typography>
         <Stack
@@ -129,7 +163,7 @@ const MovieDetail = () => {
           alignItems="center"
           sx={{ overflowX: "auto" }}
         >
-          {data.credits?.cast?.map((actor) => (
+          {data?.credits?.cast?.map((actor) => (
             <Stack key={actor.id}>
               <Box
                 sx={{
@@ -202,7 +236,7 @@ const MovieDetail = () => {
                     value="2"
                   />
                   <Tab
-                    label={`Poster (${movieBackdropData?.backdrops.length})`}
+                    label={`Posters (${movieBackdropData?.backdrops.length})`}
                     value="3"
                   />
                 </TabList>
@@ -210,101 +244,155 @@ const MovieDetail = () => {
             </TabContext>
           </Box>
           <TabPanel value="1">
-            <Stack
-              alignItems="center"
-              direction="row"
-              spacing={1}
-              sx={{ overflowX: "auto" }}
-            >
-              {dataVideo?.results.map((video) => (
-                <Stack key={video.id}>
-                  <ReactPlayer
-                    key={video.id}
-                    url={`https://www.youtube.com/watch?v=${video.key}`}
-                    width="320px"
-                    height="100%"
-                    controls={true}
-                  />
-                </Stack>
-              ))}
-            </Stack>
-          </TabPanel>
-          <TabPanel value="2">
-            {" "}
-            <Stack gap={4} direction="column">
-              {datareview?.results.slice(0, visibleReviews).map((review) => (
-                <Stack key={review.id}>
-                  <Stack direction="row">
-                    <Box>
-                      <Avatar
-                        src={`https://image.tmdb.org/t/p/w500${review.author_details.avatar_path}`}
-                        sx={{
-                          marginRight: "10px",
-                          width: "80px",
-                          height: "80px",
-                        }}
-                      />
-                    </Box>
-                    <Stack direction="column" sx={{ marginTop: "15px" }}>
-                      <Box color="white"> {review.author}</Box>
-                      <Box color="gray">
-                        {format(
-                          new Date(review.updated_at),
-                          "dd/MM/yyyy HH:mm:ss"
-                        )}
-                      </Box>
-                    </Stack>
+            {dataVideo?.results.length === 0 ? (
+              "Don't have any trailers"
+            ) : (
+              <Stack
+                alignItems="center"
+                direction="row"
+                spacing={1}
+                sx={{ overflowX: "auto" }}
+              >
+                {dataVideo?.results.map((video) => (
+                  <Stack key={video.id}>
+                    <ReactPlayer
+                      key={video.id}
+                      url={`https://www.youtube.com/watch?v=${video.key}`}
+                      width="320px"
+                      height="100%"
+                      controls={true}
+                    />
                   </Stack>
-                  <Typography sx={{ fontSize: "18px", color: "white" }}>
-                    {expandedOverview === review.content
-                      ? review.content
-                      : review.content.length > 90
-                      ? `${review.content.slice(0, 90)}...`
-                      : review.content}
-                    {review.content.length > 90 && (
-                      <Button
-                        sx={{ fontSize: "12px", color: "blue" }}
-                        onClick={() => toggleText(review.content)}
-                      >
-                        {expandedOverview === review.content ? "Less" : "More"}
-                      </Button>
-                    )}
-                  </Typography>
-                </Stack>
-              ))}
-              {datareview?.results.length > visibleReviews && (
-                <Box textAlign="center" mt={2}>
-                  <Button
-                    variant="contained"
-                    style={{
-                      backgroundColor: "black", // Đặt màu nền là đen
-                      color: "white", // Đặt màu chữ là trắng
-                      border: "1px solid white", // Đặt viền là trắng
-                      borderRadius: "8px", // Điều chỉnh góc bo
-                      padding: "12px 24px", // Điều chỉnh khoảng cách nút
-                      fontSize: "16px", // Điều chỉnh kích thước chữ
-                      textTransform: "none", // Ngăn chữ in hoa
-                    }}
-                    onClick={loadMoreReviews}
-                  >
-                    Load More
-                  </Button>
-                </Box>
-              )}
-            </Stack>
+                ))}
+              </Stack>
+            )}
+          </TabPanel>
+
+          <TabPanel value="2">
+            {dataVideo?.results.length === 0 ? (
+              "Don't have any reviews"
+            ) : (
+              <Stack gap={4} direction="column">
+                {datareview?.results.slice(0, visibleReviews).map((review) => (
+                  <Stack key={review.id}>
+                    <Stack direction="row">
+                      <Box>
+                        <Avatar
+                          src={`https://image.tmdb.org/t/p/w500${review.author_details.avatar_path}`}
+                          sx={{
+                            marginRight: "10px",
+                            width: "80px",
+                            height: "80px",
+                          }}
+                        />
+                      </Box>
+                      <Stack direction="column" sx={{ marginTop: "15px" }}>
+                        <Box color="white"> {review.author}</Box>
+                        <Box color="gray">
+                          {format(
+                            new Date(review.updated_at),
+                            "dd/MM/yyyy HH:mm:ss"
+                          )}
+                        </Box>
+                      </Stack>
+                    </Stack>
+                    <Typography
+                      sx={{
+                        fontSize: "18px",
+                        color: "white",
+                        textAlign: "justify",
+                      }}
+                    >
+                      {expandedOverview === review.content
+                        ? review.content
+                        : review.content.length > 90
+                        ? `${review.content.slice(0, 90)}...`
+                        : review.content}
+                      {review.content.length > 90 && (
+                        <Button
+                          sx={{ fontSize: "12px", color: "lightblue" }}
+                          onClick={() => toggleText(review.content)}
+                        >
+                          {expandedOverview === review.content
+                            ? "Less"
+                            : "More"}
+                        </Button>
+                      )}
+                    </Typography>
+                  </Stack>
+                ))}
+                {datareview?.results.length > visibleReviews && (
+                  <Box textAlign="center" mt={2}>
+                    <Button
+                      variant="contained"
+                      style={{
+                        backgroundColor: "black", // Đặt màu nền là đen
+                        color: "white", // Đặt màu chữ là trắng
+                        border: "1px solid white", // Đặt viền là trắng
+                        borderRadius: "8px", // Điều chỉnh góc bo
+                        padding: "12px 24px", // Điều chỉnh khoảng cách nút
+                        fontSize: "16px", // Điều chỉnh kích thước chữ
+                        textTransform: "none", // Ngăn chữ in hoa
+                      }}
+                      onClick={loadMoreReviews}
+                    >
+                      Load More
+                    </Button>
+                  </Box>
+                )}
+              </Stack>
+            )}
           </TabPanel>
           <TabPanel value="3">
-            <Stack direction={"row"} spacing={2} sx={{ overflowX: "auto" }}>
-              {movieBackdropData?.backdrops.map((backdrop) => (
-                <Box
-                  key={backdrop.file_path}
-                  component="img"
-                  src={`https://image.tmdb.org/t/p/w500${backdrop.file_path}`}
-                  alt={`${data.title} backdrop`}
-                  sx={{ width: "400px" }}
-                />
-              ))}
-            </Stack>
+            {dataVideo?.results.length === 0 ? (
+              "Don't have any posters"
+            ) : (
+              <Stack direction={"row"} spacing={2} sx={{ overflowX: "auto" }}>
+                {movieBackdropData?.backdrops.map((backdrop) => (
+                  <Box
+                    key={backdrop.file_path}
+                    component="img"
+                    src={`https://image.tmdb.org/t/p/w500${backdrop.file_path}`}
+                    alt={`${data?.title} backdrop`}
+                    sx={{ width: "400px" }}
+                    onClick={() => handleImageClick(backdrop.file_path)}
+                  />
+                ))}
+              </Stack>
+            )}{" "}
+            <Modal
+              open={Boolean(fullScreenImage)}
+              onClose={handleCloseFullScreenImage}
+              closeAfterTransition
+            >
+              <div style={{ position: "relative" }}>
+                <IconButton
+                  style={{
+                    position: "absolute",
+                    top: 230,
+                    right: 10,
+                    color: "white",
+                  }}
+                  onClick={handleCloseFullScreenImage}
+                >
+                  <CloseIcon sx={{ fontSize: "35px" }} />
+                </IconButton>
+                <Fade in={Boolean(fullScreenImage)}>
+                  <Box>
+                    <div
+                      style={{
+                        width: "100vw",
+                        height: "100vh",
+                        backgroundImage: `url('https://image.tmdb.org/t/p/original${fullScreenImage}')`,
+                        backgroundSize: "100% auto",
+                        backgroundRepeat: "no-repeat",
+                        backgroundPosition: "center",
+                      }}
+                    />
+                  </Box>
+                </Fade>
+              </div>
+            </Modal>
           </TabPanel>
         </TabContext>
       </Box>
@@ -364,7 +452,7 @@ const MovieDetail = () => {
                   </Typography>
                 </Box>
 
-                {data.genres?.slice(0, 2).map((genre) => (
+                {data?.genres?.slice(0, 2).map((genre) => (
                   <Typography
                     key={genre.id}
                     variant="h6"

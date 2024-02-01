@@ -1,5 +1,5 @@
 import { MovieList } from "@/models/Movie";
-import { Box, Button, Stack, Typography } from "@mui/material";
+import { Box, Button, LinearProgress, Stack, Typography } from "@mui/material";
 import axios from "axios";
 import { useRouter } from "next/router";
 import useSWR from "swr";
@@ -31,16 +31,22 @@ const MovieFeature = () => {
     setExpandedOverview((prev) => (prev === overview ? null : overview));
   };
   const genres = dataGenre?.genres || [];
+  if (!data)
+    return (
+      <div>
+        <LinearProgress color="inherit" />
+      </div>
+    );
   return (
     <>
-      <Typography
-        color="white"
-        variant="h4"
-        sx={{ ..._letterStyles, padding: "10px" }}
-      >
-        FeaTured SaintStream
-      </Typography>
       <Stack sx={{ overflowX: "auto" }} direction="column">
+        <Typography
+          color="white"
+          variant="h4"
+          sx={{ ..._letterStyles, padding: "10px" }}
+        >
+          FeaTured SaintStream
+        </Typography>
         <Box>
           <Stack
             gap={4}
@@ -192,39 +198,19 @@ const MovieFeature = () => {
                         ? `${movie.overview.slice(0, 80)}...`
                         : movie.overview}
                     </Typography>
-                    {movie.overview.length > 80 && (
-                      <Button
-                        sx={{ fontSize: "12px", color: "green" }}
-                        onClick={() => toggleText(movie.overview)}
-                      >
-                        {expandedOverview === movie.overview
-                          ? "Read less"
-                          : "Read more"}
-                      </Button>
-                    )}
                   </Box>
-                  <Stack direction={"row"} spacing={3}>
-                    <Button
-                      onClick={() => handleDetailClick(movie.id)}
-                      sx={{
-                        backgroundColor: "green",
-                        width: "45%",
-                        fontSize: "12px",
-                      }}
-                      variant="contained"
-                      startIcon={<PlayCircleFilledIcon />}
-                    >
-                      Play Now
-                    </Button>
-                    <Button
-                      color="inherit"
-                      sx={{ width: "45%", fontSize: "12px" }}
-                      variant="outlined"
-                      startIcon={<TurnedInNotIcon />}
-                    >
-                      Add watchlist
-                    </Button>
-                  </Stack>
+                  <Button
+                    onClick={() => handleDetailClick(movie.id)}
+                    sx={{
+                      backgroundColor: "green",
+                      width: "90%",
+                      fontSize: "12px",
+                      marginTop: "3px",
+                    }}
+                    variant="contained"
+                  >
+                    Read more
+                  </Button>
                 </Box>
               </Stack>
             ))}

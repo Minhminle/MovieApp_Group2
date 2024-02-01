@@ -4,6 +4,7 @@ import {
   Button,
   CardContent,
   CardMedia,
+  LinearProgress,
   Stack,
   Typography,
 } from "@mui/material";
@@ -19,7 +20,7 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import SearchIcon from "@mui/icons-material/Search";
 import { Styles } from "@/stylescomponents/style";
 import AvatarView from "@/components/movie/AvatarView";
-import Footter from "@/components/movie/Footer";
+import Footter from "@/components/Footer";
 const DetailCast = () => {
   const getGenderLabel = (gender) => {
     return gender === 2 ? "Male" : gender === 1 ? "Female" : "Unknown";
@@ -50,10 +51,17 @@ const DetailCast = () => {
     setVisibleItems((prevVisibleItems) => prevVisibleItems + 5);
   };
   const findLink = "/detail/Find";
+
+  if (!data)
+    return (
+      <div>
+        <LinearProgress color="inherit" />
+      </div>
+    );
   return (
     <>
       <Stack direction={"row"} alignItems={"center"} spacing={12}>
-        <Stack direction={"row"} spacing={1}>
+        <Stack alignItems={"center"} direction={"row"} spacing={1}>
           <ArrowBackIcon
             onClick={() => router.back()}
             sx={{ fontSize: "40px" }}
@@ -62,15 +70,7 @@ const DetailCast = () => {
             Actor profile
           </Typography>
         </Stack>
-        <Stack direction={"row"} spacing={1} alignItems="center">
-          <SearchIcon
-            onClick={() => {
-              router.push(findLink);
-            }}
-            sx={Styles._iconheaderhome}
-          />
-          <AvatarView></AvatarView>
-        </Stack>
+        <AvatarView></AvatarView>
       </Stack>
       {data && (
         <Stack spacing={2} padding={"10px"}>
@@ -120,7 +120,7 @@ const DetailCast = () => {
             <Typography variant="h4" sx={{ ..._letterStyles }}>
               Biography
             </Typography>
-            <Typography>
+            <Typography variant="h6" sx={{ textAlign: "justify" }}>
               {expandedOverview === data.biography
                 ? data.biography
                 : data.biography.length > 150
@@ -128,7 +128,7 @@ const DetailCast = () => {
                 : data.biography}
               {data.biography.length > 150 && (
                 <Button
-                  sx={{ fontSize: "12px", color: "green" }}
+                  sx={{ fontSize: "12px", color: "lightgreen" }}
                   onClick={() => toggleText(data.biography)}
                 >
                   {expandedOverview === data.biography ? "Less" : "More"}

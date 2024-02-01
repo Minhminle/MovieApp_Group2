@@ -1,4 +1,4 @@
-import { Box, Button, Stack, Typography } from "@mui/material";
+import { Box, Button, LinearProgress, Stack, Typography } from "@mui/material";
 import React, { useState } from "react"; // Import useState
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import TurnedInNotIcon from "@mui/icons-material/TurnedInNot";
@@ -31,6 +31,12 @@ const Header = (props: Props) => {
 
   console.log(data);
   const genres = dataGenre?.genres || [];
+  if (!data)
+    return (
+      <div>
+        <LinearProgress color="inherit" />
+      </div>
+    );
   return (
     <>
       <Box>
@@ -79,7 +85,6 @@ const Header = (props: Props) => {
                     <Typography
                       variant="body2"
                       sx={{
-                        color: "#9e9e9e",
                         fontSize: "15px",
                       }}
                     >
@@ -106,36 +111,16 @@ const Header = (props: Props) => {
                         : movie.overview.length > 90
                         ? `${movie.overview.slice(0, 90)}...`
                         : movie.overview}
-                      {movie.overview.length > 90 && (
-                        <Button
-                          sx={{ fontSize: "12px", color: "green" }}
-                          onClick={() => handleDetailClick(movie.id)}
-                        >
-                          {expandedOverview === movie.overview
-                            ? "Read less"
-                            : "Read more"}
-                        </Button>
-                      )}
                     </Typography>
                   </Box>
-                  <Stack direction={"row"} spacing={3}>
-                    <Button
-                      sx={{ backgroundColor: "green", width: "50%" }}
-                      variant="contained"
-                      startIcon={<AddCircleIcon />}
-                      onClick={() => handleDetailClick(movie.id)}
-                    >
-                      Play Now
-                    </Button>
-                    <Button
-                      color="inherit"
-                      sx={{ width: "50%" }}
-                      variant="outlined"
-                      startIcon={<TurnedInNotIcon />}
-                    >
-                      Add watchlist
-                    </Button>
-                  </Stack>
+
+                  <Button
+                    sx={{ backgroundColor: "green", width: "100%" }}
+                    variant="contained"
+                    onClick={() => handleDetailClick(movie.id)}
+                  >
+                    Read more
+                  </Button>
                 </Stack>
               </Box>
             </Stack>

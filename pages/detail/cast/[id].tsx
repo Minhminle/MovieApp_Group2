@@ -4,6 +4,7 @@ import {
   Button,
   CardContent,
   CardMedia,
+  LinearProgress,
   Stack,
   Typography,
 } from "@mui/material";
@@ -50,6 +51,13 @@ const DetailCast = () => {
     setVisibleItems((prevVisibleItems) => prevVisibleItems + 5);
   };
   const findLink = "/detail/Find";
+
+  if (!data)
+    return (
+      <div>
+        <LinearProgress color="inherit" />
+      </div>
+    );
   return (
     <>
       <Stack direction={"row"} alignItems={"center"} spacing={12}>

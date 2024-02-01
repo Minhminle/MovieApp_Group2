@@ -1,7 +1,14 @@
 import { useRouter } from "next/router";
 import { useEffect, type ReactElement, useState } from "react";
 import { NextPageWithLayout } from "@/pages/_app";
-import { Box, Button, Chip, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Chip,
+  LinearProgress,
+  Stack,
+  Typography,
+} from "@mui/material";
 // import axios from "axios";
 import useSWR from "swr";
 import { Movie, MovieList } from "@/models/Movie";
@@ -31,6 +38,12 @@ const MovieCategory: NextPageWithLayout = () => {
   };
   const genres = dataGenre?.genres || [];
   const [expandedOverview, setExpandedOverview] = useState<string | null>(null);
+  if (!data && !data2)
+    return (
+      <div>
+        <LinearProgress color="inherit" />
+      </div>
+    );
   return (
     <>
       <Typography variant="h4" sx={{ ..._letterStyles, padding: "10px" }}>

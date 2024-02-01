@@ -10,6 +10,8 @@ import {
   CardMedia,
   Grid,
   IconButton,
+  Snackbar,
+  SnackbarContent,
   Stack,
   Tooltip,
   Typography,
@@ -34,6 +36,7 @@ import { getCookie, setCookie, deleteCookie } from "cookies-next";
 import SearchIcon from "@mui/icons-material/Search";
 import { Styles } from "@/stylescomponents/style";
 import AvatarView from "@/components/movie/AvatarView";
+import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 export interface Cast {
   id: number;
   name: string;
@@ -134,6 +137,21 @@ const HeaderDetail = () => {
     fontWeight: "700",
   };
 
+  const handleClickOpen = () => {
+    if (!session_id) {
+      setSnackbarMessage("Login Required");
+      setSnackbarOpen(true);
+    } else {
+      handleWatchList();
+    }
+  };
+
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+  };
   if (error) return <div>Error loading movie details</div>;
   if (!data) return <div>Loading...</div>;
   return (
@@ -212,57 +230,68 @@ const HeaderDetail = () => {
                 </Typography>
               </Stack>
               <Stack direction={"row"} alignItems={"center"} spacing={1}>
-                <Tooltip
-                  title={
-                    session_id ? "" : "Login to add this movie to your list"
-                  }
-                  arrow
-                  placement="top"
-                  enterTouchDelay={0} // Thêm option này để xử lý delay cho cả touch events
-                  style={{ fontSize: "14px", maxWidth: "200px" }} // Điều chỉnh kích thước và kiểu dáng cho di động
+                <IconButton
+                  color="inherit"
+                  onClick={() => {
+                    if (!session_id) {
+                      handleClickOpen();
+                    } else {
+                      handleWatchList();
+                    }
+                  }}
                 >
-                  <IconButton color="inherit">
-                    <TurnedInIcon
-                      sx={{
-                        color: session_id
-                          ? isTurnedInPressed
-                            ? "yellow"
-                            : "inherit"
-                          : "inherit",
-                        "&:hover": {
-                          backgroundColor: "transparent", // Loại bỏ hiệu ứng hover trên di động
-                        },
-                      }}
-                      onClick={session_id ? handleWatchList : undefined}
-                    />
-                  </IconButton>
-                </Tooltip>
+                  <TurnedInIcon
+                    sx={{
+                      color: session_id
+                        ? isTurnedInPressed
+                          ? "yellow"
+                          : "inherit"
+                        : "inherit",
+                    }}
+                  />
+                </IconButton>
+                <Snackbar
+                  open={snackbarOpen}
+                  autoHideDuration={1500}
+                  onClose={handleSnackbarClose}
+                  anchorOrigin={{ vertical: "top", horizontal: "center" }} // Đặt vị trí ở Top-Center
+                  style={{ background: "yellow" }}
+                >
+                  <SnackbarContent
+                    message={
+                      <Stack direction="row" alignItems="center">
+                        {/* Add the icon here */}
+                        <WarningAmberIcon sx={{ marginRight: 1 }} />
+                        Login to add this movie to your list
+                      </Stack>
+                    }
+                    sx={{
+                      backgroundColor: "yellow",
+                      color: "black",
+                    }}
+                  />
+                </Snackbar>
 
-                <Tooltip
-                  title={
-                    session_id ? "" : "Login to add this movie to your list"
-                  }
-                  arrow
-                  placement="top"
-                  enterTouchDelay={0} // Thêm option này để xử lý delay cho cả touch events
-                  style={{ fontSize: "14px", maxWidth: "200px" }} // Điều chỉnh kích thước và kiểu dáng cho di động
+                <IconButton
+                  color="inherit"
+                  onClick={() => {
+                    if (!session_id) {
+                      handleClickOpen();
+                    } else {
+                      handleFavorite();
+                    }
+                  }}
                 >
-                  <IconButton color="inherit">
-                    <FavoriteIcon
-                      sx={{
-                        color: session_id
-                          ? isThumbUpPressed
-                            ? "red"
-                            : "inherit"
-                          : "inherit",
-                        "&:hover": {
-                          backgroundColor: "transparent", // Loại bỏ hiệu ứng hover trên di động
-                        },
-                      }}
-                      onClick={session_id ? handleFavorite : undefined}
-                    />
-                  </IconButton>
-                </Tooltip>
+                  <FavoriteIcon
+                    sx={{
+                      color: session_id
+                        ? isThumbUpPressed
+                          ? "red"
+                          : "inherit"
+                        : "inherit",
+                    }}
+                  />
+                </IconButton>
                 <IconButton color="inherit">
                   <DownloadIcon />
                 </IconButton>

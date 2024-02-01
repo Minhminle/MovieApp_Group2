@@ -1,7 +1,14 @@
 import { useRouter } from "next/router";
 import type { ReactElement } from "react";
 import { NextPageWithLayout } from "@/pages/_app";
-import { Box, Button, Chip, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Chip,
+  LinearProgress,
+  Stack,
+  Typography,
+} from "@mui/material";
 import axios from "axios";
 import useSWR from "swr";
 import { MovieList } from "@/models/Movie";
@@ -31,6 +38,12 @@ const MovieAward: NextPageWithLayout = () => {
 
   console.log(data);
   const genres = dataGenre?.genres || [];
+  if (!data)
+    return (
+      <div>
+        <LinearProgress color="inherit" />
+      </div>
+    );
   return (
     <>
       <Typography variant="h4" sx={{ ..._letterStyles, padding: "10px" }}>

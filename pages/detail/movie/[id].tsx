@@ -11,6 +11,12 @@ import {
   CardMedia,
   Grid,
   IconButton,
+  LinearProgress,
+  Dialog,
+  DialogContent,
+  Modal,
+  Backdrop,
+  Fade,
   Stack,
   Tab,
   Typography,
@@ -27,6 +33,7 @@ import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import DetailHeader from "@/components/movie/DetailHeader";
 import HeaderDetail from "@/components/movie/HeaderDetail";
+import CloseIcon from "@mui/icons-material/Close";
 export interface Cast {
   id: number;
   name: string;
@@ -53,6 +60,16 @@ const MovieDetail = () => {
     setCurrentVideoIndex((prevIndex) =>
       prevIndex === dataVideo?.results.length - 1 ? 0 : prevIndex + 1
     );
+  };
+
+  const [fullScreenImage, setFullScreenImage] = useState(null);
+
+  const handleImageClick = (file_path) => {
+    setFullScreenImage(file_path);
+  };
+
+  const handleCloseFullScreenImage = () => {
+    setFullScreenImage(null);
   };
 
   const formatRuntime = (minutes: number): string => {
@@ -115,7 +132,19 @@ const MovieDetail = () => {
   };
 
   if (error) return <div>Error loading movie details</div>;
-  if (!data) return <div>Loading...</div>;
+
+  if (
+    !data &&
+    !similarMoviesData &&
+    !dataVideo &&
+    !datareview &&
+    !movieBackdropData
+  )
+    return (
+      <div>
+        <LinearProgress color="inherit" />
+      </div>
+    );
 
   return (
     <>
@@ -130,7 +159,7 @@ const MovieDetail = () => {
           alignItems="center"
           sx={{ overflowX: "auto" }}
         >
-          {data.credits?.cast?.map((actor) => (
+          {data?.credits?.cast?.map((actor) => (
             <Stack key={actor.id}>
               <Box
                 sx={{
@@ -320,12 +349,46 @@ const MovieDetail = () => {
                     key={backdrop.file_path}
                     component="img"
                     src={`https://image.tmdb.org/t/p/w500${backdrop.file_path}`}
-                    alt={`${data.title} backdrop`}
+                    alt={`${data?.title} backdrop`}
                     sx={{ width: "400px" }}
+                    onClick={() => handleImageClick(backdrop.file_path)}
                   />
                 ))}
               </Stack>
-            )}
+            )}{" "}
+            <Modal
+              open={Boolean(fullScreenImage)}
+              onClose={handleCloseFullScreenImage}
+              closeAfterTransition
+            >
+              <div style={{ position: "relative" }}>
+                <IconButton
+                  style={{
+                    position: "absolute",
+                    top: 230,
+                    right: 10,
+                    color: "white",
+                  }}
+                  onClick={handleCloseFullScreenImage}
+                >
+                  <CloseIcon sx={{ fontSize: "35px" }} />
+                </IconButton>
+                <Fade in={Boolean(fullScreenImage)}>
+                  <Box>
+                    <div
+                      style={{
+                        width: "100vw",
+                        height: "100vh",
+                        backgroundImage: `url('https://image.tmdb.org/t/p/original${fullScreenImage}')`,
+                        backgroundSize: "100% auto",
+                        backgroundRepeat: "no-repeat",
+                        backgroundPosition: "center",
+                      }}
+                    />
+                  </Box>
+                </Fade>
+              </div>
+            </Modal>
           </TabPanel>
         </TabContext>
       </Box>
@@ -385,7 +448,7 @@ const MovieDetail = () => {
                   </Typography>
                 </Box>
 
-                {data.genres?.slice(0, 2).map((genre) => (
+                {data?.genres?.slice(0, 2).map((genre) => (
                   <Typography
                     key={genre.id}
                     variant="h6"

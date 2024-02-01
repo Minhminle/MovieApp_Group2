@@ -13,6 +13,7 @@ import {
   Stack,
   Tooltip,
   Typography,
+  Alert,
 } from "@mui/material";
 import { ReactElement, useEffect, useState } from "react";
 import { Movie } from "@/models/Movie";
@@ -30,12 +31,13 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 
 import { getCookie, setCookie, deleteCookie } from "cookies-next";
+
 import SearchIcon from "@mui/icons-material/Search";
 import { Styles } from "@/stylescomponents/style";
 import AvatarView from "@/components/movie/AvatarView";
-import StarRateIcon from "@mui/icons-material/StarRate";
-import Popover from "@mui/material/Popover";
-import CancelIcon from "@mui/icons-material/Cancel";
+import Snackbar from "@mui/material/Snackbar";
+import SnackbarContent from "@mui/material/SnackbarContent";
+import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 export interface Cast {
   id: number;
   name: string;
@@ -63,7 +65,6 @@ const DetailHeader = () => {
   const [isThumbUpPressed, setIsThumbUpPressed] = useState(
     localStorage.getItem(`thumbUp_${id}`) === "true"
   );
-
   const handleWatchList = async () => {
     try {
       const response = await axios.post(
@@ -131,112 +132,28 @@ const DetailHeader = () => {
     `/movie/${id}?append_to_response=credits`,
     fetcher
   );
-  const { data: votelist } = useSWR<Movie>(
-    `/account/{account_id}/rated/movies?session_id=${session_id}`
-  );
+
   const findLink = "/detail/Find";
-  const [showRating, setShowRating] = useState(false);
-  const [userRating, setUserRating] = useState(0);
-  const [hasVoted, setHasVoted] = useState(false);
-  const [anchorEl, setAnchorEl] = useState(null);
-  const handleStarClick = (event) => {
-    setAnchorEl(event.currentTarget);
-    setShowRating(true); // Hiển thị box đánh giá
-  };
-  const handleClosePopover = () => {
-    setAnchorEl(null);
-    setShowRating(false); // Thêm dòng này để ẩn box đánh giá khi đóng Popover
-  };
+  const [open, setOpen] = useState(false);
 
-  const handleRatingChange = async (event, newValue) => {
-    try {
-      // Gọi API để gửi đánh giá
-      const response = await axios.post(
-        `/movie/${id}/rating`,
-        {
-          value: newValue * 2,
-        },
-        {
-          params: {
-            session_id: session_id,
-          },
-        }
-      );
-
-      console.log("Rating request success:", response.data);
-
-      // Đóng box đánh giá và cập nhật các state cần thiết
-      setShowRating(false);
-      setAnchorEl(null);
-
-      // Lưu trạng thái vote vào local storage trước khi cập nhật state
-      localStorage.setItem(`userRating_${id}`, newValue);
-
-      // Cập nhật giá trị userRating khi vote thành công
-      setUserRating(newValue);
-      setHasVoted(true);
-    } catch (error) {
-      console.error("Error making rating request:", error);
+  const handleClickOpen = () => {
+    if (!session_id) {
+      setSnackbarMessage("Login Required");
+      setSnackbarOpen(true);
+    } else {
+      handleWatchList();
     }
   };
 
-  const handleDeleteRating = async (movieId) => {
-    try {
-      const response = await axios.delete(`/movie/${movieId}/rating`, {
-        params: {
-          session_id: session_id,
-        },
-      });
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
 
-      // Xử lý sau khi xóa thành công, có thể làm mới danh sách hoặc hiển thị thông báo thành công.
-      console.log("Xóa đánh giá thành công", response);
-      setHasVoted(false);
-      setUserRating(0);
-      localStorage.removeItem(`userRating_${movieId}`);
-      // Sau khi xóa, bạn có thể làm mới danh sách votelist để cập nhật UI.
-      // Chẳng hạn: mutate(`/account/{account_id}/rated/movies?session_id=${session_id}`);
-    } catch (error) {
-      console.error("Lỗi khi xóa đánh giá", error);
-      // Xử lý lỗi nếu cần
-    }
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
   };
+
   if (error) return <div>Error loading movie details</div>;
   if (!data) return <div>Loading...</div>;
-
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        // Gọi API để kiểm tra xem user đã vote cho bộ phim này chưa
-        const response = await axios.get(`/movie/${id}/account_states`, {
-          params: {
-            session_id: session_id,
-          },
-        });
-
-        const hasVoted = response.data?.rated;
-
-        // Nếu user đã vote, lấy giá trị vote từ API
-        if (hasVoted) {
-          setUserRating(response.data?.rated.value / 2);
-          setHasVoted(true);
-        } else {
-          // Nếu user chưa vote, kiểm tra xem có vote trong local storage không
-          const storedUserRating = localStorage.getItem(`userRating_${id}`);
-          const storedHasVoted = localStorage.getItem(`hasVoted_${id}`);
-
-          if (storedHasVoted && storedUserRating) {
-            setUserRating(parseInt(storedUserRating, 10));
-            setHasVoted(true);
-          }
-        }
-      } catch (error) {
-        console.error("Error checking voting state:", error);
-      }
-    };
-
-    fetchData();
-  }, [session_id, id]);
   return (
     <>
       <Stack
@@ -319,102 +236,71 @@ const DetailHeader = () => {
               >
                 Continue Watching
               </Button>
-              <Tooltip
-                title={session_id ? "" : "Login to add this movie to your list"}
-                arrow
-                placement="top"
-                enterTouchDelay={0} // Thêm option này để xử lý delay cho cả touch events
-                style={{ fontSize: "14px", maxWidth: "200px" }} // Điều chỉnh kích thước và kiểu dáng cho di động
+              <IconButton
+                color="inherit"
+                onClick={() => {
+                  if (!session_id) {
+                    handleClickOpen();
+                  } else {
+                    handleWatchList();
+                  }
+                }}
               >
-                <IconButton color="inherit">
-                  <TurnedInIcon
-                    sx={{
-                      color: session_id
-                        ? isTurnedInPressed
-                          ? "yellow"
-                          : "inherit"
-                        : "inherit",
-                      "&:hover": {
-                        backgroundColor: "transparent", // Loại bỏ hiệu ứng hover trên di động
-                      },
-                    }}
-                    onClick={session_id ? handleWatchList : undefined}
-                  />
-                </IconButton>
-              </Tooltip>
+                <TurnedInIcon
+                  sx={{
+                    color: session_id
+                      ? isTurnedInPressed
+                        ? "yellow"
+                        : "inherit"
+                      : "inherit",
+                  }}
+                />
+              </IconButton>
+              <Snackbar
+                open={snackbarOpen}
+                autoHideDuration={1500}
+                onClose={handleSnackbarClose}
+                anchorOrigin={{ vertical: "top", horizontal: "center" }} // Đặt vị trí ở Top-Center
+                style={{ background: "yellow" }}
+              >
+                <SnackbarContent
+                  message={
+                    <Stack direction="row" alignItems="center">
+                      {/* Add the icon here */}
+                      <WarningAmberIcon sx={{ marginRight: 1 }} />
+                      Login to add this movie to your list
+                    </Stack>
+                  }
+                  sx={{
+                    backgroundColor: "yellow",
+                    color: "black",
+                  }}
+                />
+              </Snackbar>
 
-              <Tooltip
-                title={session_id ? "" : "Login to add this movie to your list"}
-                arrow
-                placement="top"
-                enterTouchDelay={0} // Thêm option này để xử lý delay cho cả touch events
-                style={{ fontSize: "14px", maxWidth: "200px" }} // Điều chỉnh kích thước và kiểu dáng cho di động
+              <IconButton
+                color="inherit"
+                onClick={() => {
+                  if (!session_id) {
+                    handleClickOpen();
+                  } else {
+                    handleFavorite();
+                  }
+                }}
               >
-                <IconButton color="inherit">
-                  <FavoriteIcon
-                    sx={{
-                      color: session_id
-                        ? isThumbUpPressed
-                          ? "red"
-                          : "inherit"
-                        : "inherit",
-                      "&:hover": {
-                        backgroundColor: "transparent", // Loại bỏ hiệu ứng hover trên di động
-                      },
-                    }}
-                    onClick={session_id ? handleFavorite : undefined}
-                  />
-                </IconButton>
-              </Tooltip>
-              <Tooltip
-                title={session_id ? "" : "Login to add this movie to your list"}
-                arrow
-                placement="top"
-                enterTouchDelay={0}
-                style={{ fontSize: "14px", maxWidth: "200px" }}
-              >
-                <Box>
-                  <IconButton color="inherit" onClick={handleStarClick}>
-                    <StarRateIcon
-                      sx={{ color: hasVoted ? "yellow" : "inherit" }}
-                    />
-                  </IconButton>
-                  <Popover
-                    open={Boolean(anchorEl)}
-                    anchorEl={anchorEl}
-                    onClose={handleClosePopover}
-                    anchorOrigin={{
-                      vertical: "bottom",
-                      horizontal: "left",
-                    }}
-                    transformOrigin={{
-                      vertical: "top",
-                      horizontal: "left",
-                    }}
-                  >
-                    {/* Hiển thị rating và cho phép đánh giá */}
-                    {showRating && (
-                      <Box
-                        sx={{
-                          backgroundColor: "white",
-                          padding: "16px",
-                          borderRadius: "8px",
-                          boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.1)",
-                        }}
-                      >
-                        <Rating
-                          value={userRating}
-                          onChange={session_id ? handleRatingChange : undefined}
-                          sx={{ color: hasVoted ? "yellow" : "yellow" }}
-                        />
-                        <CancelIcon
-                          onClick={() => handleDeleteRating(id)}
-                        ></CancelIcon>
-                      </Box>
-                    )}
-                  </Popover>
-                </Box>
-              </Tooltip>
+                <FavoriteIcon
+                  sx={{
+                    color: session_id
+                      ? isThumbUpPressed
+                        ? "red"
+                        : "inherit"
+                      : "inherit",
+                  }}
+                />
+              </IconButton>
+              <IconButton color="inherit">
+                <DownloadIcon />
+              </IconButton>
             </Stack>
           </Stack>
         </Box>
@@ -445,9 +331,6 @@ const DetailHeader = () => {
         <Stack direction={"row"} spacing={2}>
           {data.genres?.slice(0, 4).map((genre) => (
             <Chip
-              onClick={() => {
-                router.push(findLink);
-              }}
               key={genre.id}
               label={genre.name}
               sx={{

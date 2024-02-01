@@ -1,7 +1,14 @@
 import { useRouter } from "next/router";
 import type { ReactElement } from "react";
 import { NextPageWithLayout } from "@/pages/_app";
-import { Box, Button, Chip, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Chip,
+  LinearProgress,
+  Stack,
+  Typography,
+} from "@mui/material";
 import axios from "axios";
 import useSWR from "swr";
 import { MovieList } from "@/models/Movie";
@@ -31,6 +38,12 @@ const MovieAward: NextPageWithLayout = () => {
 
   console.log(data);
   const genres = dataGenre?.genres || [];
+  if (!data)
+    return (
+      <div>
+        <LinearProgress color="inherit" />
+      </div>
+    );
   return (
     <>
       <Typography variant="h4" sx={{ ..._letterStyles, padding: "10px" }}>
@@ -63,18 +76,6 @@ const MovieAward: NextPageWithLayout = () => {
                   : "/images/DefaultPoster.png" // Đường dẫn đến hình ảnh mặc định
               }
             />
-            <CardContent>
-              <Button
-                variant="outlined"
-                sx={{
-                  borderRadius: "30px",
-                  color: "white",
-                  borderColor: "white",
-                }}
-              >
-                Best Pictures
-              </Button>
-            </CardContent>
             <Box>
               <Box
                 fontSize={"40px"}
@@ -131,39 +132,19 @@ const MovieAward: NextPageWithLayout = () => {
                     ? `${movie.overview.slice(0, 90)}...`
                     : movie.overview}
                 </Typography>
-                {movie.overview.length > 90 && (
-                  <Button
-                    sx={{ fontSize: "12px", color: "green" }}
-                    onClick={() => toggleText(movie.overview)}
-                  >
-                    {expandedOverview === movie.overview
-                      ? "Read less"
-                      : "Read more"}
-                  </Button>
-                )}
               </Box>
-              <Stack direction={"row"} spacing={3}>
-                <Button
-                  onClick={() => handleDetailClick(movie.id)}
-                  sx={{
-                    backgroundColor: "green",
-                    width: "45%",
-                    fontSize: "12px",
-                  }}
-                  variant="contained"
-                  startIcon={<PlayCircleFilledIcon />}
-                >
-                  Play Now
-                </Button>
-                <Button
-                  color="inherit"
-                  sx={{ width: "45%", fontSize: "12px" }}
-                  variant="outlined"
-                  startIcon={<TurnedInNotIcon />}
-                >
-                  Add watchlist
-                </Button>
-              </Stack>
+              <Button
+                onClick={() => handleDetailClick(movie.id)}
+                sx={{
+                  backgroundColor: "green",
+                  width: "100%",
+                  fontSize: "12px",
+                  marginTop: "3px",
+                }}
+                variant="contained"
+              >
+                Read more
+              </Button>
             </Box>
           </Box>
         ))}

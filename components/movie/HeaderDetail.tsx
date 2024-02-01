@@ -54,6 +54,39 @@ const HeaderDetail = () => {
   };
 
   const session_id = getCookie("session_id");
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Gọi API để kiểm tra xem user đã vote cho bộ phim này chưa
+        const response = await axios.get(`/movie/${id}/account_states`, {
+          params: {
+            session_id: session_id,
+          },
+        });
+
+        const hasVoted = response.data?.rated;
+
+        // Nếu user đã vote, lấy giá trị vote từ API
+        if (hasVoted) {
+          setUserRating(response.data?.rated.value / 2);
+          setHasVoted(true);
+        } else {
+          // Nếu user chưa vote, kiểm tra xem có vote trong local storage không
+          const storedUserRating = localStorage.getItem(`userRating_${id}`);
+          const storedHasVoted = localStorage.getItem(`hasVoted_${id}`);
+
+          if (storedHasVoted && storedUserRating) {
+            setUserRating(parseInt(storedUserRating, 10));
+            setHasVoted(true);
+          }
+        }
+      } catch (error) {
+        console.error("Error checking voting state:", error);
+      }
+    };
+
+    fetchData();
+  }, [session_id, id]);
   const handleThumbUp = () => {
     setIsThumbUpPressed((prev) => !prev);
   };
@@ -226,39 +259,6 @@ const HeaderDetail = () => {
   if (!data) return <div>Loading...</div>;
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        // Gọi API để kiểm tra xem user đã vote cho bộ phim này chưa
-        const response = await axios.get(`/movie/${id}/account_states`, {
-          params: {
-            session_id: session_id,
-          },
-        });
-
-        const hasVoted = response.data?.rated;
-
-        // Nếu user đã vote, lấy giá trị vote từ API
-        if (hasVoted) {
-          setUserRating(response.data?.rated.value / 2);
-          setHasVoted(true);
-        } else {
-          // Nếu user chưa vote, kiểm tra xem có vote trong local storage không
-          const storedUserRating = localStorage.getItem(`userRating_${id}`);
-          const storedHasVoted = localStorage.getItem(`hasVoted_${id}`);
-
-          if (storedHasVoted && storedUserRating) {
-            setUserRating(parseInt(storedUserRating, 10));
-            setHasVoted(true);
-          }
-        }
-      } catch (error) {
-        console.error("Error checking voting state:", error);
-      }
-    };
-
-    fetchData();
-  }, [session_id, id]);
   return (
     <>
       <Stack

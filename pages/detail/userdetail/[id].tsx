@@ -227,7 +227,12 @@ const UserDetail = () => {
                       onClick={() => handleDetailClick(movie.id)}
                     />
                     <Stack direction="column">
-                      <Stack>{movie.title}</Stack>
+                      <Stack direction={"row"} alignItems={"center"}>
+                        {movie.title}
+                        <IconButton>
+                          <FavoriteIcon sx={{ color: "red" }} />
+                        </IconButton>
+                      </Stack>
                       <Stack>
                         <Stack direction="row">
                           <StarRateIcon sx={{ color: "yellow" }}></StarRateIcon>
@@ -283,7 +288,12 @@ const UserDetail = () => {
                     />
 
                     <Stack>
-                      {movie.title}
+                      <Stack direction={"row"} alignItems={"center"}>
+                        {movie.title}
+                        <IconButton>
+                          <StarRateIcon sx={{ color: "yellow" }}></StarRateIcon>
+                        </IconButton>
+                      </Stack>
                       <Stack direction={"row"} alignItems={"center"}>
                         <StarRateIcon sx={{ color: "yellow" }}></StarRateIcon>
                         <Stack direction="row">

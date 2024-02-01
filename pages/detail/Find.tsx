@@ -167,7 +167,7 @@ const Find = () => {
           {/* fitlerresultgenresfilm */}
           {showGenres && (
             <Box sx={{ pl: "45px" }}>
-              <Stack spacing={1} sx={{ width: "90%" }}>
+              <Stack spacing={1} sx={{ width: "95%" }}>
                 <Stack direction="row" alignItems="center" gap={1}>
                   <Stack
                     direction="row"

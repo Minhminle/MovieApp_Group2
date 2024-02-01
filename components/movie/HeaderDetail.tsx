@@ -120,7 +120,10 @@ const HeaderDetail = () => {
 
       console.log("Favorite request success:", response.data);
       setIsTurnedInPressed(!isTurnedInPressed);
-      localStorage.setItem(`watchlist${id}`, !isTurnedInPressed);
+      localStorage.setItem(
+        `watchlist${id}`,
+        JSON.stringify(!isTurnedInPressed)
+      );
     } catch (error) {
       console.error("Error making favorite request:", error);
     }

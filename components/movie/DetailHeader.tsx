@@ -83,7 +83,10 @@ const DetailHeader = () => {
 
       console.log("Favorite request success:", response.data);
       setIsTurnedInPressed(!isTurnedInPressed);
-      localStorage.setItem(`watchlist${id}`, !isTurnedInPressed);
+      localStorage.setItem(
+        `watchlist${id}`,
+        JSON.stringify(!isTurnedInPressed)
+      );
     } catch (error) {
       console.error("Error making favorite request:", error);
     }
@@ -106,7 +109,7 @@ const DetailHeader = () => {
 
       console.log("Favorite request success:", response.data);
       setIsThumbUpPressed(!isThumbUpPressed);
-      localStorage.setItem(`thumbUp_${id}`, !isThumbUpPressed);
+      localStorage.setItem(`thumbUp_${id}`, JSON.stringify(!isTurnedInPressed));
     } catch (error) {
       console.error("Error making favorite request:", error);
     }
@@ -329,7 +332,7 @@ const DetailHeader = () => {
         </Stack>
 
         <Stack direction={"row"} spacing={2}>
-          {data.genres?.slice(0, 4).map((genre) => (
+          {data?.genres?.slice(0, 4).map((genre) => (
             <Chip
               key={genre.id}
               label={genre.name}

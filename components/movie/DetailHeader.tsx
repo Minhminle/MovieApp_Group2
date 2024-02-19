@@ -38,6 +38,7 @@ import AvatarView from "@/components/movie/AvatarView";
 import Snackbar from "@mui/material/Snackbar";
 import SnackbarContent from "@mui/material/SnackbarContent";
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
+import { Genres } from "@/models/Genres";
 export interface Cast {
   id: number;
   name: string;
@@ -332,7 +333,7 @@ const DetailHeader = () => {
         </Stack>
 
         <Stack direction={"row"} spacing={2}>
-          {data?.genres?.slice(0, 4).map((genre) => (
+          {data?.genres?.slice(0, 4).map((genre: Genres) => (
             <Chip
               key={genre.id}
               label={genre.name}

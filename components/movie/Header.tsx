@@ -7,13 +7,14 @@ import useSWR from "swr";
 import axios from "axios";
 import { MovieList } from "@/models/Movie";
 import { format } from "date-fns";
+import { GenreList, Genres } from "@/models/Genres";
 
 type Props = {};
 
 const Header = (props: Props) => {
   const router = useRouter();
   const { data, isLoading, error } = useSWR<MovieList>("/movie/popular");
-  const { data: dataGenre } = useSWR("/genre/movie/list");
+  const { data: dataGenre } = useSWR("/genres/movie-list");
 
   const handleDetailClick = (movieId: string) => {
     router.push(`/detail/movie/${movieId}`);
@@ -89,13 +90,17 @@ const Header = (props: Props) => {
                       }}
                     >
                       |{" "}
-                      {movie.genre_ids && movie.genre_ids.length > 0
-                        ? movie.genre_ids
+                      {movie.genres && movie.genres.length > 0
+                        ? movie.genres
                             .slice(0, 2)
-                            .map((genreId) => {
+                            .map(() => {
                               const foundGenre = genres.find(
-                                (genre) => genre.id === genreId
+                                (genre: Genres, list: GenreList) =>
+                                  list.genres.some(
+                                    (listGenre) => listGenre.id === genre.id
+                                  )
                               );
+
                               return foundGenre
                                 ? foundGenre.name
                                 : "Unknown Genre";

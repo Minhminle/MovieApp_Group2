@@ -1,4 +1,5 @@
 import { CreditSection } from "./Credit";
+import { Genres } from "./Genres";
 import { Images } from "./Images";
 import { PersonSection } from "./Person";
 import { VideoList } from "./Video";
@@ -14,14 +15,6 @@ export interface ProductionCountry {
   origin_country: string;
 }
 
-export interface Genres {
-  id: string;
-  name: string;
-}
-
-export interface GenreList {
-  genres: Genres[];
-}
 export interface Movie {
   id: string;
   title: string;
@@ -43,5 +36,6 @@ export interface Movie {
   images: Images;
   person: PersonSection;
   tagline: string;
-  rating:number;
+  rating: number;
+  genres: Genres[];
 }

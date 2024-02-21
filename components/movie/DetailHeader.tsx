@@ -16,7 +16,7 @@ import {
   Alert,
 } from "@mui/material";
 import { ReactElement, useEffect, useState } from "react";
-import { Movie } from "@/models/Movie";
+import { Genres, Movie } from "@/models/Movie";
 import { Rating, Chip } from "@mui/material";
 import PlayCircleFilledIcon from "@mui/icons-material/PlayCircleFilled";
 import TurnedInIcon from "@mui/icons-material/TurnedIn";
@@ -38,7 +38,6 @@ import AvatarView from "@/components/movie/AvatarView";
 import Snackbar from "@mui/material/Snackbar";
 import SnackbarContent from "@mui/material/SnackbarContent";
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
-import { Genres } from "@/models/Genres";
 export interface Cast {
   id: number;
   name: string;

@@ -7,14 +7,29 @@ import useSWR from "swr";
 import axios from "axios";
 import { MovieList, Movie } from "@/models/Movie";
 import { format } from "date-fns";
-import { Genres } from "@/models/Genres";
 
 type Props = {};
 
 const Header = (props: Props) => {
   const router = useRouter();
   const { data, isLoading, error } = useSWR<MovieList>("/movie/popular");
-  const { data: dataGenre } = useSWR("/genre/movie/list");
+  // const { data: dataGenre } = useSWR("/genre/movie/list");
+  const { data: movieGenres } = useSWR("/genre/movie/list");
+  // const genresList: GenreList[] = movieGenres?.genres
+  //   ? movieGenres.genres.map((genre: Genre) => [genre])
+  //   : [];
+
+  const getGenreNameById = (genreId: number) => {
+    // Kiểm tra xem movieGenres có tồn tại và có thuộc tính genres không
+    if (movieGenres && movieGenres.genres) {
+      const genre = movieGenres.genres.find(
+        (g: { id: number }) => g.id === genreId
+      );
+      return genre ? genre.name : "Unknown Genre";
+    }
+    // Trả về giá trị mặc định nếu movieGenres không tồn tại hoặc không có thuộc tính genres
+    return "Unknown Genre";
+  };
 
   const handleDetailClick = (movieId: string) => {
     router.push(`/detail/movie/${movieId}`);
@@ -31,9 +46,6 @@ const Header = (props: Props) => {
   // };
 
   console.log(data);
-  const genresList: Genres[][] = dataGenre?.genres
-    ? dataGenre.genres.map((genre: Genres) => [genre])
-    : [];
   if (!data)
     return (
       <div>
@@ -43,54 +55,6 @@ const Header = (props: Props) => {
   return (
     <>
       <Box>
-        <Typography>
-          {genresList.length > 0
-            ? genresList.map((genreArray: Genres[], index: number) => (
-                <div key={index}>
-                  {genreArray.map((genre: Genres) => (
-                    <div key={genre.id}>
-                      <span>{genre.id}</span>
-                      <span>{genre.name}</span>
-                    </div>
-                  ))}
-                </div>
-              ))
-            : "No genres available"}
-        </Typography>
-        <Typography>
-          {data?.results.map((movie) => (
-            <div key={movie.id}>
-              <h3>{movie.title}</h3>
-              <h3>{movie.id}</h3>
-              <p>
-                <Typography>
-                  {data?.results.map((movie) => (
-                    <div key={movie.id}>
-                      <h3>{movie.title}</h3>
-                      <p>
-                        {/* Hiển thị thể loại của bộ phim */}
-                        {movie.genres && movie.genres.length > 0
-                          ? movie.genres
-                              .slice(0, 2)
-                              .map((genreId) => {
-                                const foundGenre = genresList.find(
-                                  (genre: Genres[]) => genre //thêm vào đây === genreId
-                                );
-                                return foundGenre
-                                  ? foundGenre.name
-                                  : "Unknown Genre";
-                              })
-                              .join(" - ")
-                          : "Unknown Genre"}
-                      </p>
-                    </div>
-                  ))}
-                </Typography>
-              </p>
-            </div>
-          ))}
-        </Typography>
-
         <Stack gap={4} direction="row" sx={{ overflowX: "auto" }}>
           {data?.results.slice(0, 2).map((movie) => (
             <Stack key={movie.id} spacing={2} sx={{ position: "relative" }}>
@@ -139,21 +103,11 @@ const Header = (props: Props) => {
                         fontSize: "15px",
                       }}
                     >
-                      |{" "}
-                      {movie.genres && movie.genres.length > 0
-                        ? movie.genres
-                            .slice(0, 2)
-                            .map((genreId) => {
-                              const foundGenre = genresList.find(
-                                (genre: Genres) => genre.id === genreId.id
-                              );
-
-                              return foundGenre
-                                ? foundGenre.name
-                                : "Unknown Genre";
-                            })
-                            .join(" - ")
-                        : "Unknown Genre"}
+                      {movie.genre_ids?.slice(0, 2).map((genreId) => (
+                        <Typography key={genreId}>
+                          {getGenreNameById(genreId)}
+                        </Typography>
+                      ))}
                     </Typography>
                   </Stack>
                   <Box>

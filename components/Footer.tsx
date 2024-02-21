@@ -1,6 +1,7 @@
 import { Box, Container, Stack, Typography } from "@mui/material";
 import React from "react";
 import { Styles } from "@/stylescomponents/style";
+import { Contact } from "./sendMail";
 type Props = {};
 const Footter = (props: Props) => {
   return (
@@ -20,6 +21,7 @@ const Footter = (props: Props) => {
             @2024
           </Typography>
         </Stack>
+        <Contact />
       </Container>
     </>
   );

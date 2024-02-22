@@ -19,12 +19,27 @@ import { useState } from "react";
 const MovieRate = () => {
   const router = useRouter();
   const { data } = useSWR<MovieList>("/movie/popular");
-  const { data: dataGenre } = useSWR<GenreList>("/genre/movie/list");
+  const { data: movieGenres } = useSWR("/genre/movie/list");
+  // const genresList: GenreList[] = movieGenres?.genres
+  //   ? movieGenres.genres.map((genre: Genre) => [genre])
+  //   : [];
+
+  const getGenreNameById = (genreId: number) => {
+    // Kiểm tra xem movieGenres có tồn tại và có thuộc tính genres không
+    if (movieGenres && movieGenres.genres) {
+      const genre = movieGenres.genres.find(
+        (g: { id: number }) => g.id === genreId
+      );
+      return genre ? genre.name : "Unknown Genre";
+    }
+    // Trả về giá trị mặc định nếu movieGenres không tồn tại hoặc không có thuộc tính genres
+    return "Unknown Genre";
+  };
+
   console.log(data);
   const handleDetailClick = (movieId: string) => {
     router.push(`/detail/movie/${movieId}`);
   };
-  const genres = dataGenre?.genres || [];
   const [expandedOverview, setExpandedOverview] = useState<string | null>(null);
   if (!data)
     return (
@@ -32,22 +47,6 @@ const MovieRate = () => {
         <LinearProgress color="inherit" />
       </div>
     );
-  const Counter = ({ count }) => {
-    const numbers = [];
-    for (let i = 1; i <= count; i++) {
-      numbers.push(i);
-    }
-    return (
-      <>
-        <>
-          {numbers.map((number) => (
-            <Typography key={number}>{number}</Typography>
-          ))}
-        </>
-      </>
-    );
-  };
-  const movieCount = data?.results.length;
   const _letterStyles = {
     color: "white",
     fontWeight: "700",
@@ -70,7 +69,7 @@ const MovieRate = () => {
         sx={{ overflowX: "auto" }}
       >
         {data?.results?.map((movie, index) => (
-          <Stack key={movie.id} direction="row" alignItems="center">
+          <Stack key={movie.id} direction="row" alignItems="center" spacing={1}>
             <Typography variant="h3" color="white" padding={"3px"}>
               {index + 1}
             </Typography>
@@ -110,17 +109,13 @@ const MovieRate = () => {
                   width: "100px",
                 }}
               >
-                {movie.genre_ids && movie.genre_ids.length > 0
-                  ? movie.genre_ids
-                      .slice(0, 2)
-                      .map((genreId) => {
-                        const foundGenre = genres.find(
-                          (genre) => genre.id === genreId
-                        );
-                        return foundGenre ? foundGenre.name : "Unknown Genre";
-                      })
-                      .join(" - ")
-                  : "Unknown Genre"}
+                {movie.genre_ids?.slice(0, 2).map((genreId, index, array) => (
+                  <React.Fragment key={genreId}>
+                    {getGenreNameById(genreId)}
+                    {index < array.length - 1 && " - "}{" "}
+                    {/* Hiển thị dấu phân tách nếu không phải là phần tử cuối cùng */}
+                  </React.Fragment>
+                ))}
               </Typography>
               <Stack direction="row" alignItems="center">
                 <Box>

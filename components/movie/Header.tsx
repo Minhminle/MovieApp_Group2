@@ -93,7 +93,7 @@ const Header = (props: Props) => {
                       ? `${movie.title.slice(0, 15)}...`
                       : movie.title}
                   </Box>
-                  <Stack direction={"row"} spacing={2}>
+                  <Stack direction={"row"} spacing={1}>
                     <Box sx={{ paddingTop: "2px" }}>
                       {format(new Date(movie.release_date), "dd/MM/yyyy")}
                     </Box>
@@ -103,11 +103,16 @@ const Header = (props: Props) => {
                         fontSize: "15px",
                       }}
                     >
-                      {movie.genre_ids?.slice(0, 2).map((genreId) => (
-                        <Typography key={genreId}>
-                          {getGenreNameById(genreId)}
-                        </Typography>
-                      ))}
+                      |{" "}
+                      {movie.genre_ids
+                        ?.slice(0, 2)
+                        .map((genreId, index, array) => (
+                          <React.Fragment key={genreId}>
+                            {getGenreNameById(genreId)}
+                            {index < array.length - 1 && " - "}{" "}
+                            {/* Hiển thị dấu phân tách nếu không phải là phần tử cuối cùng */}
+                          </React.Fragment>
+                        ))}
                     </Typography>
                   </Stack>
                   <Box>

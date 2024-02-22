@@ -22,7 +22,7 @@ import { Styles } from "@/stylescomponents/style";
 import AvatarView from "@/components/movie/AvatarView";
 import Footter from "@/components/Footer";
 const DetailCast = () => {
-  const getGenderLabel = (gender) => {
+  const getGenderLabel = (gender: number) => {
     return gender === 2 ? "Male" : gender === 1 ? "Female" : "Unknown";
   };
 

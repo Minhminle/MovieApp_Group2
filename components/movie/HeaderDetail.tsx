@@ -97,11 +97,11 @@ const HeaderDetail = () => {
   const [isThumbUpPressed, setIsThumbUpPressed] = useState(
     localStorage.getItem(`thumbUp_${id}`) === "true"
   );
-  const handleGenreClick = (genreId) => {
+  const handleGenreClick = (genreId: string) => {
     router.push(`/detail/Find?genre=${genreId}`);
-    setSelectedGenre(genreId);
+    setSelectedGenre(() => genreId);
   };
-  const [selectedGenre, setSelectedGenre] = useState(null);
+  const [selectedGenre, setSelectedGenre] = useState<null | string>(null);
   const handleWatchList = async () => {
     try {
       const response = await axios.post(
@@ -146,7 +146,7 @@ const HeaderDetail = () => {
 
       console.log("Favorite request success:", response.data);
       setIsThumbUpPressed(!isThumbUpPressed);
-      localStorage.setItem(`thumbUp_${id}`, !isThumbUpPressed);
+      localStorage.setItem(`thumbUp_${id}`, (!isThumbUpPressed).toString());
     } catch (error) {
       console.error("Error making favorite request:", error);
     }
@@ -194,10 +194,11 @@ const HeaderDetail = () => {
     setSnackbarOpen(false);
   };
   const [showRating, setShowRating] = useState(false);
-  const [userRating, setUserRating] = useState(0);
+  const [userRating, setUserRating] = useState<number | null>(null);
   const [hasVoted, setHasVoted] = useState(false);
-  const [anchorEl, setAnchorEl] = useState(null);
-  const handleStarClick = (event) => {
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+
+  const handleStarClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
     setShowRating(true); // Hiển thị box đánh giá
   };
@@ -206,13 +207,16 @@ const HeaderDetail = () => {
     setShowRating(false); // Thêm dòng này để ẩn box đánh giá khi đóng Popover
   };
 
-  const handleRatingChange = async (event, newValue) => {
+  const handleRatingChange = async (
+    event: React.SyntheticEvent,
+    newValue: number | null
+  ) => {
     try {
       // Gọi API để gửi đánh giá
       const response = await axios.post(
         `/movie/${id}/rating`,
         {
-          value: newValue * 2,
+          value: newValue ? newValue * 2 : null,
         },
         {
           params: {
@@ -228,7 +232,10 @@ const HeaderDetail = () => {
       setAnchorEl(null);
 
       // Lưu trạng thái vote vào local storage trước khi cập nhật state
-      localStorage.setItem(`userRating_${id}`, newValue);
+      localStorage.setItem(
+        `userRating_${id}`,
+        newValue !== null ? String(newValue) : ""
+      );
 
       // Cập nhật giá trị userRating khi vote thành công
       setUserRating(newValue);
@@ -238,7 +245,7 @@ const HeaderDetail = () => {
     }
   };
 
-  const handleDeleteRating = async (movieId) => {
+  const handleDeleteRating = async (movieId: number) => {
     try {
       const response = await axios.delete(`/movie/${movieId}/rating`, {
         params: {
@@ -446,7 +453,7 @@ const HeaderDetail = () => {
                             sx={{ color: hasVoted ? "yellow" : "yellow" }}
                           />
                           <CancelIcon
-                            onClick={() => handleDeleteRating(id)}
+                            onClick={() => handleDeleteRating(Number(id))}
                           ></CancelIcon>
                         </Box>
                       )}

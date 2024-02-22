@@ -14,13 +14,13 @@ export interface ProductionCountry {
   origin_country: string;
 }
 
-export interface Genres {
+export interface Genre {
   id: string;
   name: string;
 }
 
 export interface GenreList {
-  genres: Genres[];
+  genres: Genre[];
 }
 export interface Movie {
   id: string;
@@ -43,6 +43,7 @@ export interface Movie {
   images: Images;
   person: PersonSection;
   tagline: string;
+  character: string;
   rating: number;
   genres: Genre[];
   genre_ids: number[];

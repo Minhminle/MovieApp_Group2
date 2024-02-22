@@ -1,5 +1,5 @@
-export interface ListReview{
-  results:Reviews[];
+export interface ListReview {
+  results: Reviews[];
 }
 
 export interface Reviews {
@@ -7,5 +7,5 @@ export interface Reviews {
   avatar_path: String;
   content: String;
   id: number;
-  updated_at:String;
+  updated_at: String;
 }

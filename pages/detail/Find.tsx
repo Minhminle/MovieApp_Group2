@@ -38,7 +38,7 @@ const Find = () => {
   const [btloadMoreGenres, setbtloadMoreGenres] = useState(null);
   const [showTopRated, setShowTopRated] = useState(true);
   const [showCancelIcon, setShowCancelIcon] = useState(false);
-  const handleSearchChange = (event) => {
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newSearchQuery = event.target.value;
     setSearchQuery(newSearchQuery);
 
@@ -166,7 +166,7 @@ const Find = () => {
 
           {/* fitlerresultgenresfilm */}
           {showGenres && (
-            <Box sx={{ pl: "45px" }}>
+            <Box sx={{ pl: "25px" }}>
               <Stack spacing={1} sx={{ width: "95%" }}>
                 <Stack direction="row" alignItems="center" gap={1}>
                   <Stack

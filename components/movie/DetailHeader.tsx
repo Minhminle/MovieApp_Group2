@@ -16,7 +16,7 @@ import {
   Alert,
 } from "@mui/material";
 import { ReactElement, useEffect, useState } from "react";
-import { Genres, Movie } from "@/models/Movie";
+import { Genre, Movie } from "@/models/Movie";
 import { Rating, Chip } from "@mui/material";
 import PlayCircleFilledIcon from "@mui/icons-material/PlayCircleFilled";
 import TurnedInIcon from "@mui/icons-material/TurnedIn";
@@ -332,7 +332,7 @@ const DetailHeader = () => {
         </Stack>
 
         <Stack direction={"row"} spacing={2}>
-          {data?.genres?.slice(0, 4).map((genre: Genres) => (
+          {data?.genres?.slice(0, 4).map((genre: Genre) => (
             <Chip
               key={genre.id}
               label={genre.name}

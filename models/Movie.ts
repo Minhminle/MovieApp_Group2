@@ -21,6 +21,7 @@ export interface Genre {
 
 export interface GenreList {
   genres: Genre[];
+  results: string;
 }
 export interface Movie {
   id: string;
@@ -47,4 +48,5 @@ export interface Movie {
   rating: number;
   genres: Genre[];
   genre_ids: number[];
+  results: string;
 }

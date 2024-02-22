@@ -5,7 +5,11 @@ export interface ListReview {
 export interface Reviews {
   author: String;
   avatar_path: String;
-  content: String;
+  content: string;
   id: number;
   updated_at: String;
+  author_details: AuthorDetails;
+}
+export interface AuthorDetails {
+  avatar_path: String;
 }

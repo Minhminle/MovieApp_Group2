@@ -297,7 +297,7 @@ const MovieDetail = () => {
                           <Box color="white"> {review.author}</Box>
                           <Box color="gray">
                             {format(
-                              new Date(review.updated_at),
+                              new Date(review.updated_at.toString()),
                               "dd/MM/yyyy HH:mm:ss"
                             )}
                           </Box>

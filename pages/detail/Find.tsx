@@ -10,7 +10,7 @@ import {
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import useSWR from "swr";
-import { MovieList } from "@/models/Movie";
+import { MovieList, Movie } from "@/models/Movie";
 import { GenreList } from "@/models/Movie";
 import { ReactElement } from "react";
 import config from "@/config";
@@ -30,12 +30,12 @@ const Find = () => {
   const { data: dataGenre } = useSWR<GenreList>("/genre/movie/list");
   // Set State cho trang hiện tại và tất cả phim
   const [currentPage, setCurrentPage] = useState(1);
-  const [allMovies, setAllMovies] = useState([]);
-  const [selectedGenre, setSelectedGenre] = useState(null);
-  const [moviesByGenre, setMoviesByGenre] = useState([]);
+  const [allMovies, setAllMovies] = useState<Movie[]>([]);
+  const [selectedGenre, setSelectedGenre] = useState<number | null>(null);
+  const [moviesByGenre, setMoviesByGenre] = useState<Movie[]>([]);
   const [showGenres, setShowGenres] = useState(true);
   const [currentGenrePage, setCurrentGenrePage] = useState(1);
-  const [btloadMoreGenres, setbtloadMoreGenres] = useState(null);
+  const [btloadMoreGenres, setbtloadMoreGenres] = useState<number | null>(null);
   const [showTopRated, setShowTopRated] = useState(true);
   const [showCancelIcon, setShowCancelIcon] = useState(false);
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -117,9 +117,11 @@ const Find = () => {
   useEffect(() => {
     const { genre } = router.query;
     if (genre) {
-      // Cập nhật
-      setSelectedGenre(parseInt(genre));
-      handleGenreClick(genre);
+      const selectedGenre = Array.isArray(genre)
+        ? parseInt(genre[0])
+        : parseInt(genre);
+      setSelectedGenre(selectedGenre);
+      handleGenreClick(selectedGenre);
     }
   }, [router.query]);
 
@@ -196,12 +198,14 @@ const Find = () => {
                         <Stack
                           direction="row"
                           justifyContent="flex-start"
-                          onClick={() => handleGenreClick(genre.id)}
+                          onClick={() => handleGenreClick(Number(genre.id))}
                         >
                           <Typography
                             sx={{
                               color:
-                                selectedGenre == genre.id ? "yellow" : "white",
+                                selectedGenre == Number(genre.id)
+                                  ? "yellow"
+                                  : "white",
                               cursor: "pointer",
                             }}
                           >

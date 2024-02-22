@@ -12,11 +12,12 @@ const Footter = (props: Props) => {
     <>
       <Container sx={{ backgroundColor: "black" }}>
         <Stack direction="column" gap={2}>
+          {" "}
+          <Contact />
           <Typography sx={Styles._title} variant="h6">
             Our platform is trusted by milions & fearture best updated movies
             all around the world.
           </Typography>
-          <Contact />
           <Typography
             sx={{
               color: "gray",

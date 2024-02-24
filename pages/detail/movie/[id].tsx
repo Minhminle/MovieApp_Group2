@@ -459,7 +459,7 @@ const MovieDetail = () => {
                   </Typography>
                 </Box>
 
-                {data?.genres?.slice(0, 2).map((genre) => (
+                {data?.genres?.slice(0, 2).map((genre, index, array) => (
                   <Typography
                     key={genre.id}
                     variant="h6"
@@ -467,6 +467,7 @@ const MovieDetail = () => {
                     sx={{ color: "#9e9e9e" }}
                   >
                     {genre.name}
+                    {index < array.length - 1 ? " | " : ""}
                   </Typography>
                 ))}
               </Stack>

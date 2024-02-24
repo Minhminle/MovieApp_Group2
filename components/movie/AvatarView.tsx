@@ -157,7 +157,7 @@ function NotLoggedInAvatar() {
           .get<RequestTokenResponse>("authentication/token/new")
           .then((res) =>
             window.open(
-              `https://www.themoviedb.org/authenticate/${res.data.request_token}?redirect_to=http://localhost:3000/detail/authorize`,
+              `https://www.themoviedb.org/authenticate/${res.data.request_token}?redirect_to=https://65da137eb91d7c11d1a1dbfd--quiet-raindrop-d1ef73.netlify.app/detail/authorize`,
               "_blank",
               "noopener,noreferrer"
             )

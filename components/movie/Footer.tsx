@@ -12,19 +12,18 @@ const Footter = (props: Props) => {
     <>
       <Container sx={{ backgroundColor: "black" }}>
         <Stack direction="column" gap={2}>
-          {" "}
-          <Contact />
           <Typography sx={Styles._title} variant="h6">
             Our platform is trusted by milions & fearture best updated movies
             all around the world.
           </Typography>
+          <Contact />
           <Typography
             sx={{
               color: "gray",
               textAlign: "center",
             }}
           >
-            @2024
+            &copy; 2024 | Credits: Truong, Nghia, Hoan, Sang
           </Typography>
         </Stack>
       </Container>

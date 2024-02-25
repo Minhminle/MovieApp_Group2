@@ -60,31 +60,51 @@ export const Contact: React.FC = () => {
       ...prevContent,
       [name]: value,
     }));
+
+    // Đặt phần kiểm tra trong cùng một tập dấu ngoặc nhọn của hàm handleInputChange
+    if (
+      (name === "from_email" && emailContent.message && showError) ||
+      (name === "message" && emailContent.from_email && showError)
+    ) {
+      setShowError(false);
+    }
   };
 
   return (
     <form ref={form} onSubmit={sendEmail}>
       <Stack justifyContent="center">
         <Box>
+          <Typography
+            sx={{
+              fontSize: "18px",
+              color: "gray",
+              fontStyle: "italic",
+              textAlign: "justify",
+            }}
+          >
+            Send us feedback if you have anything to reflect on the website. We
+            will contact you as soon as possible to address your requests
+          </Typography>
           <TextField
-            label="Email"
+            label="Email address *"
             type="email"
             name="from_email"
             variant="outlined"
-            color="success"
+            color={showError && !emailContent.from_email ? "error" : "success"}
             fullWidth
             margin="normal"
             value={emailContent.from_email}
             onChange={handleInputChange}
             InputLabelProps={{ style: { color: "white" } }}
             InputProps={{ style: { color: "white" } }}
+            placeholder="user@example.com"
             focused
           />
           <TextField
-            label="Message"
+            label="Message *"
             name="message"
             variant="outlined"
-            color="success"
+            color={showError && !emailContent.message ? "error" : "success"}
             fullWidth
             multiline
             rows={4}
@@ -93,6 +113,7 @@ export const Contact: React.FC = () => {
             onChange={handleInputChange}
             InputLabelProps={{ style: { color: "white" } }}
             InputProps={{ style: { color: "white" } }}
+            placeholder="Enter your message here..."
             focused
           />
         </Box>
@@ -101,7 +122,15 @@ export const Contact: React.FC = () => {
             Please fill out both email and message fields.
           </Typography>
         )}
-        <Button type="submit" variant="contained" color="primary">
+        <Button
+          type="submit"
+          variant="contained"
+          color="warning"
+          sx={{
+            width: "25%",
+            borderRadius: "20px",
+          }}
+        >
           Send
         </Button>
         <Snackbar
@@ -109,7 +138,7 @@ export const Contact: React.FC = () => {
           autoHideDuration={2500}
           onClose={handleSnackbarClose}
           anchorOrigin={{ vertical: "top", horizontal: "center" }}
-          style={{ background: "yellow" }}
+          style={{ background: "green" }}
         >
           <SnackbarContent
             message={

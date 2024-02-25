@@ -150,6 +150,7 @@ function LoggedInAvatar(props: { data: User }) {
 }
 
 function NotLoggedInAvatar() {
+  const baseURL = window.location.origin ?? "http://localhost:3000";
   return (
     <Person
       onClick={() => {
@@ -157,7 +158,7 @@ function NotLoggedInAvatar() {
           .get<RequestTokenResponse>("authentication/token/new")
           .then((res) =>
             window.open(
-              `https://www.themoviedb.org/authenticate/${res.data.request_token}?redirect_to=http://localhost:3000/detail/authorize`,
+              `https://www.themoviedb.org/authenticate/${res.data.request_token}?redirect_to=${baseURL}/detail/authorize`,
               "_blank",
               "noopener,noreferrer"
             )

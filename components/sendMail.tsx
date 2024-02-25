@@ -1,6 +1,6 @@
 import React, { useRef, FormEvent, useState } from "react";
 import emailjs from "@emailjs/browser";
-import { Box, Button, Stack, TextField } from "@mui/material";
+import { Box, Button, Stack, TextField, Typography } from "@mui/material";
 
 export const Contact: React.FC = () => {
   const form = useRef<HTMLFormElement>(null);
@@ -8,9 +8,16 @@ export const Contact: React.FC = () => {
     from_email: "",
     message: "",
   });
+  const [showError, setShowError] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
 
   const sendEmail = (e: FormEvent) => {
     e.preventDefault();
+    if (!emailContent.from_email || !emailContent.message) {
+      setShowError(true);
+      return;
+    }
+    setShowError(false);
     if (form.current) {
       emailjs
         .sendForm("service_zp6qpot", "template_m64wheo", form.current, {
@@ -19,7 +26,9 @@ export const Contact: React.FC = () => {
         .then(
           () => {
             console.log("SUCCESS!");
+            setShowSuccess(true);
             setEmailContent({ from_email: "", message: "" });
+            setTimeout(() => setShowSuccess(false), 3000);
           },
           (error) => {
             console.log("FAILED...", error.text);
@@ -70,6 +79,16 @@ export const Contact: React.FC = () => {
             focused
           />
         </Box>
+        {showError && (
+          <Typography variant="body2" color="error">
+            Please fill out both email and message fields.
+          </Typography>
+        )}
+        {showSuccess && (
+          <Typography variant="body2" color="success">
+            Email sent successfully!
+          </Typography>
+        )}
         <Button type="submit" variant="contained" color="primary">
           Send
         </Button>

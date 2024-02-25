@@ -150,7 +150,7 @@ function LoggedInAvatar(props: { data: User }) {
 }
 
 function NotLoggedInAvatar() {
-  const baseURL = process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000";
+  const baseURL = window.location.origin ?? "http://localhost:3000";
   return (
     <Person
       onClick={() => {

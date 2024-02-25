@@ -263,7 +263,7 @@ const DetailHeader = () => {
                 open={snackbarOpen}
                 autoHideDuration={1500}
                 onClose={handleSnackbarClose}
-                anchorOrigin={{ vertical: "top", horizontal: "center" }} // Đặt vị trí ở Top-Center
+                anchorOrigin={{ vertical: "top", horizontal: "center" }}
                 style={{ background: "yellow" }}
               >
                 <SnackbarContent

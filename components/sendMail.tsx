@@ -1,6 +1,20 @@
 import React, { useRef, FormEvent, useState } from "react";
 import emailjs from "@emailjs/browser";
-import { Box, Button, Stack, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Stack,
+  TextField,
+  Typography,
+  Snackbar,
+  SnackbarContent,
+} from "@mui/material";
+import MuiAlert, { AlertProps } from "@mui/material/Alert";
+import DoneIcon from "@mui/icons-material/Done";
+
+function Alert(props: AlertProps) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 export const Contact: React.FC = () => {
   const form = useRef<HTMLFormElement>(null);
@@ -9,7 +23,11 @@ export const Contact: React.FC = () => {
     message: "",
   });
   const [showError, setShowError] = useState(false);
-  const [showSuccess, setShowSuccess] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+  };
 
   const sendEmail = (e: FormEvent) => {
     e.preventDefault();
@@ -26,9 +44,8 @@ export const Contact: React.FC = () => {
         .then(
           () => {
             console.log("SUCCESS!");
-            setShowSuccess(true);
+            setSnackbarOpen(true);
             setEmailContent({ from_email: "", message: "" });
-            setTimeout(() => setShowSuccess(false), 3000);
           },
           (error) => {
             console.log("FAILED...", error.text);
@@ -84,14 +101,29 @@ export const Contact: React.FC = () => {
             Please fill out both email and message fields.
           </Typography>
         )}
-        {showSuccess && (
-          <Typography variant="body2" color="success">
-            Email sent successfully!
-          </Typography>
-        )}
         <Button type="submit" variant="contained" color="primary">
           Send
         </Button>
+        <Snackbar
+          open={snackbarOpen}
+          autoHideDuration={2500}
+          onClose={handleSnackbarClose}
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+          style={{ background: "yellow" }}
+        >
+          <SnackbarContent
+            message={
+              <Stack direction="row" alignItems="center">
+                <DoneIcon sx={{ marginRight: 1 }} />
+                Email sent successfully!
+              </Stack>
+            }
+            sx={{
+              backgroundColor: "green",
+              color: "black",
+            }}
+          />
+        </Snackbar>
       </Stack>
     </form>
   );

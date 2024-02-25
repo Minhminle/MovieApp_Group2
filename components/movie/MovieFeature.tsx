@@ -13,7 +13,22 @@ import { format } from "date-fns";
 const MovieFeature = () => {
   const router = useRouter();
   const { data, isLoading, error } = useSWR<MovieList>("/movie/top_rated");
-  const { data: dataGenre } = useSWR("/genre/movie/list");
+  const { data: movieGenres } = useSWR("/genre/movie/list");
+  // const genresList: GenreList[] = movieGenres?.genres
+  //   ? movieGenres.genres.map((genre: Genre) => [genre])
+  //   : [];
+
+  const getGenreNameById = (genreId: number) => {
+    // Kiểm tra xem movieGenres có tồn tại và có thuộc tính genres không
+    if (movieGenres && movieGenres.genres) {
+      const genre = movieGenres.genres.find(
+        (g: { id: number }) => g.id === genreId
+      );
+      return genre ? genre.name : "Unknown Genre";
+    }
+    // Trả về giá trị mặc định nếu movieGenres không tồn tại hoặc không có thuộc tính genres
+    return "Unknown Genre";
+  };
 
   console.log(data);
 
@@ -30,7 +45,6 @@ const MovieFeature = () => {
   const toggleText = (overview: string) => {
     setExpandedOverview((prev) => (prev === overview ? null : overview));
   };
-  const genres = dataGenre?.genres || [];
   if (!data)
     return (
       <div>
@@ -52,6 +66,7 @@ const MovieFeature = () => {
             gap={4}
             direction="row"
             alignItems="center"
+            marginLeft={"15px"}
             // Thêm kiểm soát tràn ngang
           >
             {data?.results?.map((movie) => (
@@ -70,57 +85,9 @@ const MovieFeature = () => {
                   }
                   width={300}
                   height={500}
-                  sx={{ borderRadius: "10%" }}
+                  sx={{ borderRadius: "60px" }}
                   onClick={() => handleDetailClick(movie.id)}
                 />
-
-                <Box
-                  position={"absolute"}
-                  zIndex={"1"}
-                  bottom={"20px"}
-                  left={"30px"}
-                >
-                  <Box
-                    sx={{
-                      flexGrow: 1,
-                      color: "white",
-                      marginTop: "20px",
-                      marginLeft: "5px",
-                      fontSize: "20px",
-                    }}
-                  >
-                    {movie.title}
-                  </Box>
-                  <Stack direction="row" alignItems="center">
-                    <StarRateIcon sx={{ color: "yellow" }}></StarRateIcon>
-                    <Box sx={{ color: "white" }}>
-                      {(movie.vote_average * 0.5).toFixed(1)}/5
-                    </Box>
-                    <Typography
-                      variant="body2"
-                      sx={{
-                        marginLeft: "5px",
-                        color: "#9e9e9e",
-                        fontSize: "15px",
-                      }}
-                    >
-                      |{" "}
-                      {movie.genre_ids && movie.genre_ids.length > 0
-                        ? movie.genre_ids
-                            .slice(0, 2)
-                            .map((genreId) => {
-                              const foundGenre = genres.find(
-                                (genre) => genre.id === genreId
-                              );
-                              return foundGenre
-                                ? foundGenre.name
-                                : "Unknown Genre";
-                            })
-                            .join(" - ")
-                        : "Unknown Genre"}
-                    </Typography>
-                  </Stack>
-                </Box>
                 <Box
                   position={"absolute"}
                   zIndex={"0"}
@@ -137,7 +104,11 @@ const MovieFeature = () => {
           </Stack>
         </Box>
         <Box>
-          <Stack gap={4} direction="row" sx={{ padding: "19px" }}>
+          <Stack
+            gap={4}
+            direction="row"
+            sx={{ padding: "15px", marginTop: "-15px" }}
+          >
             {data?.results?.map((movie) => (
               <Stack key={movie.id}>
                 <Box>
@@ -175,19 +146,15 @@ const MovieFeature = () => {
                       }}
                     >
                       |{" "}
-                      {movie.genre_ids && movie.genre_ids.length > 0
-                        ? movie.genre_ids
-                            .slice(0, 1)
-                            .map((genreId) => {
-                              const foundGenre = genres.find(
-                                (genre) => genre.id === genreId
-                              );
-                              return foundGenre
-                                ? foundGenre.name
-                                : "Unknown Genre";
-                            })
-                            .join(" - ")
-                        : "Unknown Genre"}
+                      {movie.genre_ids
+                        ?.slice(0, 2)
+                        .map((genreId, index, array) => (
+                          <React.Fragment key={genreId}>
+                            {getGenreNameById(genreId)}
+                            {index < array.length - 1 && " - "}{" "}
+                            {/* Hiển thị dấu phân tách nếu không phải là phần tử cuối cùng */}
+                          </React.Fragment>
+                        ))}
                     </Typography>
                   </Stack>
                   <Box>

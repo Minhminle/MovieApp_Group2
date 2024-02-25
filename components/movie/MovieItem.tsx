@@ -7,6 +7,7 @@ import { useRouter } from "next/router";
 import { Box, Container, Stack, Typography } from "@mui/material";
 import config from "@/config";
 import { Styles } from "@/stylescomponents/style";
+import React from "react";
 type Props = {
   movie: Movie;
 };
@@ -17,12 +18,26 @@ const MovieItem = () => {
   const [topRatedIdx, setTopRatedIdx] = useState(0);
   const { data: upcomingData } = useSWR<MovieList>(`/movie/upcoming`);
   const { data: topRatedData } = useSWR<MovieList>("/movie/top_rated");
-  const { data: dataGenre } = useSWR("/genre/movie/list");
+  const { data: movieGenres } = useSWR("/genre/movie/list");
+  // const genresList: GenreList[] = movieGenres?.genres
+  //   ? movieGenres.genres.map((genre: Genre) => [genre])
+  //   : [];
+
+  const getGenreNameById = (genreId: number) => {
+    // Kiểm tra xem movieGenres có tồn tại và có thuộc tính genres không
+    if (movieGenres && movieGenres.genres) {
+      const genre = movieGenres.genres.find(
+        (g: { id: number }) => g.id === genreId
+      );
+      return genre ? genre.name : "Unknown Genre";
+    }
+    // Trả về giá trị mặc định nếu movieGenres không tồn tại hoặc không có thuộc tính genres
+    return "Unknown Genre";
+  };
 
   const handleDetailClick = (movieId: string) => {
     router.push(`/detail/movie/${movieId}`);
   };
-  const genres = dataGenre?.genres || [];
   const Moviecard = ({ movie }: Props) => {
     return (
       <Stack>
@@ -50,17 +65,13 @@ const MovieItem = () => {
                 fontSize: "15px",
               }}
             >
-              {movie.genre_ids && movie.genre_ids.length > 0
-                ? movie.genre_ids
-                    .slice(0, 2)
-                    .map((genreId) => {
-                      const foundGenre = genres.find(
-                        (genre) => genre.id === genreId
-                      );
-                      return foundGenre ? foundGenre.name : "Unknown Genre";
-                    })
-                    .join(" - ")
-                : "Unknown Genre"}
+              {movie.genre_ids?.slice(0, 2).map((genreId, index, array) => (
+                <React.Fragment key={genreId}>
+                  {getGenreNameById(genreId)}
+                  {index < array.length - 1 && " - "}{" "}
+                  {/* Hiển thị dấu phân tách nếu không phải là phần tử cuối cùng */}
+                </React.Fragment>
+              ))}
             </Typography>
             <Stack direction="row" alignItems="center" spacing={1}>
               <Box
@@ -109,8 +120,16 @@ const MovieItem = () => {
 
     if (dataList) {
       const newIndex =
-        direction === "next" ? indexState[0] + 4 : indexState[0] - 4;
-      indexState[1](Math.max(0, Math.min(newIndex, dataList.length - 4)));
+        direction === "next"
+          ? (indexState[0] as number) + 4
+          : (indexState[0] as number) - 4;
+      const setStateFunction = indexState[1] as React.Dispatch<
+        React.SetStateAction<number>
+      >;
+
+      setStateFunction((prevIndex) =>
+        Math.max(0, Math.min(newIndex, dataList.length - 4))
+      );
     }
   };
   // useEffect(() => {

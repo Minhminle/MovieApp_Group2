@@ -14,6 +14,7 @@ import useSWR from "swr";
 import { Movie, MovieList } from "@/models/Movie";
 import { Card, CardContent, CardMedia } from "@mui/material";
 import StarIcon from "@mui/icons-material/Star";
+import React from "react";
 
 const MovieCategory: NextPageWithLayout = () => {
   const router = useRouter();
@@ -21,7 +22,10 @@ const MovieCategory: NextPageWithLayout = () => {
   const { data, isLoading, error } = useSWR<MovieList>(
     `/movie/top_rated?append_to_response=details`
   );
-  const { data: dataGenre } = useSWR("/genre/movie/list");
+  const { data: movieGenres } = useSWR("/genre/movie/list");
+  // const genresList: GenreList[] = movieGenres?.genres
+  //   ? movieGenres.genres.map((genre: Genre) => [genre])
+  //   : [];
   const {
     data: data2,
     isLoading: isLoading2,
@@ -36,7 +40,18 @@ const MovieCategory: NextPageWithLayout = () => {
     color: "white",
     fontWeight: "700",
   };
-  const genres = dataGenre?.genres || [];
+  const getGenreNameById = (genreId: number) => {
+    // Kiểm tra xem movieGenres có tồn tại và có thuộc tính genres không
+    if (movieGenres && movieGenres.genres) {
+      const genre = movieGenres.genres.find(
+        (g: { id: number }) => g.id === genreId
+      );
+      return genre ? genre.name : "Unknown Genre";
+    }
+    // Trả về giá trị mặc định nếu movieGenres không tồn tại hoặc không có thuộc tính genres
+    return "Unknown Genre";
+  };
+
   const [expandedOverview, setExpandedOverview] = useState<string | null>(null);
   if (!data && !data2)
     return (
@@ -109,17 +124,13 @@ const MovieCategory: NextPageWithLayout = () => {
                   }}
                 >
                   |{" "}
-                  {movie.genre_ids && movie.genre_ids.length > 0
-                    ? movie.genre_ids
-                        .slice(0, 2)
-                        .map((genreId) => {
-                          const foundGenre = genres.find(
-                            (genre) => genre.id === genreId
-                          );
-                          return foundGenre ? foundGenre.name : "Unknown Genre";
-                        })
-                        .join(" - ")
-                    : "Unknown Genre"}
+                  {movie.genre_ids?.slice(0, 2).map((genreId, index, array) => (
+                    <React.Fragment key={genreId}>
+                      {getGenreNameById(genreId)}
+                      {index < array.length - 1 && " - "}{" "}
+                      {/* Hiển thị dấu phân tách nếu không phải là phần tử cuối cùng */}
+                    </React.Fragment>
+                  ))}
                 </Typography>
               </Stack>
             </CardContent>
@@ -186,17 +197,13 @@ const MovieCategory: NextPageWithLayout = () => {
                   }}
                 >
                   |{" "}
-                  {movie.genre_ids && movie.genre_ids.length > 0
-                    ? movie.genre_ids
-                        .slice(0, 2)
-                        .map((genreId) => {
-                          const foundGenre = genres.find(
-                            (genre) => genre.id === genreId
-                          );
-                          return foundGenre ? foundGenre.name : "Unknown Genre";
-                        })
-                        .join(" - ")
-                    : "Unknown Genre"}
+                  {movie.genre_ids?.slice(0, 2).map((genreId, index, array) => (
+                    <React.Fragment key={genreId}>
+                      {getGenreNameById(genreId)}
+                      {index < array.length - 1 && " - "}{" "}
+                      {/* Hiển thị dấu phân tách nếu không phải là phần tử cuối cùng */}
+                    </React.Fragment>
+                  ))}
                 </Typography>
               </Stack>
             </CardContent>

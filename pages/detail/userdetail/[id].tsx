@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import { getCookie, setCookie, deleteCookie } from "cookies-next";
-import { Movie } from "@/models/Movie";
+import { Genre, Movie, MovieList } from "@/models/Movie";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
@@ -23,35 +23,53 @@ import { ST } from "next/dist/shared/lib/utils";
 import StarRateIcon from "@mui/icons-material/StarRate";
 import TurnedInIcon from "@mui/icons-material/TurnedIn";
 import FavoriteIcon from "@mui/icons-material/Favorite";
+import { Favorite, Rate, WatchList } from "@/models/UserList";
 const UserDetail = () => {
   const router = useRouter();
   const { id } = router.query;
-  const [value, setValue] = React.useState("1");
+  const [value, setValue] = React.useState<number | number[]>(1);
   const session_id = getCookie("session_id");
   const fetcher = (url: string) => axios.get(url).then((res) => res.data);
-  const handleChange = (event, newValue) => {
+  const handleChange = (
+    event: React.ChangeEvent<{}>,
+    newValue: number | number[]
+  ) => {
     setValue(newValue);
   };
   const { data: userDetails } = useSWR<User>(
     `/account?session_id=${session_id}`
   );
-  const { data: watchList } = useSWR<Movie>(
+  const { data: watchList } = useSWR<WatchList>(
     id
       ? `/account/{account_id}/watchlist/movies?session_id=${session_id}`
       : null
   );
-  const { data: faVourite } = useSWR<Movie>(
+  const { data: faVourite } = useSWR<Favorite>(
     id ? `/account/{account_id}/favorite/movies?session_id=${session_id}` : null
   );
-  const { data: votelist } = useSWR<Movie>(
+  const { data: votelist } = useSWR<Rate>(
     `/account/{account_id}/rated/movies?session_id=${session_id}`
   );
   // const { data: votelist } = useSWR<Movie>(
   //   `/account/${session_id}/rated/movies`
   // );
 
-  const { data: dataGenre } = useSWR("/genre/movie/list");
-  const genres = dataGenre?.genres || [];
+  const { data: movieGenres } = useSWR("/genre/movie/list");
+  // const genresList: GenreList[] = movieGenres?.genres
+  //   ? movieGenres.genres.map((genre: Genre) => [genre])
+  //   : [];
+
+  const getGenreNameById = (genreId: number) => {
+    // Kiểm tra xem movieGenres có tồn tại và có thuộc tính genres không
+    if (movieGenres && movieGenres.genres) {
+      const genre = movieGenres.genres.find(
+        (g: { id: number }) => g.id === genreId
+      );
+      return genre ? genre.name : "Unknown Genre";
+    }
+    // Trả về giá trị mặc định nếu movieGenres không tồn tại hoặc không có thuộc tính genres
+    return "Unknown Genre";
+  };
   const handleDetailClick = (movieId: string) => {
     router.push(`/detail/movie/${movieId}`);
   };
@@ -61,25 +79,25 @@ const UserDetail = () => {
     setVisibleItems((prevVisibleItems) => prevVisibleItems + 10);
   };
   const [hasVoted, setHasVoted] = useState(false);
-  const handleDeleteRating = async (movieId) => {
-    try {
-      const response = await axios.delete(`/movie/${movieId}/rating`, {
-        params: {
-          session_id: session_id,
-        },
-      });
+  // const handleDeleteRating = async (movieId) => {
+  //   try {
+  //     const response = await axios.delete(`/movie/${movieId}/rating`, {
+  //       params: {
+  //         session_id: session_id,
+  //       },
+  //     });
 
-      // Xử lý sau khi xóa thành công, có thể làm mới danh sách hoặc hiển thị thông báo thành công.
-      console.log("Xóa đánh giá thành công", response);
-      setHasVoted(false);
-      localStorage.removeItem(`userRating_${id}`);
-      // Sau khi xóa, bạn có thể làm mới danh sách votelist để cập nhật UI.
-      // Chẳng hạn: mutate(`/account/{account_id}/rated/movies?session_id=${session_id}`);
-    } catch (error) {
-      console.error("Lỗi khi xóa đánh giá", error);
-      // Xử lý lỗi nếu cần
-    }
-  };
+  //     // Xử lý sau khi xóa thành công, có thể làm mới danh sách hoặc hiển thị thông báo thành công.
+  //     console.log("Xóa đánh giá thành công", response);
+  //     setHasVoted(false);
+  //     localStorage.removeItem(`userRating_${id}`);
+  //     // Sau khi xóa, bạn có thể làm mới danh sách votelist để cập nhật UI.
+  //     // Chẳng hạn: mutate(`/account/{account_id}/rated/movies?session_id=${session_id}`);
+  //   } catch (error) {
+  //     console.error("Lỗi khi xóa đánh giá", error);
+  //     // Xử lý lỗi nếu cần
+  //   }
+  // };
   return (
     <>
       <Stack direction="row" spacing={2} alignItems="center">
@@ -113,9 +131,9 @@ const UserDetail = () => {
         {userDetails?.username}
       </Typography>
       <Box sx={{ width: "100%", typography: "body1" }}>
-        <TabContext value={value}>
+        <TabContext value={value.toString()}>
           <Box sx={{ width: "100%", typography: "body1" }}>
-            <TabContext value={value}>
+            <TabContext value={value.toString()}>
               <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
                 <TabList
                   sx={{
@@ -130,15 +148,15 @@ const UserDetail = () => {
                   aria-label="lab API tabs example"
                 >
                   <Tab
-                    label={`Watch List (${watchList?.results.length})`}
+                    label={`Watch List (${watchList?.total_results})`}
                     value="1"
                   />
                   <Tab
-                    label={`Favourite (${faVourite?.results.length}) `}
+                    label={`Favourite (${faVourite?.total_results}) `}
                     value="2"
                   />
                   <Tab
-                    label={`Vote List (${votelist?.results.length}) `}
+                    label={`Vote List (${votelist?.total_results}) `}
                     value="3"
                   />
                 </TabList>
@@ -147,7 +165,7 @@ const UserDetail = () => {
           </Box>
           <TabPanel value="1">
             <Stack alignContent="center" spacing={2} direction="column-reverse">
-              {watchList?.results?.map((movie) => (
+              {watchList?.results?.map((movie: Movie) => (
                 <Stack key={movie.id}>
                   <Stack direction="row" spacing={2} alignItems="center">
                     <Box
@@ -187,19 +205,15 @@ const UserDetail = () => {
                             }}
                           >
                             |{" "}
-                            {movie.genre_ids && movie.genre_ids.length > 0
-                              ? movie.genre_ids
-                                  .slice(0, 2)
-                                  .map((genreId) => {
-                                    const foundGenre = genres.find(
-                                      (genre) => genre.id === genreId
-                                    );
-                                    return foundGenre
-                                      ? foundGenre.name
-                                      : "Unknown Genre";
-                                  })
-                                  .join(" - ")
-                              : "Unknown Genre"}
+                            {movie.genre_ids
+                              ?.slice(0, 2)
+                              .map((genreId, index, array) => (
+                                <React.Fragment key={genreId}>
+                                  {getGenreNameById(genreId)}
+                                  {index < array.length - 1 && " - "}{" "}
+                                  {/* Hiển thị dấu phân tách nếu không phải là phần tử cuối cùng */}
+                                </React.Fragment>
+                              ))}
                           </Typography>
                         </Stack>
                       </Stack>
@@ -211,7 +225,7 @@ const UserDetail = () => {
           </TabPanel>
           <TabPanel value="2">
             <Stack alignContent="center" spacing={2} direction="column-reverse">
-              {faVourite?.results?.map((movie) => (
+              {faVourite?.results.map((movie) => (
                 <Stack key={movie.id}>
                   <Stack direction="row" spacing={2} alignItems="center">
                     <Box
@@ -247,19 +261,15 @@ const UserDetail = () => {
                             }}
                           >
                             |{" "}
-                            {movie.genre_ids && movie.genre_ids.length > 0
-                              ? movie.genre_ids
-                                  .slice(0, 2)
-                                  .map((genreId) => {
-                                    const foundGenre = genres.find(
-                                      (genre) => genre.id === genreId
-                                    );
-                                    return foundGenre
-                                      ? foundGenre.name
-                                      : "Unknown Genre";
-                                  })
-                                  .join(" - ")
-                              : "Unknown Genre"}
+                            {movie.genre_ids
+                              ?.slice(0, 2)
+                              .map((genreId, index, array) => (
+                                <React.Fragment key={genreId}>
+                                  {getGenreNameById(genreId)}
+                                  {index < array.length - 1 && " - "}{" "}
+                                  {/* Hiển thị dấu phân tách nếu không phải là phần tử cuối cùng */}
+                                </React.Fragment>
+                              ))}
                           </Typography>
                         </Stack>
                       </Stack>
@@ -308,19 +318,15 @@ const UserDetail = () => {
                             }}
                           >
                             |{" "}
-                            {movie.genre_ids && movie.genre_ids.length > 0
-                              ? movie.genre_ids
-                                  .slice(0, 2)
-                                  .map((genreId) => {
-                                    const foundGenre = genres.find(
-                                      (genre) => genre.id === genreId
-                                    );
-                                    return foundGenre
-                                      ? foundGenre.name
-                                      : "Unknown Genre";
-                                  })
-                                  .join(" - ")
-                              : "Unknown Genre"}
+                            {movie.genre_ids
+                              ?.slice(0, 2)
+                              .map((genreId, index, array) => (
+                                <React.Fragment key={genreId}>
+                                  {getGenreNameById(genreId)}
+                                  {index < array.length - 1 && " - "}{" "}
+                                  {/* Hiển thị dấu phân tách nếu không phải là phần tử cuối cùng */}
+                                </React.Fragment>
+                              ))}
                           </Typography>
                         </Stack>
                       </Stack>

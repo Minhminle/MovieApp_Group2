@@ -97,11 +97,11 @@ const HeaderDetail = () => {
   const [isThumbUpPressed, setIsThumbUpPressed] = useState(
     localStorage.getItem(`thumbUp_${id}`) === "true"
   );
-  const handleGenreClick = (genreId) => {
+  const handleGenreClick = (genreId: string) => {
     router.push(`/detail/Find?genre=${genreId}`);
-    setSelectedGenre(genreId);
+    setSelectedGenre(() => genreId);
   };
-  const [selectedGenre, setSelectedGenre] = useState(null);
+  const [selectedGenre, setSelectedGenre] = useState<null | string>(null);
   const handleWatchList = async () => {
     try {
       const response = await axios.post(
@@ -146,7 +146,7 @@ const HeaderDetail = () => {
 
       console.log("Favorite request success:", response.data);
       setIsThumbUpPressed(!isThumbUpPressed);
-      localStorage.setItem(`thumbUp_${id}`, !isThumbUpPressed);
+      localStorage.setItem(`thumbUp_${id}`, (!isThumbUpPressed).toString());
     } catch (error) {
       console.error("Error making favorite request:", error);
     }
@@ -178,26 +178,50 @@ const HeaderDetail = () => {
     fontWeight: "700",
   };
 
-  const handleClickOpen = () => {
+  const handleClickOpenWatchList = () => {
     if (!session_id) {
       setSnackbarMessage("Login Required");
-      setSnackbarOpen(true);
+      setSnackbarOpenWatchList(true);
     } else {
       handleWatchList();
     }
   };
 
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const handleClickOpenFavoriteList = () => {
+    if (!session_id) {
+      setSnackbarMessage("Login Required");
+      setSnackbarOpenFavoriteList(true);
+    } else {
+      handleWatchList();
+    }
+  };
+
+  const handleClickOpenVoteList = () => {
+    if (!session_id) {
+      setSnackbarMessage("Login Required");
+      setSnackbarOpenVoteList(true);
+    } else {
+      handleWatchList();
+    }
+  };
+
+  const [snackbarOpenWatchList, setSnackbarOpenWatchList] = useState(false);
+  const [snackbarOpenFavoriteList, setSnackbarOpenFavoriteList] =
+    useState(false);
+  const [snackbarOpenVoteList, setSnackbarOpenVoteList] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
 
   const handleSnackbarClose = () => {
-    setSnackbarOpen(false);
+    setSnackbarOpenWatchList(false);
+    setSnackbarOpenFavoriteList(false);
+    setSnackbarOpenVoteList(false);
   };
   const [showRating, setShowRating] = useState(false);
-  const [userRating, setUserRating] = useState(0);
+  const [userRating, setUserRating] = useState<number | null>(null);
   const [hasVoted, setHasVoted] = useState(false);
-  const [anchorEl, setAnchorEl] = useState(null);
-  const handleStarClick = (event) => {
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+
+  const handleStarClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
     setShowRating(true); // Hiển thị box đánh giá
   };
@@ -206,13 +230,16 @@ const HeaderDetail = () => {
     setShowRating(false); // Thêm dòng này để ẩn box đánh giá khi đóng Popover
   };
 
-  const handleRatingChange = async (event, newValue) => {
+  const handleRatingChange = async (
+    event: React.SyntheticEvent,
+    newValue: number | null
+  ) => {
     try {
       // Gọi API để gửi đánh giá
       const response = await axios.post(
         `/movie/${id}/rating`,
         {
-          value: newValue * 2,
+          value: newValue ? newValue * 2 : null,
         },
         {
           params: {
@@ -228,7 +255,10 @@ const HeaderDetail = () => {
       setAnchorEl(null);
 
       // Lưu trạng thái vote vào local storage trước khi cập nhật state
-      localStorage.setItem(`userRating_${id}`, newValue);
+      localStorage.setItem(
+        `userRating_${id}`,
+        newValue !== null ? String(newValue) : ""
+      );
 
       // Cập nhật giá trị userRating khi vote thành công
       setUserRating(newValue);
@@ -238,7 +268,7 @@ const HeaderDetail = () => {
     }
   };
 
-  const handleDeleteRating = async (movieId) => {
+  const handleDeleteRating = async (movieId: number) => {
     try {
       const response = await axios.delete(`/movie/${movieId}/rating`, {
         params: {
@@ -342,7 +372,7 @@ const HeaderDetail = () => {
                   color="inherit"
                   onClick={() => {
                     if (!session_id) {
-                      handleClickOpen();
+                      handleClickOpenWatchList();
                     } else {
                       handleWatchList();
                     }
@@ -359,7 +389,7 @@ const HeaderDetail = () => {
                   />
                 </IconButton>
                 <Snackbar
-                  open={snackbarOpen}
+                  open={snackbarOpenWatchList}
                   autoHideDuration={1500}
                   onClose={handleSnackbarClose}
                   anchorOrigin={{ vertical: "top", horizontal: "center" }} // Đặt vị trí ở Top-Center
@@ -370,7 +400,7 @@ const HeaderDetail = () => {
                       <Stack direction="row" alignItems="center">
                         {/* Add the icon here */}
                         <WarningAmberIcon sx={{ marginRight: 1 }} />
-                        Login to add this movie to your list
+                        Login to add this movie to your watch list
                       </Stack>
                     }
                     sx={{
@@ -384,7 +414,7 @@ const HeaderDetail = () => {
                   color="inherit"
                   onClick={() => {
                     if (!session_id) {
-                      handleClickOpen();
+                      handleClickOpenFavoriteList();
                     } else {
                       handleFavorite();
                     }
@@ -400,59 +430,104 @@ const HeaderDetail = () => {
                     }}
                   />
                 </IconButton>
-                <Tooltip
-                  title={
-                    session_id ? "" : "Login to add this movie to your list"
-                  }
-                  arrow
-                  placement="top"
-                  enterTouchDelay={0}
-                  style={{ fontSize: "14px", maxWidth: "200px" }}
+                <Snackbar
+                  open={snackbarOpenFavoriteList}
+                  autoHideDuration={1500}
+                  onClose={handleSnackbarClose}
+                  anchorOrigin={{ vertical: "top", horizontal: "center" }} // Đặt vị trí ở Top-Center
+                  style={{ background: "yellow" }}
                 >
-                  <Box>
-                    <IconButton color="inherit" onClick={handleStarClick}>
-                      <StarRateIcon
-                        sx={{ color: hasVoted ? "yellow" : "inherit" }}
-                      />
-                    </IconButton>
-                    <Popover
-                      open={Boolean(anchorEl)}
-                      anchorEl={anchorEl}
-                      onClose={handleClosePopover}
-                      anchorOrigin={{
-                        vertical: "bottom",
-                        horizontal: "left",
+                  <SnackbarContent
+                    message={
+                      <Stack direction="row" alignItems="center">
+                        {/* Add the icon here */}
+                        <WarningAmberIcon sx={{ marginRight: 1 }} />
+                        Login to add this movie to your favorite list
+                      </Stack>
+                    }
+                    sx={{
+                      backgroundColor: "yellow",
+                      color: "black",
+                    }}
+                  />
+                </Snackbar>
+                <Box>
+                  <IconButton
+                    color="inherit"
+                    onClick={(event) => {
+                      if (!session_id) {
+                        handleClickOpenVoteList();
+                      } else {
+                        handleStarClick(event); // Truyền tham số event vào handleStarClick
+                      }
+                    }}
+                  >
+                    <StarRateIcon
+                      sx={{
+                        color: session_id
+                          ? hasVoted
+                            ? "yellow"
+                            : "inherit"
+                          : "inherit",
                       }}
-                      transformOrigin={{
-                        vertical: "top",
-                        horizontal: "left",
+                    />
+                  </IconButton>
+                  <Snackbar
+                    open={snackbarOpenVoteList}
+                    autoHideDuration={1500}
+                    onClose={handleSnackbarClose}
+                    anchorOrigin={{ vertical: "top", horizontal: "center" }} // Đặt vị trí ở Top-Center
+                    style={{ background: "yellow" }}
+                  >
+                    <SnackbarContent
+                      message={
+                        <Stack direction="row" alignItems="center">
+                          {/* Add the icon here */}
+                          <WarningAmberIcon sx={{ marginRight: 1 }} />
+                          Login to add this movie to your vote list
+                        </Stack>
+                      }
+                      sx={{
+                        backgroundColor: "yellow",
+                        color: "black",
                       }}
-                    >
-                      {/* Hiển thị rating và cho phép đánh giá */}
-                      {showRating && (
-                        <Box
-                          sx={{
-                            backgroundColor: "white",
-                            padding: "16px",
-                            borderRadius: "8px",
-                            boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.1)",
-                          }}
-                        >
-                          <Rating
-                            value={userRating}
-                            onChange={
-                              session_id ? handleRatingChange : undefined
-                            }
-                            sx={{ color: hasVoted ? "yellow" : "yellow" }}
-                          />
-                          <CancelIcon
-                            onClick={() => handleDeleteRating(id)}
-                          ></CancelIcon>
-                        </Box>
-                      )}
-                    </Popover>
-                  </Box>
-                </Tooltip>
+                    />
+                  </Snackbar>
+                  <Popover
+                    open={Boolean(anchorEl)}
+                    anchorEl={anchorEl}
+                    onClose={handleClosePopover}
+                    anchorOrigin={{
+                      vertical: "bottom",
+                      horizontal: "left",
+                    }}
+                    transformOrigin={{
+                      vertical: "top",
+                      horizontal: "left",
+                    }}
+                  >
+                    {/* Hiển thị rating và cho phép đánh giá */}
+                    {showRating && (
+                      <Box
+                        sx={{
+                          backgroundColor: "white",
+                          padding: "16px",
+                          borderRadius: "8px",
+                          boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.1)",
+                        }}
+                      >
+                        <Rating
+                          value={userRating}
+                          onChange={session_id ? handleRatingChange : undefined}
+                          sx={{ color: hasVoted ? "yellow" : "yellow" }}
+                        />
+                        <CancelIcon
+                          onClick={() => handleDeleteRating(Number(id))}
+                        ></CancelIcon>
+                      </Box>
+                    )}
+                  </Popover>
+                </Box>
               </Stack>
             </Stack>
           </Stack>

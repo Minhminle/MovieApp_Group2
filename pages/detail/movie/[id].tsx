@@ -33,6 +33,8 @@ import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import HeaderDetail from "@/components/movie/HeaderDetail";
 import CloseIcon from "@mui/icons-material/Close";
+import { Video } from "@/models/Video";
+import { Reviews } from "@/models/Reviews";
 export interface Cast {
   id: number;
   name: string;
@@ -61,9 +63,9 @@ const MovieDetail = () => {
     );
   };
 
-  const [fullScreenImage, setFullScreenImage] = useState(null);
+  const [fullScreenImage, setFullScreenImage] = useState<string | null>(null);
 
-  const handleImageClick = (file_path) => {
+  const handleImageClick = (file_path: string) => {
     setFullScreenImage(file_path);
   };
 
@@ -90,9 +92,12 @@ const MovieDetail = () => {
     fontWeight: "700",
   };
   const [isThumbUpPressed, setIsThumbUpPressed] = useState(false);
-  const [value, setValue] = React.useState("1");
+  const [value, setValue] = React.useState<number | number[]>(1);
 
-  const handleChange = (event, newValue) => {
+  const handleChange = (
+    event: React.ChangeEvent<{}>,
+    newValue: number | number[]
+  ) => {
     setValue(newValue);
   };
 
@@ -211,9 +216,9 @@ const MovieDetail = () => {
       </Typography>
 
       <Box sx={{ width: "100%", typography: "body1" }}>
-        <TabContext value={value}>
+        <TabContext value={value.toString()}>
           <Box sx={{ width: "100%", typography: "body1" }}>
-            <TabContext value={value}>
+            <TabContext value={value.toString()}>
               <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
                 <TabList
                   sx={{
@@ -253,7 +258,7 @@ const MovieDetail = () => {
                 spacing={1}
                 sx={{ overflowX: "auto" }}
               >
-                {dataVideo?.results.map((video) => (
+                {dataVideo?.results.map((video: Video) => (
                   <Stack key={video.id}>
                     <ReactPlayer
                       key={video.id}
@@ -273,54 +278,56 @@ const MovieDetail = () => {
               "Don't have any reviews"
             ) : (
               <Stack gap={4} direction="column">
-                {datareview?.results.slice(0, visibleReviews).map((review) => (
-                  <Stack key={review.id}>
-                    <Stack direction="row">
-                      <Box>
-                        <Avatar
-                          src={`https://image.tmdb.org/t/p/w500${review.author_details.avatar_path}`}
-                          sx={{
-                            marginRight: "10px",
-                            width: "80px",
-                            height: "80px",
-                          }}
-                        />
-                      </Box>
-                      <Stack direction="column" sx={{ marginTop: "15px" }}>
-                        <Box color="white"> {review.author}</Box>
-                        <Box color="gray">
-                          {format(
-                            new Date(review.updated_at),
-                            "dd/MM/yyyy HH:mm:ss"
-                          )}
+                {datareview?.results
+                  .slice(0, visibleReviews)
+                  .map((review: Reviews) => (
+                    <Stack key={review.id}>
+                      <Stack direction="row">
+                        <Box>
+                          <Avatar
+                            src={`https://image.tmdb.org/t/p/w500${review.author_details.avatar_path}`}
+                            sx={{
+                              marginRight: "10px",
+                              width: "80px",
+                              height: "80px",
+                            }}
+                          />
                         </Box>
+                        <Stack direction="column" sx={{ marginTop: "15px" }}>
+                          <Box color="white"> {review.author}</Box>
+                          <Box color="gray">
+                            {format(
+                              new Date(review.updated_at.toString()),
+                              "dd/MM/yyyy HH:mm:ss"
+                            )}
+                          </Box>
+                        </Stack>
                       </Stack>
+                      <Typography
+                        sx={{
+                          fontSize: "18px",
+                          color: "white",
+                          textAlign: "justify",
+                        }}
+                      >
+                        {expandedOverview === review.content
+                          ? review.content
+                          : review.content.length > 90
+                          ? `${review.content.slice(0, 90)}...`
+                          : review.content}
+                        {review.content.length > 90 && (
+                          <Button
+                            sx={{ fontSize: "12px", color: "lightblue" }}
+                            onClick={() => toggleText(review.content)}
+                          >
+                            {expandedOverview === review.content
+                              ? "Less"
+                              : "More"}
+                          </Button>
+                        )}
+                      </Typography>
                     </Stack>
-                    <Typography
-                      sx={{
-                        fontSize: "18px",
-                        color: "white",
-                        textAlign: "justify",
-                      }}
-                    >
-                      {expandedOverview === review.content
-                        ? review.content
-                        : review.content.length > 90
-                        ? `${review.content.slice(0, 90)}...`
-                        : review.content}
-                      {review.content.length > 90 && (
-                        <Button
-                          sx={{ fontSize: "12px", color: "lightblue" }}
-                          onClick={() => toggleText(review.content)}
-                        >
-                          {expandedOverview === review.content
-                            ? "Less"
-                            : "More"}
-                        </Button>
-                      )}
-                    </Typography>
-                  </Stack>
-                ))}
+                  ))}
                 {datareview?.results.length > visibleReviews && (
                   <Box textAlign="center" mt={2}>
                     <Button
@@ -404,7 +411,7 @@ const MovieDetail = () => {
         direction="row"
         sx={{ overflowX: "auto" }} // Thêm kiểm soát tràn ngang
       >
-        {similarMoviesData?.results.map((movie) => (
+        {similarMoviesData?.results.map((movie: Movie) => (
           <Box
             key={movie.id}
             sx={{
@@ -452,7 +459,7 @@ const MovieDetail = () => {
                   </Typography>
                 </Box>
 
-                {data?.genres?.slice(0, 2).map((genre) => (
+                {data?.genres?.slice(0, 2).map((genre, index, array) => (
                   <Typography
                     key={genre.id}
                     variant="h6"
@@ -460,6 +467,7 @@ const MovieDetail = () => {
                     sx={{ color: "#9e9e9e" }}
                   >
                     {genre.name}
+                    {index < array.length - 1 ? " | " : ""}
                   </Typography>
                 ))}
               </Stack>

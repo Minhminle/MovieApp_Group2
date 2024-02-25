@@ -22,6 +22,7 @@
     "google-auth-library": "^9.6.0",
     "googleapis": "^131.0.0",
     "next": "^14.0.4",
+    "nodemailer": "^6.9.9",
     "react": "^18.2.0",
     "react-dom": "^18",
     "react-id-swiper": "^4.0.0",
@@ -37,6 +38,7 @@
   "devDependencies": {
     "@types/jquery": "^3.5.29",
     "@types/node": "^20",
+    "@types/nodemailer": "^6.4.14",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "eslint": "^8",
